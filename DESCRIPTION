@@ -1,21 +1,17 @@
-Package: DemoTools
+Package: LifeIneq
 Type: Package
 Title: Calculate indices of lifespan variation
-Version: 00.01.00
-Date: 2019-11-27
+Version: 00.02.00
+Date: 2019-11-28
 Authors@R: c(
-person("Alyson", "van Raalte", role = c("aut","cre"), 
-          email = "vanraalte@demogr.mpg.de", comment = c(ORCID = "0000-0002-0676-8921")),
-   person("Tim", "Riffe", role = c("aut", "cre"), 
-          email = "tim.riffe@gmail.com", comment = c(ORCID = "0000-0002-2673-4622")),
-
+   person("Alyson", "van Raalte", role = c("aut","cre"), email = "vanraalte@demogr.mpg.de", comment = c(ORCID = "0000-0002-0676-8921")),
+   person("Tim", "Riffe", role = c("aut"), email = "tim.riffe@gmail.com", comment = c(ORCID = "0000-0002-2673-4622")))
 Description: A package to calculate indices of lifespan variation from a life table
 LazyLoad: yes
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.0
 Depends:
     R (>= 3.6)
 RdMacros: Rdpack
-
 BugReports: https://github.com/alysonvanraalte/LifeIneq/issues
 Encoding: UTF-8
