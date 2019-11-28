@@ -1,7 +1,7 @@
 Package: LifeIneq
 Type: Package
 Title: Calculate indices of lifespan variation
-Version: 00.02.00
+Version: 00.02.01
 Date: 2019-11-28
 Authors@R: c(
    person("Alyson", "van Raalte", role = c("aut","cre"), email = "vanraalte@demogr.mpg.de", comment = c(ORCID = "0000-0002-0676-8921")),
@@ -13,5 +13,7 @@ RoxygenNote: 7.0.0
 Depends:
     R (>= 3.6)
 RdMacros: Rdpack
+Imports: 
+  Rdpack 
 BugReports: https://github.com/alysonvanraalte/LifeIneq/issues
 Encoding: UTF-8

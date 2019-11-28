@@ -19,7 +19,7 @@ ineq_Gini(age, lx, ex, ax)
 Calculate a lifetable column for the conditional Gini coefficient of inequality in survivorship
 }
 \details{
-All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). \ The formula for calculating the Gini was taken from the citet{Shkolnikov2010} spreadsheet, and is a simplification of the formulas described in citet{Shkolnikov2003; Hanada1983}.
+All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). \ The formula for calculating the Gini was taken from the Shkolnikov (2010) spreadsheet, and is a simplification of the formulas described in Shkolnikov (2003) and Hanada (1983).
 }
 \examples{
 
@@ -30,4 +30,7 @@ G = ineq_Gini(age=LT$Age,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 G[1]
 # The Gini coefficient conditional upon survival to age 10
 G[11]
+}
+\references{
+\insertRef{shkolnikov2010}{LifeIneq}
 }
