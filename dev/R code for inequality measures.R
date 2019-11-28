@@ -9,8 +9,12 @@ myHMDusername <- "vanraalte@demogr.mpg.de"
 myHMDpassword <- "1538657766"
 
 # an HMD life table as example data
-LT <- readHMD("C:\\hmd_statistics\\lt_female\\fltper_5x1\\CAN.fltper_5x1.txt") %>%
+LT <- readHMD("C:\\hmd_statistics\\lt_female\\fltper_1x1\\CAN.fltper_1x1.txt") %>%
         filter(Year==max(Year))
+
+LT5 <- readHMD("C:\\hmd_statistics\\lt_female\\fltper_5x1\\CAN.fltper_5x1.txt")   %>%
+  filter(Year==max(Year))
+
 
 # let's assume our input is mx, and output an HMD-like life table.
 
@@ -56,7 +60,12 @@ lines(Age,edag/edag[1],col="green")
 lines(Age,H/H[1],col="darkorange")
 
 #------------------------- Gini (G), AAD
+lx2 <- lx^2 / lx[1]^2
+lx2plusn <- c(lx2[-1],0)
+intlx2 <- lx2plusn*n + ax*(lx2-lx2plusn)*n
+G <- 1 - rev(cumsum(rev(intlx2)))/(ex*lx2)
 
+AID <- G*ex
 
 
 #------------------------- Theil, MLD
