@@ -74,8 +74,7 @@ ineq_variance <- function(age, dx, lx, ex, ax){
 
 ineq_sd <- function(age, dx, lx, ex, ax){
    V <- ineq_variance(age, dx, lx, ex, ax)
-   sqrt(V) # %>%
-   #   round(2) 
+   sqrt(V) 
 }
 
 
@@ -106,8 +105,7 @@ ineq_sd <- function(age, dx, lx, ex, ax){
 
 ineq_cov <- function(age, dx, lx, ex, ax){
   V <- ineq_variance(age, dx, lx, ex, ax)
-  sqrt(V) / (ex + age) # %>%
-  #   round(2) 
+  sqrt(V) / (ex + age) 
 }
 
 
@@ -152,8 +150,7 @@ ineq_edag <- function(age, dx, lx, ex, ax){
   # ends up being roughly half of the ex between ages
     ex_average <- ex + ax/n * (explusone-ex)
   
-  rev(cumsum(rev(dx*ex_average))) / lx # %>%
-  #   round(2) 
+  rev(cumsum(rev(dx*ex_average))) / lx 
 }
 
 
@@ -183,8 +180,7 @@ ineq_edag <- function(age, dx, lx, ex, ax){
 
 
 ineq_H <- function(age, dx, lx, ex, ax){
-  ineq_edag(age, dx, lx, ex, ax) / (ex + age) # %>%
-  #   round(4) 
+  ineq_edag(age, dx, lx, ex, ax) / (ex + age)
 }
 
 
@@ -232,7 +228,7 @@ ineq_Theil <- function(age, dx, lx, ex, ax){
                    ) / lx[i]
       T1 <- ifelse(T1<0,0,T1)
       }
-    return(round(T1,4))
+    return(T1)
 }
 
 
@@ -272,14 +268,14 @@ ineq_MLD <- function(age, dx, lx, ex, ax){
   exAge <- ex + age
   nages <- length(age)
   
-  MLD1 <- rep(NA,nages)
+  MLD <- rep(NA,nages)
   for(i in 1:nages){
-    MLD1[i] <- sum(
+    MLD[i] <- sum(
                 dx[i:nages]* (log (exAge[i]/axAge[i:nages]))
                    ) / lx[i]
-    MLD1 <- ifelse(MLD1<0,0,MLD1) 
+    MLD <- ifelse(MLD<0,0,MLD) 
   }
-  return(round(MLD1,4))
+  return(MLD)
 }
 
 
@@ -287,7 +283,9 @@ ineq_MLD <- function(age, dx, lx, ex, ax){
 #' @title ineq_Gini
 #' @description Calculate a lifetable column for the conditional Gini coefficient of inequality in survivorship
 #'
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). \ The formula for calculating the Gini was taken from the Shkolnikov (2010) spreadsheet, and is a simplification of the formulas described in Shkolnikov (2003) and Hanada (1983).
+#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
+#' 
+#'   The formula for calculating the Gini was taken from the Shkolnikov (2010) spreadsheet, and is a simplification of the formulas described in Shkolnikov (2003) and Hanada (1983).
 #' 
 #' 
 #' @param age numeric. vector of lower age bounds.
@@ -296,6 +294,8 @@ ineq_MLD <- function(age, dx, lx, ex, ax){
 #' @param ax numeric. vector containing average time spent in age interval of those dying within the interval.
 #'
 #' @references 
+#' \insertRef{hanada1983}{LifeIneq}
+#' \insertRef{shkolnikov2003}{LifeIneq}
 #' \insertRef{shkolnikov2010}{LifeIneq}
 #' 
 #'
@@ -332,7 +332,7 @@ ineq_Gini <- function(age, lx, ex, ax){
   intlx2 <- lx2plusn*n + ax*(lx2-lx2plusn)*n
   G <- 1 - rev(cumsum(rev(intlx2)))/(ex*lx2)
   G[G<0] <- 0
-  return(round(G,4))
+  return(G)
 }
 
 
@@ -364,7 +364,7 @@ ineq_Gini <- function(age, lx, ex, ax){
 
 ineq_AID <- function(age, lx, ex, ax){
   AID <- ineq_Gini(age=age,lx=lx,ex=ex,ax=ax) * ex
-  return(round(AID,2))
+  return(AID)
 }
 
 
@@ -401,7 +401,7 @@ ineq_LTquantile <- function(age,lx,quantile,n.grid=1000){
   agei <- fit$x
   lxi <- fit$y
   age_quantile <- agei[which.min(abs(lxi-quantile))]
-  return(round(age_quantile,2))
+  return(age_quantile)
 }
 
 
@@ -428,8 +428,66 @@ ineq_LTquantile <- function(age,lx,quantile,n.grid=1000){
 ineq_iqr <- function(age,lx,n.grid=1000){
   q1 <- ineq_LTquantile(age=age,lx=lx,quantile=0.25,n.grid=1000) 
   q3 <- ineq_LTquantile(age=age,lx=lx,quantile=0.75,n.grid=1000)
-  round(q1-q3,2)
+  q1-q3
 }
+
+
+
+#' @title ineq_Cp
+#' @description Calculate Kannisto's C-measures from a lifetable
+#'
+#' @details The age and lx vectors must be the same length. This function estimates the shortest distance between two ages containing p percent of the life table cohort's death. The mechanics behind the function are to fit a cubic spline through the survival curve to estimate surivorship between age intervals. If your data have an upper age bound lower than 110, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws').
+#' 
+#'  This function is currently very slow because the author is a better demographer than she is programmer. For ideas of how to improve this function, please let email vanraalte@@demogr.mpg.de.
+#'  
+#'   The concept behind Kannisto's C-measures is found in Kannisto (2000) 
+#' 
+#'
+#' @param age numeric. vector of lower age bounds.
+#' @param lx numeric. vector containing the lifetable survivorship. The starting radix (\eqn{\ell_{0}}) can be 100000, 1, or any value you like.
+#' @param n.grid numeric. How many points do we want to interpolate? Defaults to 1000, which would work out to about a tenth of a year for a vector of life table survivors from age zero to 100+.
+#' @param p numeric. What percent of the life table cohort do you want captured in the C measure? The default is 50.
+#'
+#'
+#'@references 
+#' \insertRef{kannisto2000}{LifeIneq}
+#'
+#' @export
+#' @examples 
+#'
+#' data(LT)
+#' # The shortest age range containing 50 percent of the deaths
+#' C50 <- ineq_Cp(age=LT$Age,lx=LT$lx,p=50,n.grid=1000)
+#' C50
+
+
+ineq_Cp <- function(age,lx,p=50,n.grid=1000){
+  # First fitting a spline through the lx values to get a finer grid of age and lx
+  # A bit slow. I have default n=1000. If it's too slow, lower n.grid.
+  require(dplyr)
+  
+  fit <- spline(x=age, y=lx, n=n.grid)
+  xi <- fit$x
+  yi <- fit$y
+  
+  # two columns with all combinations of possible ages
+  age_comparison <- data.frame(t(combn(xi,2)))
+  
+  # finding the difference between all lx values on our larger grid of lxs 
+  diff_lx <- combn(yi,2,diff)
+  
+  diffdf <- data.frame(Age1=age_comparison[,1],Age2=age_comparison[,2]) %>%
+                mutate(diff_age=Age2-Age1,diff_lx=-diff_lx) %>%
+                filter(diff_lx >= p / 100 * lx[1])
+  
+  mindiff <- which.min(diffdf$diff_age)
+  Age1 <- diffdf[mindiff,]$Age1
+  Age2 <- diffdf[mindiff,]$Age2
+  Cp <- Age2-Age1
+  return(Cp)
+  
+}
+
 
 
 

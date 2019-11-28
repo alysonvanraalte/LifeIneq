@@ -19,8 +19,7 @@ load_all()
 ?ineq_AID
 ?ineq_LTquantile
 ?ineq_iqr
+?ineq_Cp
 
-T1 <- rep(NA,nages)
-for(i in 1:nages){
-  T1[i] <- dx[i]*(axAge[i]/exAge[i]*(log (axAge[i]/exAge[i])))
-}
+
+install_github("alysonvanraalte/LifeIneq")
