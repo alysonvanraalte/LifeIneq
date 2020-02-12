@@ -9,7 +9,7 @@ ineq_LTquantile(age, lx, quantile, n.grid = 1000)
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
-\item{lx}{numeric. vector containing the lifetable survivorship. The starting radix (\eqn{\ell_{0}}) can be 100000, 1, or any value you like.}
+\item{lx}{numeric. vector of the lifetable survivorship.}
 
 \item{quantile}{numeric. value between zero and one indicating the quantile of interest.}
 
@@ -19,7 +19,7 @@ ineq_LTquantile(age, lx, quantile, n.grid = 1000)
 Calculate quantiles of survivorship from a lifetable
 }
 \details{
-The age and lx vectors must be the same length. This function estimates any quantile of survivorship for the life table cohort by fitting a cubic spline through the survival curve. If your data have a lower upper age bound then that which corresponds to the quantile that you are interested in, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws').
+All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
 }
 \examples{
 
@@ -32,4 +32,11 @@ ineq_LTquantile(age=LT$Age,lx=LT$lx,quantile=0.1,n.grid=1000)
 # The difference between the bottom 10 and top 10 percent of survival age
 ineq_LTquantile(age=LT$Age,lx=LT$lx,quantile=0.1,n.grid=1000) -
 ineq_LTquantile(age=LT$Age,lx=LT$lx,quantile=0.9,n.grid=1000)
+}
+\seealso{
+\code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
+
+\code{ungroup::\link[ungroup]{pclm}}
+
+\code{MortalitySmooth::\link[MortalitySmooth]{Mort1Dsmooth}}
 }

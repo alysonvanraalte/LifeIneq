@@ -9,11 +9,11 @@ ineq_AID(age, lx, ex, ax)
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
-\item{lx}{numeric. vector containing the lifetable survivorship.}
+\item{lx}{numeric. vector of the lifetable survivorship.}
 
-\item{ex}{numeric. vector containing remaining life expectancy.}
+\item{ex}{numeric. vector of remaining life expectancy.}
 
-\item{ax}{numeric. vector containing average time spent in age interval of those dying within the interval.}
+\item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
 }
 \description{
 Calculate a lifetable column for the conditional absolute inter-individual difference in lifespan (AID)
@@ -32,4 +32,11 @@ AID = ineq_AID(age=LT$Age,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 AID[1]
 # The absolute inter-individual difference in lifespan from age 10
 AID[11]
+}
+\seealso{
+\code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
+
+\code{ungroup::\link[ungroup]{pclm}}
+
+\code{MortalitySmooth::\link[MortalitySmooth]{Mort1Dsmooth}}
 }

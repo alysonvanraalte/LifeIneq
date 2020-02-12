@@ -2,7 +2,7 @@
 library(devtools)
 
 document()
-
+check()
 
 # do a once-off library() action on our package structure.
 # without actually having to install it or build it.

@@ -9,19 +9,19 @@ ineq_sd(age, dx, lx, ex, ax)
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
-\item{dx}{numeric. vector containing the lifetable deaths distribution.}
+\item{dx}{numeric. vector of the lifetable death distribution.}
 
-\item{lx}{numeric. vector containing the lifetable survivorship.}
+\item{lx}{numeric. vector of the lifetable survivorship.}
 
-\item{ex}{numeric. vector containing remaining life expectancy.}
+\item{ex}{numeric. vector of remaining life expectancy.}
 
-\item{ax}{numeric. vector containing average time spent in age interval of those dying within the interval.}
+\item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
 }
 \description{
 Calculate a lifetable column for the conditional standard deviation in lifetable ages at death
 }
 \details{
-All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth').
+All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
 }
 \examples{
 
@@ -32,4 +32,11 @@ S = ineq_sd(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 S[1]
 # The standard deviation in age at death conditional upon survival to age 10
 S[11]
+}
+\seealso{
+\code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
+
+\code{ungroup::\link[ungroup]{pclm}}
+
+\code{MortalitySmooth::\link[MortalitySmooth]{Mort1Dsmooth}}
 }

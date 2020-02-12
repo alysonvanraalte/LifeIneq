@@ -2,7 +2,7 @@
 #' @title ineq_variance
 #' @description Calculate a lifetable column for the conditional variance in lifetable ages at death 
 #'
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
+#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}). 
 #'   
 #'
 #' @param age numeric. vector of lower age bounds.
@@ -11,8 +11,13 @@
 #' @param ex numeric. vector of remaining life expectancy.
 #' @param ax numeric. vector of the average time spent in the age interval of those dying within the interval.
 #'
-#'
-#'
+#' @seealso 
+#' \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
+#' 
+#' \code{ungroup::\link[ungroup]{pclm}}
+#' 
+#' \code{MortalitySmooth::\link[MortalitySmooth]{Mort1Dsmooth}}
+#' 
 #' @export
 #' @examples 
 #'
@@ -52,13 +57,9 @@ ineq_variance <- function(age, dx, lx, ex, ax){
 #' @title ineq_sd
 #' @description Calculate a lifetable column for the conditional standard deviation in lifetable ages at death 
 #'
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
-#'
-#' @param age numeric. vector of lower age bounds.
-#' @param dx numeric. vector containing the lifetable deaths distribution.
-#' @param lx numeric. vector containing the lifetable survivorship.
-#' @param ex numeric. vector containing remaining life expectancy.
-#' @param ax numeric. vector containing average time spent in age interval of those dying within the interval.
+#' @inheritParams ineq_variance
+#' @inherit ineq_variance details
+#' @inherit ineq_variance seealso
 #'
 #' @export
 #' @examples 
@@ -83,13 +84,9 @@ ineq_sd <- function(age, dx, lx, ex, ax){
 #' @title ineq_cov
 #' @description Calculate a lifetable column for the conditional coefficient of variation in lifetable ages at death 
 #'
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
-#'
-#' @param age numeric. vector of lower age bounds.
-#' @param dx numeric. vector containing the lifetable deaths distribution.
-#' @param lx numeric. vector containing the lifetable survivorship.
-#' @param ex numeric. vector containing remaining life expectancy.
-#' @param ax numeric. vector containing average time spent in age interval of those dying within the interval.
+#' @inheritParams ineq_variance
+#' @inherit ineq_variance details
+#' @inherit ineq_variance seealso
 #'
 #' @export
 #' @examples 
@@ -113,13 +110,9 @@ ineq_cov <- function(age, dx, lx, ex, ax){
 #' @title ineq_edag
 #' @description Calculate a lifetable column for the conditional life disparity (\eqn{e^\dagger}) of a population.  
 #'
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
-#'
-#' @param age numeric. vector of lower age bounds.
-#' @param dx numeric. vector containing the lifetable deaths distribution.
-#' @param lx numeric. vector containing the lifetable survivorship.
-#' @param ex numeric. vector containing remaining life expectancy.
-#' @param ax numeric. vector containing average time spent in age interval of those dying within the interval.
+#' @inheritParams ineq_variance
+#' @inherit ineq_variance details
+#' @inherit ineq_variance seealso
 #'
 #' @export
 #' @examples 
@@ -148,25 +141,24 @@ ineq_edag <- function(age, dx, lx, ex, ax){
   # the average remaining life expectancy in each age interval 
   # (as opposed to the beginning of the interval)
   # ends up being roughly half of the ex between ages
-    ex_average <- ex + ax/n * (explusone-ex)
+  ex_average <- ex + ax / n * (explusone - ex)
   
-  rev(cumsum(rev(dx*ex_average))) / lx 
+  rev(cumsum(rev(dx * ex_average))) / lx 
 }
 
 
 
 
 #' @title ineq_H
-#' @description Calculate a lifetable column for the quantity \emph{H}, generally referred to as either the lifetable entropy citep{Keyfitz1977} or the elasticity of life expectancy citep{Leser1955}
+#' @description Calculate a lifetable column for the quantity \emph{H}, generally referred to as either the lifetable entropy (Keyfitz, 1977) or the elasticity of life expectancy (Leser, 1955).
 #'
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
-#'
-#' @param age numeric. vector of lower age bounds.
-#' @param dx numeric. vector containing the lifetable deaths distribution.
-#' @param lx numeric. vector containing the lifetable survivorship.
-#' @param ex numeric. vector containing remaining life expectancy.
-#' @param ax numeric. vector containing average time spent in age interval of those dying within the interval.
-#'
+#' @inheritParams ineq_variance
+#' @inherit ineq_variance details
+#' @inherit ineq_variance seealso
+#' @references
+#' \insertRef{Keyfitz1977}{LifeIneq}
+#' \insertRef{Leser1955}{LifeIneq}
+#' 
 #' @export
 #' @examples 
 #'
@@ -189,13 +181,9 @@ ineq_H <- function(age, dx, lx, ex, ax){
 #' @title ineq_Theil
 #' @description Calculate a lifetable column for the conditional Theil index of inequality in survivorship
 #'
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
-#'
-#' @param age numeric. vector of lower age bounds.
-#' @param dx numeric. vector containing the lifetable deaths distribution.
-#' @param lx numeric. vector containing the lifetable survivorship.
-#' @param ex numeric. vector containing remaining life expectancy.
-#' @param ax numeric. vector containing average time spent in age interval of those dying within the interval.
+#' @inheritParams ineq_variance
+#' @inherit ineq_variance details
+#' @inherit ineq_variance seealso
 #'
 #' @export
 #' @examples 
@@ -237,13 +225,9 @@ ineq_Theil <- function(age, dx, lx, ex, ax){
 #' @title ineq_MLD
 #' @description Calculate a lifetable column for the conditional mean log deviation index of inequality in survivorship
 #'
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
-#'
-#' @param age numeric. vector of lower age bounds.
-#' @param dx numeric. vector containing the lifetable deaths distribution.
-#' @param lx numeric. vector containing the lifetable survivorship.
-#' @param ex numeric. vector containing remaining life expectancy.
-#' @param ax numeric. vector containing average time spent in age interval of those dying within the interval.
+#' @inheritParams ineq_variance
+#' @inherit ineq_variance details
+#' @inherit ineq_variance seealso
 #'
 #' @export
 #' @examples 
@@ -283,23 +267,18 @@ ineq_MLD <- function(age, dx, lx, ex, ax){
 #' @title ineq_Gini
 #' @description Calculate a lifetable column for the conditional Gini coefficient of inequality in survivorship
 #'
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
+#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}). 
 #' 
 #'   The formula for calculating the Gini was taken from the Shkolnikov (2010) spreadsheet, and is a simplification of the formulas described in Shkolnikov (2003) and Hanada (1983).
 #' 
-#' 
-#' @param age numeric. vector of lower age bounds.
-#' @param lx numeric. vector containing the lifetable survivorship.
-#' @param ex numeric. vector containing remaining life expectancy.
-#' @param ax numeric. vector containing average time spent in age interval of those dying within the interval.
+#' @inheritParams ineq_variance
+#' @inherit ineq_variance seealso
 #'
 #' @references 
 #' \insertRef{hanada1983}{LifeIneq}
 #' \insertRef{shkolnikov2003}{LifeIneq}
 #' \insertRef{shkolnikov2010}{LifeIneq}
 #' 
-#'
-#'
 #' @export
 #' 
 #' @examples 
@@ -311,7 +290,6 @@ ineq_MLD <- function(age, dx, lx, ex, ax){
 #' G[1]
 #' # The Gini coefficient conditional upon survival to age 10
 #' G[11]
-
 
 ineq_Gini <- function(age, lx, ex, ax){
   age_length_equal <- all.equal(length(age),length(lx),
@@ -345,10 +323,8 @@ ineq_Gini <- function(age, lx, ex, ax){
 #' The formula for calculating the AID was taken from the citet{Shkolnikov2010} spreadsheet, and is a simplification of the formula described in citet{Shkolnikov2003}.
 #' 
 #'
-#' @param age numeric. vector of lower age bounds.
-#' @param lx numeric. vector containing the lifetable survivorship.
-#' @param ex numeric. vector containing remaining life expectancy.
-#' @param ax numeric. vector containing average time spent in age interval of those dying within the interval.
+#' @inheritParams ineq_variance
+#' @inherit ineq_variance seealso
 #'
 #' @export
 #' @examples 
@@ -373,11 +349,10 @@ ineq_AID <- function(age, lx, ex, ax){
 #' @title ineq_LTquantile
 #' @description Calculate quantiles of survivorship from a lifetable
 #'
-#' @details The age and lx vectors must be the same length. This function estimates any quantile of survivorship for the life table cohort by fitting a cubic spline through the survival curve. If your data have a lower upper age bound then that which corresponds to the quantile that you are interested in, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). 
-#' 
+#' @inherit ineq_variance details
+#' @inherit ineq_variance seealso
 #'
-#' @param age numeric. vector of lower age bounds.
-#' @param lx numeric. vector containing the lifetable survivorship. The starting radix (\eqn{\ell_{0}}) can be 100000, 1, or any value you like.
+#' @inheritParams ineq_variance
 #' @param quantile numeric. value between zero and one indicating the quantile of interest.
 #' @param n.grid numeric. How many points do we want to interpolate? Defaults to 1000, which would work out to about a tenth of a year for a vector of life table survivors from age zero to 100+.
 #'
@@ -396,11 +371,11 @@ ineq_AID <- function(age, lx, ex, ax){
 
 
 ineq_LTquantile <- function(age,lx,quantile,n.grid=1000){
-  lx <- lx/lx[1]
-  fit <- spline(x=age, y=lx, n=n.grid)
+  lx   <- lx / lx[1]
+  fit  <- spline(x = age, y = lx, n = n.grid)
   agei <- fit$x
-  lxi <- fit$y
-  age_quantile <- agei[which.min(abs(lxi-quantile))]
+  lxi  <- fit$y
+  age_quantile <- agei[which.min(abs(lxi - quantile))]
   return(age_quantile)
 }
 
@@ -409,11 +384,10 @@ ineq_LTquantile <- function(age,lx,quantile,n.grid=1000){
 #' @title ineq_iqr
 #' @description Calculate the interquartile range survivorship age from a lifetable
 #'
-#' @details The age and lx vectors must be the same length. This function estimates the interquartile range of the life table cohort by fitting a cubic spline through the survival curve. If your data have a lower upper age bound then that which corresponds to the top quartile of survivors, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). 
+#' @inherit ineq_variance details
+#' @inherit ineq_variance seealso
 #' 
-#'
-#' @param age numeric. vector of lower age bounds.
-#' @param lx numeric. vector containing the lifetable survivorship. The starting radix (\eqn{\ell_{0}}) can be 100000, 1, or any value you like.
+#' @inheritParams ineq_variance
 #' @param n.grid numeric. How many points do we want to interpolate? Defaults to 1000, which would work out to about a tenth of a year for a vector of life table survivors from age zero to 100+.
 #'
 #' @export
