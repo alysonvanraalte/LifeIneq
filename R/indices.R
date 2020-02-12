@@ -417,10 +417,8 @@ ineq_iqr <- function(age,lx,n.grid=1000){
 #'   The concept behind Kannisto's C-measures is found in Kannisto (2000) 
 #' 
 #'
-#' @param age numeric. vector of lower age bounds.
-#' @param lx numeric. vector containing the lifetable survivorship. The starting radix (\eqn{\ell_{0}}) can be 100000, 1, or any value you like.
-#' @param n.grid numeric. How many points do we want to interpolate? Defaults to 1000, which would work out to about a tenth of a year for a vector of life table survivors from age zero to 100+.
-#' @param p numeric. What percent of the life table cohort do you want captured in the C measure? The default is 50.
+#' @inheritParams ineq_variance
+#' @param p numeric. What proportion of the life table cohort do you want captured in the C measure? The default is .5
 #'
 #'
 #'@references 
@@ -430,39 +428,37 @@ ineq_iqr <- function(age,lx,n.grid=1000){
 #' @examples 
 #'
 #' data(LT)
-#' # The shortest age range containing 50 percent of the deaths
-#' C50 <- ineq_Cp(age=LT$Age,lx=LT$lx,p=50,n.grid=1000)
-#' C50
+#' # The shortest age range containing half of the deaths
+#' (C50 <- ineq_Cp(age=LT$Age,lx=LT$lx,p=.5))
 
+ineq_Cp <- function(age, lx, p = .5){
 
-ineq_Cp <- function(age,lx,p=50,n.grid=1000){
-  # First fitting a spline through the lx values to get a finer grid of age and lx
-  # A bit slow. I have default n=1000. If it's too slow, lower n.grid.
-  require(dplyr)
+  stopifnot(length(age) == length(lx))
+  stopifnot(p <= 1)
   
-  fit <- spline(x=age, y=lx, n=n.grid)
-  xi <- fit$x
-  yi <- fit$y
+  # span minimizer function
+  ineq_Cp_min <- function(par = 60, fun, funinv, p = .5){
+    q1 <- fun(par)
+    q2 <- q1 - p
+    # age span
+    funinv(q2) - par
+  }
+
+  lx  <- lx / lx[1]
   
-  # two columns with all combinations of possible ages
-  age_comparison <- data.frame(t(combn(xi,2)))
+  a2q <- splinefun(x = age, y = lx, method = "monoH.FC")
+  q2a <- splinefun(x = lx, y = age, method = "monoH.FC")
   
-  # finding the difference between all lx values on our larger grid of lxs 
-  diff_lx <- combn(yi,2,diff)
-  
-  diffdf <- data.frame(Age1=age_comparison[,1],Age2=age_comparison[,2]) %>%
-                mutate(diff_age=Age2-Age1,diff_lx=-diff_lx) %>%
-                filter(diff_lx >= p / 100 * lx[1])
-  
-  mindiff <- which.min(diffdf$diff_age)
-  Age1 <- diffdf[mindiff,]$Age1
-  Age2 <- diffdf[mindiff,]$Age2
-  Cp <- Age2-Age1
-  return(Cp)
-  
+  # lower age can't be higher than this:
+  tops <- q2a(p*1.0001)
+  # first optimize for lower age by minimizing
+  # the interval capturing 
+  age1 <- optimize(ineq_Cp_min, 
+           interval = c(min(age), tops),
+           fun = a2q, 
+           funinv = q2a,
+           p = p)
+  # this is the age span
+  age1$objective
 }
-
-
-
-
 
