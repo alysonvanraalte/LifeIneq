@@ -346,7 +346,7 @@ ineq_AID <- function(age, lx, ex, ax){
 
 
 
-#' @title ineq_LTquantile
+#' @title calculate a survivorship quantile
 #' @description Calculate quantiles of survivorship from a lifetable
 #'
 #' @inherit ineq_variance details
@@ -354,55 +354,49 @@ ineq_AID <- function(age, lx, ex, ax){
 #'
 #' @inheritParams ineq_variance
 #' @param quantile numeric. value between zero and one indicating the quantile of interest.
-#' @param n.grid numeric. How many points do we want to interpolate? Defaults to 1000, which would work out to about a tenth of a year for a vector of life table survivors from age zero to 100+.
 #'
 #' @export
 #' @examples 
 #'
 #' data(LT)
 #' # The median age at survival
-#' LTmedian <- ineq_LTquantile(age=LT$Age,lx=LT$lx,quantile=0.5,n.grid=1000)
+#' LTmedian <- ineq_quantile(age=LT$Age,lx=LT$lx,quantile=0.5)
 #' LTmedian
 #' # The age reached by 90% of the life table cohort (i.e. the top 10%)
-#' ineq_LTquantile(age=LT$Age,lx=LT$lx,quantile=0.1,n.grid=1000) 
+#' ineq_quantile(age=LT$Age,lx=LT$lx,quantile=0.1) 
 #' # The difference between the bottom 10 and top 10 percent of survival age
-#' ineq_LTquantile(age=LT$Age,lx=LT$lx,quantile=0.1,n.grid=1000) -
-#' ineq_LTquantile(age=LT$Age,lx=LT$lx,quantile=0.9,n.grid=1000)
+#' ineq_quantile(age=LT$Age,lx=LT$lx,quantile=0.1) -
+#' ineq_quantile(age=LT$Age,lx=LT$lx,quantile=0.9)
 
-
-ineq_LTquantile <- function(age,lx,quantile,n.grid=1000){
+ineq_quantile <- function(age,lx,quantile=.5){
   lx   <- lx / lx[1]
-  fit  <- spline(x = age, y = lx, n = n.grid)
-  agei <- fit$x
-  lxi  <- fit$y
-  age_quantile <- agei[which.min(abs(lxi - quantile))]
-  return(age_quantile)
+  splinefun(age~lx)(quantile)
 }
 
 
-
 #' @title ineq_iqr
-#' @description Calculate the interquartile range survivorship age from a lifetable
+#' @description Calculate the interquartile range survivorship age from a lifetable. Other quantile ranges can also be calculated.
 #'
 #' @inherit ineq_variance details
 #' @inherit ineq_variance seealso
 #' 
 #' @inheritParams ineq_variance
-#' @param n.grid numeric. How many points do we want to interpolate? Defaults to 1000, which would work out to about a tenth of a year for a vector of life table survivors from age zero to 100+.
+#' @param upper numeric. upper survival quantile, default .75
+#' @param lower numeric. lower survival quantile, defauly .25
 #'
 #' @export
 #' @examples 
 #'
 #' data(LT)
 #' # The iqr range of survival age
-#' LTiqr <- ineq_iqr(age=LT$Age,lx=LT$lx,n.grid=1000)
+#' LTiqr <- ineq_iqr(age=LT$Age,lx=LT$lx)
 #' LTiqr
 
 
-ineq_iqr <- function(age,lx,n.grid=1000){
-  q1 <- ineq_LTquantile(age=age,lx=lx,quantile=0.25,n.grid=1000) 
-  q3 <- ineq_LTquantile(age=age,lx=lx,quantile=0.75,n.grid=1000)
-  q1-q3
+ineq_iqr <- function(age, lx, upper = .75, lower = .25){
+  q1 <- ineq_quantile(age = age, lx = lx, quantile = lower) 
+  q3 <- ineq_quantile(age = age, lx = lx, quantile = upper)
+  q1 - q3
 }
 
 
@@ -461,4 +455,55 @@ ineq_Cp <- function(age, lx, p = .5){
   # this is the age span
   age1$objective
 }
+
+# -------------------------------------
+# wrapper function
+
+#' @title calculate a lifespan inequality measure
+#' @description Choose from variance, standard deviation \code{sd},IQR, AID, Gini, edagger, or Kannisto's Cp.
+#' @param age numeric. vector of lower age bounds.
+#' @param dx numeric. vector of the lifetable death distribution.
+#' @param lx numeric. vector of the lifetable survivorship.
+#' @param ex numeric. vector of remaining life expectancy.
+#' @param ax numeric. vector of the average time spent in the age
+#' @param method one of \code{c("variance","sd","iqr","AID","Gini","MLD","edag","Cp")}
+#' @param ... other optional arguments used by particular methods.
+#'
+#' @export
+
+ineq <- function(age, dx, lx, ex, ax, method = c("variance","sd","iqr","AID","Gini","MLD","edag","Cp"),...){
+  
+  # make sure just one
+  method         <- match.arg(method)
+  # fun is now the function we need
+  fun            <- match.fun(paste0("ineq_", method))
+  
+  # what do we need and what do we have?
+  need_args      <- names(formals(fun))
+  have_args      <- c(as.list(environment()), list(...))
+  names_have_arg <- names(have_args)
+ 
+  # remove unneeded args
+  use_args       <- have_args[need_args]
+  # remove NULL entries
+  use_args       <- use_args[!is.na(names(use_args))]
+  
+  # warn about unused arguments
+  superfluous_args <- 
+    names_have_arg[!names_have_arg %in% 
+                     c(names(use_args), "need_args","fun","method")]
+  
+  if (length(superfluous_args) > 0){
+    superfluous_args <- paste(superfluous_args,collapse = ", ")
+    message("following arguments not used: ",superfluous_args)
+  }
+  
+  # pass in fitlered-down args as list
+  do.call(fun, use_args)
+}
+
+
+
+
+
 
