@@ -34,15 +34,21 @@ ex  <- LT$ex
 ineq_quantile(age,lx,.5)
 
 # ineq measures:
-#c("variance", "sd", "iqr", "AID", "Gini", "MLD", "edag", "Cp", "Theil", "H")
-...
+#c("variance", "sd","cov", "iqr", "AID", "Gini", "MLD", "edag", "Cp", "Theil", "H")
+
+# these return vectors:
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "variance")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "sd")
-ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "iqr")
+ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "cov")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "AID")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "Gini")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "MLD")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "edag")
-ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "Cp")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "Theil")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "H")
+
+# these just return for lowest age... Could be modified?
+ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "Cp")
+ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "iqr")
+
+

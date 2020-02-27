@@ -1,3 +1,45 @@
+#' @title ineq_variance
+#' @description Calculate a lifetable column for the conditional mean average deviation in lifetable ages at death 
+#'
+#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}). 
+#'   
+#'
+#' @param age numeric. vector of lower age bounds.
+#' @param dx numeric. vector of the lifetable death distribution.
+#' @param lx numeric. vector of the lifetable survivorship.
+#' @param ex numeric. vector of remaining life expectancy.
+#' @param ax numeric. vector of the average time spent in the age interval of those dying within the interval.
+#'
+#' @seealso 
+#' \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
+#' 
+#' \code{ungroup::\link[ungroup]{pclm}}
+#' 
+#' \code{MortalitySmooth::\link[MortalitySmooth]{Mort1Dsmooth}}
+#' 
+#' @export
+#' @examples 
+#'
+#' data(LT)
+#' # A vector containing the conditional MAD in age at death 
+#' M = ineq_MAD(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+#' # The MAD in age at death from birth
+#' M[1]
+#' # The MAD in age at death conditional upon survival to age 10
+#' M[11]
+
+ineq_MAD <- function(age, dx, lx, ex, ax, center_type = c("ex","mean")){
+  age_length_equal <- all.equal(length(age),length(dx),
+                                length(lx),length(ex),
+                                length(ax))
+  center_type <- match.arg(center_type)
+  stopifnot(age_length_equal)
+  
+  axAge <- age + ax
+  exAge <- ex + age
+
+  rev(cumsum(rev(dx * abs(axAge - exAge)))) / lx
+}
 
 #' @title ineq_variance
 #' @description Calculate a lifetable column for the conditional variance in lifetable ages at death 
@@ -346,14 +388,41 @@ ineq_AID <- function(age, lx, ex, ax){
 
 
 
-#' @title calculate a survivorship quantile
-#' @description Calculate quantiles of survivorship from a lifetable
+#' @title calculate a survivorship quantile 
+#' @description Calculate quantiles of survivorship from a lifetable. Not vectorized: this function jsut calculates for the lowest age in the vector given/
 #'
 #' @inherit ineq_variance details
 #' @inherit ineq_variance seealso
 #'
 #' @inheritParams ineq_variance
-#' @param quantile numeric. value between zero and one indicating the quantile of interest.
+#' @param quantile numeric. value between zero and one indicating the quantile desired.
+#'
+#' @export
+#' @examples 
+#'
+#' data(LT)
+#' # The median age at survival
+#' LTmedian <- ineq_quantile_lower(age=LT$Age,lx=LT$lx,quantile=0.5)
+#' LTmedian
+#' # The age reached by 90% of the life table cohort (i.e. the top 10%)
+#' ineq_quantile_lower(age=LT$Age,lx=LT$lx,quantile=0.1) 
+#' # The difference between the bottom 10 and top 10 percent of survival age
+#' ineq_quantile_lower(age=LT$Age,lx=LT$lx,quantile=0.1) -
+#' ineq_quantile_lower(age=LT$Age,lx=LT$lx,quantile=0.9)
+
+ineq_quantile_lower <- function(age, lx, quantile = .5){
+  lx   <- lx / lx[1]
+  splinefun(age~lx)(quantile)
+}
+
+#' @title calculate a conditional survivorship quantile 
+#' @description Calculate quantiles of survivorship from a lifetable, returns full lifetable column.
+#'
+#' @inherit ineq_variance details
+#' @inherit ineq_variance seealso
+#'
+#' @inheritParams ineq_variance
+#' @param quantile numeric. value between zero and one indicating the quantile desired.
 #'
 #' @export
 #' @examples 
@@ -368,9 +437,21 @@ ineq_AID <- function(age, lx, ex, ax){
 #' ineq_quantile(age=LT$Age,lx=LT$lx,quantile=0.1) -
 #' ineq_quantile(age=LT$Age,lx=LT$lx,quantile=0.9)
 
-ineq_quantile <- function(age,lx,quantile=.5){
-  lx   <- lx / lx[1]
-  splinefun(age~lx)(quantile)
+
+ineq_quantile <- function(age, lx, quantile = .5){
+  n    <- length(age)
+  # make sure it closes out
+  lx   <- c(lx, 0)
+  a    <- c(age, max(age) + 1)
+  
+  
+  qs   <- rep(0,n)
+  for (i in 1:n){
+    qs[i] <- ineq_quantile_lower(age = a[i:(n+1)],
+                                 lx = lx[i:(n+1)],
+                                 quantile = quantile)
+  }
+  qs - age
 }
 
 
@@ -394,8 +475,8 @@ ineq_quantile <- function(age,lx,quantile=.5){
 
 
 ineq_iqr <- function(age, lx, upper = .75, lower = .25){
-  q1 <- ineq_quantile(age = age, lx = lx, quantile = lower) 
-  q3 <- ineq_quantile(age = age, lx = lx, quantile = upper)
+  q1 <- ineq_quantile_lower(age = age, lx = lx, quantile = lower) 
+  q3 <- ineq_quantile_lower(age = age, lx = lx, quantile = upper)
   q1 - q3
 }
 
