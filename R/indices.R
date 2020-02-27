@@ -575,8 +575,8 @@ ineq <- function(age, dx, lx, ex, ax, method = c("variance","sd","cov","iqr","AI
   # what do we need and what do we have?
   need_args      <- names(formals(fun))
   have_args      <- c(as.list(environment()), list(...))
-  names_have_arg <- names(have_args)
- 
+  names_have_arg <- c(as.list(ls(environment())), list(...))
+
   # remove unneeded args
   use_args       <- have_args[need_args]
   # remove NULL entries

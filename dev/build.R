@@ -22,8 +22,8 @@ load_all()
 ?ineq_Cp
 
 
-install_github("alysonvanraalte/LifeIneq")
-libary(LifeIneq)
+#install_github("timriffe/LifeIneq")
+#libary(LifeIneq)
 data(LT)
 age <- 0:110
 ax  <- LT$ax
@@ -38,6 +38,8 @@ ineq_quantile(age,lx,.5)
 
 # these return vectors:
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "variance")
+
+
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "sd")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "cov")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "AID")
@@ -49,6 +51,18 @@ ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "H")
 
 # these just return for lowest age... Could be modified?
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "Cp")
+
+
+
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "iqr")
 
 
+load_all()
+data(LT)
+age <- 0:110
+ax  <- LT$ax
+dx  <- LT$dx
+lx  <- LT$lx
+ex  <- LT$ex
+ineq(age=age,method = "iqr")
+ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "iqr")
