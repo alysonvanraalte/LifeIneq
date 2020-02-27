@@ -1,11 +1,13 @@
 Package: LifeIneq
 Type: Package
 Title: Calculate indices of lifespan variation
-Version: 00.02.09
+Version: 00.02.10
 Date: 2020-02-27  
 Authors@R: c(
    person("Alyson", "van Raalte", role = c("aut","cre"), email = "vanraalte@demogr.mpg.de", comment = c(ORCID = "0000-0002-0676-8921")),
-   person("Tim", "Riffe", role = c("aut"), email = "tim.riffe@gmail.com", comment = c(ORCID = "0000-0002-2673-4622")))
+   person("Tim", "Riffe", role = c("aut"), email = "tim.riffe@gmail.com", comment = c(ORCID = "0000-0002-2673-4622")),
+   person("Cristian", "Dudel", role = c("aut"), email = "dudel@demogr.mpg.de", comment = c(ORCID = "0000-0002-2985-6684"))
+   )
 Description: A package to calculate indices of lifespan variation from a life table
 LazyLoad: yes
 LazyData: true
