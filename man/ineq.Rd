@@ -10,7 +10,8 @@ ineq(
   lx,
   ex,
   ax,
-  method = c("variance", "sd", "iqr", "AID", "Gini", "MLD", "edag", "Cp", "Theil", "H"),
+  method = c("variance", "sd", "cov", "iqr", "AID", "Gini", "MLD", "edag", "Cp",
+    "Theil", "H"),
   ...
 )
 }
@@ -25,7 +26,7 @@ ineq(
 
 \item{ax}{numeric. vector of the average time spent in the age}
 
-\item{method}{one of \code{c("variance","sd","iqr","AID","Gini","MLD","edag","Cp","Theil","H")}}
+\item{method}{one of \code{c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H")}}
 
 \item{...}{other optional arguments used by particular methods.}
 }

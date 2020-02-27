@@ -466,12 +466,12 @@ ineq_Cp <- function(age, lx, p = .5){
 #' @param lx numeric. vector of the lifetable survivorship.
 #' @param ex numeric. vector of remaining life expectancy.
 #' @param ax numeric. vector of the average time spent in the age
-#' @param method one of \code{c("variance","sd","iqr","AID","Gini","MLD","edag","Cp","Theil","H")}
+#' @param method one of \code{c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H")}
 #' @param ... other optional arguments used by particular methods.
 #'
 #' @export
 
-ineq <- function(age, dx, lx, ex, ax, method = c("variance","sd","iqr","AID","Gini","MLD","edag","Cp","Theil","H"),...){
+ineq <- function(age, dx, lx, ex, ax, method = c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H"),...){
   
   # make sure just one
   method         <- match.arg(method)
