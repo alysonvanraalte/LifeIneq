@@ -1,5 +1,5 @@
 #' @title ineq_variance
-#' @description Calculate a lifetable column for the conditional mean average deviation in lifetable ages at death 
+#' @description Calculate a lifetable column for the conditional mean average deviation in lifetable ages at death. This may be with respect to either conditional life expectancy or conditional median remaining lifespan. 
 #'
 #' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}). 
 #'   
@@ -9,6 +9,7 @@
 #' @param lx numeric. vector of the lifetable survivorship.
 #' @param ex numeric. vector of remaining life expectancy.
 #' @param ax numeric. vector of the average time spent in the age interval of those dying within the interval.
+#' @param center_type character either, \code{"ex"}, \code{"mean"} (same thing), or \code{"median"}
 #'
 #' @seealso 
 #' \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
@@ -27,12 +28,24 @@
 #' M[1]
 #' # The MAD in age at death conditional upon survival to age 10
 #' M[11]
+#' # MAD wrt condition median
+#' ineq_MAD(age = LT$Age, dx = LT$dx,
+#'   lx = LT$lx, ex = LT$ex, ax = LT$ax, 
+#'   center_type = "median")
 
-ineq_MAD <- function(age, dx, lx, ex, ax, center_type = c("ex","mean")){
+ineq_MAD <- function(age, dx, lx, ex, ax, center_type = c("ex","mean","median")){
   age_length_equal <- all.equal(length(age),length(dx),
                                 length(lx),length(ex),
                                 length(ax))
+  
+  # center on conditional mean or median
   center_type <- match.arg(center_type)
+  if (center_type == "median"){
+    ex <- ineq_quantile(age = age, 
+                        lx = lx, 
+                        quantile = .5)
+  }
+  
   stopifnot(age_length_equal)
   
   axAge <- age + ax
