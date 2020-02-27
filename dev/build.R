@@ -23,7 +23,7 @@ load_all()
 
 
 install_github("alysonvanraalte/LifeIneq")
-
+libary(LifeIneq)
 data(LT)
 age <- 0:110
 ax  <- LT$ax
