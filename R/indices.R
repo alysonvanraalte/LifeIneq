@@ -554,18 +554,18 @@ ineq_Cp <- function(age, lx, p = .5){
 # wrapper function
 
 #' @title calculate a lifespan inequality measure
-#' @description Choose from variance, standard deviation \code{sd},IQR, AID, Gini, edagger, or Kannisto's Cp.
+#' @description Choose from variance, standard deviation \code{sd},IQR, AID, Gini, edagger, Kannisto's Cp, H (Keyfitz) entropy, Theil, MAD (wrt mean or median).
 #' @param age numeric. vector of lower age bounds.
 #' @param dx numeric. vector of the lifetable death distribution.
 #' @param lx numeric. vector of the lifetable survivorship.
 #' @param ex numeric. vector of remaining life expectancy.
 #' @param ax numeric. vector of the average time spent in the age
-#' @param method one of \code{c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H")}
+#' @param method one of \code{c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H","MAD")}
 #' @param ... other optional arguments used by particular methods.
 #'
 #' @export
 
-ineq <- function(age, dx, lx, ex, ax, method = c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H"),...){
+ineq <- function(age, dx, lx, ex, ax, method = c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H","MAD"),...){
   
   # make sure just one
   method         <- match.arg(method)

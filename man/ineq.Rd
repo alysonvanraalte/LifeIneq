@@ -11,7 +11,7 @@ ineq(
   ex,
   ax,
   method = c("variance", "sd", "cov", "iqr", "AID", "Gini", "MLD", "edag", "Cp",
-    "Theil", "H"),
+    "Theil", "H", "MAD"),
   ...
 )
 }
@@ -26,10 +26,10 @@ ineq(
 
 \item{ax}{numeric. vector of the average time spent in the age}
 
-\item{method}{one of \code{c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H")}}
+\item{method}{one of \code{c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H","MAD")}}
 
 \item{...}{other optional arguments used by particular methods.}
 }
 \description{
-Choose from variance, standard deviation \code{sd},IQR, AID, Gini, edagger, or Kannisto's Cp.
+Choose from variance, standard deviation \code{sd},IQR, AID, Gini, edagger, Kannisto's Cp, H (Keyfitz) entropy, Theil, MAD (wrt mean or median).
 }
