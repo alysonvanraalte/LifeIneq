@@ -22,8 +22,8 @@ load_all()
 ?ineq_Cp
 
 
-#install_github("timriffe/LifeIneq")
-#libary(LifeIneq)
+#install_github("timriffe/LifeIneq",force=TRUE)
+#library(LifeIneq)
 data(LT)
 age <- 0:110
 ax  <- LT$ax
@@ -66,3 +66,12 @@ lx  <- LT$lx
 ex  <- LT$ex
 ineq(age=age,method = "iqr")
 ineq(age=age,ax=ax,dx=dx,lx=lx,ex=ex, method = "iqr")
+
+
+
+# -----------------------
+# once-off setup of testhat
+
+library(usethis)
+use_testthat()
+use_test("indices")
