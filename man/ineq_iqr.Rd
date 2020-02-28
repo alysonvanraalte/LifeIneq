@@ -4,25 +4,34 @@
 \alias{ineq_iqr}
 \title{ineq_iqr}
 \usage{
-ineq_iqr(age, lx, n.grid = 1000)
+ineq_iqr(age, lx, upper = 0.75, lower = 0.25)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
-\item{lx}{numeric. vector containing the lifetable survivorship. The starting radix (\eqn{\ell_{0}}) can be 100000, 1, or any value you like.}
+\item{lx}{numeric. vector of the lifetable survivorship.}
 
-\item{n.grid}{numeric. How many points do we want to interpolate? Defaults to 1000, which would work out to about a tenth of a year for a vector of life table survivors from age zero to 100+.}
+\item{upper}{numeric. upper survival quantile, default .75}
+
+\item{lower}{numeric. lower survival quantile, defauly .25}
 }
 \description{
-Calculate the interquartile range survivorship age from a lifetable
+Calculate the interquartile range survivorship age from a lifetable. Other quantile ranges can also be calculated.
 }
 \details{
-The age and lx vectors must be the same length. This function estimates the interquartile range of the life table cohort by fitting a cubic spline through the survival curve. If your data have a lower upper age bound then that which corresponds to the top quartile of survivors, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws').
+All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
 }
 \examples{
 
 data(LT)
 # The iqr range of survival age
-LTiqr <- ineq_iqr(age=LT$Age,lx=LT$lx,n.grid=1000)
+LTiqr <- ineq_iqr(age=LT$Age,lx=LT$lx)
 LTiqr
+}
+\seealso{
+\code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
+
+\code{ungroup::\link[ungroup]{pclm}}
+
+\code{MortalitySmooth::\link[MortalitySmooth]{Mort1Dsmooth}}
 }

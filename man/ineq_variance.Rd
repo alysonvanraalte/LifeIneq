@@ -21,7 +21,7 @@ ineq_variance(age, dx, lx, ex, ax)
 Calculate a lifetable column for the conditional variance in lifetable ages at death
 }
 \details{
-All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth').
+All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
 }
 \examples{
 
@@ -32,4 +32,11 @@ V = ineq_variance(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 V[1]
 # The variance in age at death conditional upon survival to age 10
 V[11]
+}
+\seealso{
+\code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
+
+\code{ungroup::\link[ungroup]{pclm}}
+
+\code{MortalitySmooth::\link[MortalitySmooth]{Mort1Dsmooth}}
 }

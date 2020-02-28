@@ -4,16 +4,14 @@
 \alias{ineq_Cp}
 \title{ineq_Cp}
 \usage{
-ineq_Cp(age, lx, p = 50, n.grid = 1000)
+ineq_Cp(age, lx, p = 0.5)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
-\item{lx}{numeric. vector containing the lifetable survivorship. The starting radix (\eqn{\ell_{0}}) can be 100000, 1, or any value you like.}
+\item{lx}{numeric. vector of the lifetable survivorship.}
 
-\item{p}{numeric. What percent of the life table cohort do you want captured in the C measure? The default is 50.}
-
-\item{n.grid}{numeric. How many points do we want to interpolate? Defaults to 1000, which would work out to about a tenth of a year for a vector of life table survivors from age zero to 100+.}
+\item{p}{numeric. What proportion of the life table cohort do you want captured in the C measure? The default is .5}
 }
 \description{
 Calculate Kannisto's C-measures from a lifetable
@@ -28,9 +26,8 @@ The age and lx vectors must be the same length. This function estimates the shor
 \examples{
 
 data(LT)
-# The shortest age range containing 50 percent of the deaths
-C50 <- ineq_Cp(age=LT$Age,lx=LT$lx,p=50,n.grid=1000)
-C50
+# The shortest age range containing half of the deaths
+(C50 <- ineq_Cp(age=LT$Age,lx=LT$lx,p=.5))
 }
 \references{
 \insertRef{kannisto2000}{LifeIneq}
