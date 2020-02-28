@@ -568,7 +568,7 @@ ineq_cp <- function(age, lx, p = .5){
 #'
 #' @export
 
-ineq <- function(age, dx, lx, ex, ax, method = c("var","sd","cov","iqr","aid","gini","mld","edag","cp","Theil","H","mad"),...){
+ineq <- function(age, dx, lx, ex, ax, method = c("var","sd","cov","iqr","aid","gini","mld","edag","cp","theil","H","mad"),...){
   
   # make sure just one
   method         <- match.arg(method)
