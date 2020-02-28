@@ -25,8 +25,8 @@ All input vectors must be the same length. Also, we recommend using input data f
 
 data(LT)
 # The iqr range of survival age
-LTiqr <- ineq_iqr(age=LT$Age,lx=LT$lx)
-LTiqr
+iqr <- ineq_iqr(age=LT$Age,lx=LT$lx)
+iqr
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}

@@ -27,7 +27,7 @@ All input vectors must be the same length. Also, we recommend using input data f
 
 data(LT)
 # A vector containing the conditional coefficient of variation in age at death 
-CoV = ineq_sd(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+CoV = ineq_cov(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 # The coefficient of variation in age at death from birth
 CoV[1]
 # The coefficient of variation in age at death conditional upon survival to age 10

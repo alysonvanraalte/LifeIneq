@@ -1,3 +1,13 @@
+
+
+# 1) test against real conditions, ie data likely to be encountered
+# incl abridged, or strange age groups, what about NAs? Should NA and Inf
+#  should they nix a whole operation or just the cell in which found?
+# length equality, classes.
+# 2) boundary condition testing ensures that implementations abide w theory
+# 3) other checks for missing arguments
+
+
 data(LT)
 age <- 0:110
 dx  <- LT$dx
@@ -69,19 +79,6 @@ expect_equal(ineq(age = age,
 #                   ax = ax[-1],
 #                   method = "edag"))
 
-test_that("missing args caught", {
-  expect_error(ineq(age = age,
-                    dx = dx,
-                    lx = lx,
-                    ex = ex,
-                    method = "edag"))
-  expect_error(ineq(age = age,
-                    dx = dx,
-                    lx = lx,
-                    ex = ex,
-                    method = "sd"))
-  
-})
 
 # ------------------------------------------------------------------------#
 # missing argument errors. We only check for these 
@@ -131,22 +128,5 @@ test_that("wrapper equivalence", {
                     ax = ax,
                     method = "variance"))
   # just comma-separate more statements like this...
-})
-
-# ------------------------------------------------------------------------#
-# test wrapper equivalence  (pattern can be followed for other functions) #
-# ------------------------------------------------------------------------#
-test_that("wrapper equivalence for sd", {
-  expect_equal(ineq_sd(age = age,
-                       dx = dx,
-                       lx = lx,
-                       ex = ex,
-                       ax = ax), 
-               ineq(age = age,
-                    dx = dx,
-                    lx = lx,
-                    ex = ex,
-                    ax = ax,
-                    method = "sd"))
 })
 

@@ -10,8 +10,8 @@ ineq(
   lx,
   ex,
   ax,
-  method = c("variance", "sd", "cov", "iqr", "AID", "Gini", "MLD", "edag", "Cp",
-    "Theil", "H", "MAD"),
+  method = c("var", "sd", "cov", "iqr", "aid", "gini", "mld", "edag", "cp", "Theil",
+    "H", "mad"),
   ...
 )
 }
@@ -26,10 +26,10 @@ ineq(
 
 \item{ax}{numeric. vector of the average time spent in the age}
 
-\item{method}{one of \code{c("variance","sd","cov","iqr","AID","Gini","MLD","edag","Cp","Theil","H","MAD")}}
+\item{method}{one of \code{c("var","sd","cov","iqr","aid","gini","mld","edag","cp","theil","H","mad")}}
 
 \item{...}{other optional arguments used by particular methods.}
 }
 \description{
-Choose from variance, standard deviation \code{sd},IQR, AID, Gini, edagger, Kannisto's Cp, H (Keyfitz) entropy, Theil, MAD (wrt mean or median).
+Choose from variance \code{var}, standard deviation \code{sd}, coefficient of variation \code{cov}, interquartile range \code{iqr}, gini, absolute interindividual difference (absolute gini) \code{aid}, edagger, Kannisto's compression measure \code{cp}, Leser-Keyfitz entropy \code{H}, theil, mean log deviation \code{mld}, mean absolute deviation \code{mad} (wrt mean or median).
 }

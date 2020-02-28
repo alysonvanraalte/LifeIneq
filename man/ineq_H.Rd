@@ -26,11 +26,11 @@ All input vectors must be the same length. Also, we recommend using input data f
 \examples{
 
 data(LT)
-# A vector containing the conditional \emph{H} values
+# A vector containing the conditional \\emph{H} values
 H = ineq_H(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
-# The \emph{H} from birth
+# The \\emph{H} from birth
 H[1]
-# The \emph{H} conditional upon survival to age 10
+# The \\emph{H} conditional upon survival to age 10
 H[11]
 }
 \references{

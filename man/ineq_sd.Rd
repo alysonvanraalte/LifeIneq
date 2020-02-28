@@ -26,7 +26,7 @@ All input vectors must be the same length. Also, we recommend using input data f
 \examples{
 
 data(LT)
-# A vector containing the conditional variance in age at death 
+# A vector containing the conditional standard deviation in age at death 
 S = ineq_sd(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 # The standard deviation in age at death from birth
 S[1]
