@@ -49,3 +49,32 @@ plot(0:110,ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax),ylim=c(0,.
 lines(0:110,ineq_theil2(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax))
 ineq_theil2(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax) -
 results_conditional[,"theil"]
+
+
+ineq_mld2 <-  function(age, dx, lx, ex, ax){
+    age_length_equal <- all.equal(length(age),length(dx),
+                                  length(lx),length(ex),
+                                  length(ax))
+    stopifnot(age_length_equal)
+    
+    N     <- length(age)
+    
+    MLD <- rep(NA, N )
+    for(i in 1: N ){
+      axi <- age[1:(N+1-i)] + ax[i:N]
+      MLD[i] <- sum(
+        dx[i:N]* (log (ex[i]/axi))
+      ) / lx[i]
+
+    }
+    MLD[MLD < 0] <- 0
+    return(MLD)
+}
+plot(0:110,ineq_mld(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax))
+lines(0:110,ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax))
+
+plot(0:110,ineq_mld2(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax))
+lines(0:110,ineq_theil2(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax))
+
+ineq_mld2(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax) -
+  results_conditional[,"mld"]
