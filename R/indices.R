@@ -157,7 +157,7 @@ ineq_sd <- function(age, dx, lx, ex, ax){
 
 ineq_cov <- function(age, dx, lx, ex, ax){
   V <- ineq_var(age, dx, lx, ex, ax)
-  sqrt(V) / (ex + age) 
+  sqrt(V) / ex
 }
 
 
