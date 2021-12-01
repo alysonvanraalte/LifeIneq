@@ -16,7 +16,7 @@ ineq_gini2 <- function(age, dx, ex, ax){
   g_out[1] <- sum(abs(ad) * pd) / ex[1]
   for (i in 2:N){
     dx       <- dx[-1]
-    age      <- age[-1]
+    age      <- age[-length(age)]
     ax       <- ax[-1]
     dx       <- dx / sum(dx)
     ad       <- outer(age+ax,age+ax,"-") * lower.tri(diag(N+1-i),TRUE)
@@ -26,6 +26,7 @@ ineq_gini2 <- function(age, dx, ex, ax){
   
   return(g_out)
 }
+
 data(LT)
 age <- LT$Age
 dx <- LT$dx 
