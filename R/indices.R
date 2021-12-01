@@ -227,7 +227,7 @@ ineq_edag <- function(age, dx, lx, ex, ax){
 
 
 ineq_H <- function(age, dx, lx, ex, ax){
-  ineq_edag(age, dx, lx, ex, ax) / (ex + age)
+  ineq_edag(age, dx, lx, ex, ax) / ex
 }
 
 
