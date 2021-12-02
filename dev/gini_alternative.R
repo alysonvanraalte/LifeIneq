@@ -29,10 +29,10 @@ ineq_gini2 <- function(age, dx, ex, ax){
 
 data(LT)
 age <- LT$Age
-dx <- LT$dx 
-lx <- LT$lx
-ex <- LT$ex
-ax <- LT$ax
+dx  <- LT$dx 
+lx  <- LT$lx
+ex  <- LT$ex
+ax  <- LT$ax
 
 plot(age,ineq_gini2(age,dx,ex,ax))
 lines(age,LifeIneq::ineq_gini(age, lx, ex, ax))
