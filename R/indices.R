@@ -259,20 +259,17 @@ ineq_theil <- function(age, dx, lx, ex, ax){
   
   stopifnot(age_length_equal)
   
-  axAge <- ax + age
-  exAge <- ex + age
-  nages <- length(age)
+  N     <- length(age)
   
-  T1 <- rep(NA,nages)
-    for(i in 1:nages){
-      T1[i] <- sum(
-                dx[i:nages]*(axAge[i:nages]/exAge[i]*
-                               (log (axAge[i:nages]/exAge[i])))
-                   ) / lx[i]
-      T1 <- ifelse(T1<0,0,T1)
-      }
-    return(T1)
+  T1 <- rep(NA,N)
+  for(i in 1:N){
+    axi <- age[1:(N+1-i)] + ax[i:N]
+    T1[i] <- sum(dx[i:N] * (axi / ex[i] * log( axi / ex[i]))) / lx[i]
+  }
+  T1[T1 < 0] <- 0
+  return(T1)
 }
+
 
 
 
@@ -296,27 +293,25 @@ ineq_theil <- function(age, dx, lx, ex, ax){
 #' MLD[11]
 
 
-ineq_mld <- function(age, dx, lx, ex, ax){
+ineq_mld <-  function(age, dx, lx, ex, ax){
   age_length_equal <- all.equal(length(age),length(dx),
                                 length(lx),length(ex),
                                 length(ax))
-  
   stopifnot(age_length_equal)
   
-  axAge <- ax + age
-  exAge <- ex + age
-  nages <- length(age)
+  N     <- length(age)
   
-  MLD <- rep(NA,nages)
-  for(i in 1:nages){
+  MLD <- rep(NA, N )
+  for(i in 1: N ){
+    axi <- age[1:(N+1-i)] + ax[i:N]
     MLD[i] <- sum(
-                dx[i:nages]* (log (exAge[i]/axAge[i:nages]))
-                   ) / lx[i]
-    MLD <- ifelse(MLD<0,0,MLD) 
+      dx[i:N]* (log (ex[i]/axi))
+    ) / lx[i]
+    
   }
+  MLD[MLD < 0] <- 0
   return(MLD)
 }
-
 
 
 #' @title ineq_gini
