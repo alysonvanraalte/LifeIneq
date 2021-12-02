@@ -157,7 +157,7 @@ ineq_sd <- function(age, dx, lx, ex, ax){
 
 ineq_cov <- function(age, dx, lx, ex, ax){
   V <- ineq_var(age, dx, lx, ex, ax)
-  sqrt(V) / (ex + age) 
+  sqrt(V) / ex
 }
 
 
@@ -227,7 +227,7 @@ ineq_edag <- function(age, dx, lx, ex, ax){
 
 
 ineq_H <- function(age, dx, lx, ex, ax){
-  ineq_edag(age, dx, lx, ex, ax) / (ex + age)
+  ineq_edag(age, dx, lx, ex, ax) / ex
 }
 
 
@@ -568,7 +568,7 @@ ineq_cp <- function(age, lx, p = .5){
 #'
 #' @export
 
-ineq <- function(age, dx, lx, ex, ax, method = c("var","sd","cov","iqr","aid","gini","mld","edag","cp","Theil","H","mad"),...){
+ineq <- function(age, dx, lx, ex, ax, method = c("var","sd","cov","iqr","aid","gini","mld","edag","cp","theil","H","mad"),...){
   
   # make sure just one
   method         <- match.arg(method)

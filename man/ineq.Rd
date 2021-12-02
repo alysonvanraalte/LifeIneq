@@ -10,7 +10,7 @@ ineq(
   lx,
   ex,
   ax,
-  method = c("var", "sd", "cov", "iqr", "aid", "gini", "mld", "edag", "cp", "Theil",
+  method = c("var", "sd", "cov", "iqr", "aid", "gini", "mld", "edag", "cp", "theil",
     "H", "mad"),
   ...
 )
