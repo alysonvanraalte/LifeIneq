@@ -1,7 +1,7 @@
 Package: LifeIneq
 Type: Package
 Title: Calculate indices of lifespan variation
-Version: 00.03.00
+Version: 00.03.01
 Date: 2021-12-02  
 Authors@R: c(
    person("Alyson", "van Raalte", role = c("aut","cre"), email = "vanraalte@demogr.mpg.de", comment = c(ORCID = "0000-0002-0676-8921")),

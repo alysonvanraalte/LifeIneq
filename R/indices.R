@@ -573,7 +573,13 @@ ineq <- function(age, dx, lx, ex, ax, method = c("var","sd","cov","iqr","aid","g
   # what do we need and what do we have?
   need_args      <- names(formals(fun))
 
-  have_args      <- lapply(as.list(match.call())[-1], eval)
+  #have_args      <- lapply(as.list(match.call())[-1], eval)
+  cl        <- sys.call(0)
+  f         <- get(as.character(cl[[1]]), mode="function", sys.frame(-1))
+  cl        <- match.call(definition=f, call=cl)
+  have_args <- as.list(cl)[-1]
+  
+
   names_have_arg <- names(have_args)
 
   # remove unneeded args
