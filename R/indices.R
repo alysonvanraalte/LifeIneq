@@ -91,20 +91,16 @@ ineq_var <- function(age, dx, lx, ex, ax){
   
   stopifnot(age_length_equal)
 
-  axAge <- age + ax
-  exAge <- ex + age
+  age <- age - age[1]
+  n   <- length(age)
+  out <- rep(NA, n)
   
-  # TR: if magrittr is an acceptable dependency, this
-  # might be easier to read for some people.
-  # residsq <- dx*(axAge-exAge)^2
-  # residsq %>%
-  #   rev() %>%
-  #   cumsum() %>%
-  #   rev() %>%
-  #   '/'(lx) %>%
-  #   round(1) # Alyson added this
-  # 
-  rev(cumsum(rev(dx * (axAge - exAge)^2))) / lx
+  for (i in 1:n){
+    axi    <- age[1:(n+1-i)] + ax[i:n]
+    out[i] <- sum(dx[i:n] * (axi - ex[i])^2) / lx[i]
+  }
+  out
+  
 }
 
 
