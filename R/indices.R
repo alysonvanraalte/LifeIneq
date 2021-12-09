@@ -91,13 +91,13 @@ ineq_var <- function(age, dx, lx, ex, ax){
   
   stopifnot(age_length_equal)
 
-  age <- age - age[1]
+  age0 <- age - age[1]
   n   <- length(age)
   out <- rep(NA, n)
   
   for (i in 1:n){
-    axi    <- age[1:(n+1-i)] + ax[i:n]
-    out[i] <- sum(dx[i:n] * (axi - ex[i])^2) / lx[i]
+    axAge    <- age0[1:(n+1-i)] + ax[i:n]
+    out[i] <- sum(dx[i:n] * (axAge - ex[i])^2) / lx[i]
   }
   out
   
@@ -151,9 +151,10 @@ ineq_sd <- function(age, dx, lx, ex, ax){
 #' CoV[11]
 
 
-ineq_cov <- function(age, dx, lx, ex, ax){
+ineq_cov <- function(age, dx, lx, ex, ax, distribution_type="achieved_age"){
+  age_constant <- ifelse(distribution_type=="achieved_age", age, age*0)
   V <- ineq_var(age, dx, lx, ex, ax)
-  sqrt(V) / ex
+  sqrt(V) / (ex + age_constant)
 }
 
 
@@ -259,8 +260,8 @@ ineq_theil <- function(age, dx, lx, ex, ax){
   
   T1 <- rep(NA,N)
   for(i in 1:N){
-    axi <- age[1:(N+1-i)] + ax[i:N]
-    T1[i] <- sum(dx[i:N] * (axi / ex[i] * log( axi / ex[i]))) / lx[i]
+    axAge <- age[1:(N+1-i)] + ax[i:N]
+    T1[i] <- sum(dx[i:N] * (axAge / ex[i] * log( axAge / ex[i]))) / lx[i]
   }
   T1[T1 < 0] <- 0
   return(T1)
@@ -299,9 +300,9 @@ ineq_mld <-  function(age, dx, lx, ex, ax){
   
   MLD <- rep(NA, N )
   for(i in 1: N ){
-    axi <- age[1:(N+1-i)] + ax[i:N]
+    axAge <- age[1:(N+1-i)] + ax[i:N]
     MLD[i] <- sum(
-      dx[i:N]* (log (ex[i]/axi))
+      dx[i:N]* (log (ex[i]/axAge))
     ) / lx[i]
     
   }
@@ -596,9 +597,6 @@ ineq <- function(age, dx, lx, ex, ax, method = c("var","sd","cov","iqr","aid","g
   # pass in fitlered-down args as list
   do.call(fun, use_args)
 }
-
-
-
 
 
 
