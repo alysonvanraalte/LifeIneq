@@ -1,0 +1,13 @@
+function,measure,age,ax,lx,dx,ex,other
+ineq_mad,mad,TRUE,TRUE,TRUE,TRUE,TRUE,center_type
+ineq_var,var,TRUE,TRUE,TRUE,TRUE,TRUE,
+ineq_sd,sd,TRUE,TRUE,TRUE,TRUE,TRUE,
+ineq_cov,cov,TRUE,TRUE,TRUE,TRUE,TRUE,
+ineq_edag,edag,TRUE,TRUE,TRUE,TRUE,TRUE,
+ineq_H,H,TRUE,TRUE,TRUE,TRUE,TRUE,
+ineq_theil,theil,TRUE,TRUE,TRUE,TRUE,TRUE,
+ineq_mld,mld,TRUE,TRUE,TRUE,TRUE,TRUE,
+ineq_gini,gini,TRUE,TRUE,TRUE,FALSE,TRUE,
+ineq_aid,aid,TRUE,TRUE,TRUE,FALSE,TRUE,
+ineq_iqr,iqr,TRUE,FALSE,TRUE,FALSE,FALSE,upprer; lower
+ineq_cp,cp,TRUE,FALSE,TRUE,FALSE,FALSE,p

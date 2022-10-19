@@ -32,6 +32,8 @@ lx  <- LT$lx
 ex  <- LT$ex
 # this one not in the wrapper:
 ineq_quantile(age,lx,.5)
+ineq(age,dx,lx,ex,ax,metho0d ="gini")
+
 
 # ineq measures:
 #c("variance", "sd","cov", "iqr", "AID", "Gini", "MLD", "edag", "Cp", "Theil", "H")

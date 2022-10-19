@@ -91,20 +91,16 @@ ineq_var <- function(age, dx, lx, ex, ax){
   
   stopifnot(age_length_equal)
 
-  axAge <- age + ax
-  exAge <- ex + age
+  age0 <- age - age[1]
+  n   <- length(age)
+  out <- rep(NA, n)
   
-  # TR: if magrittr is an acceptable dependency, this
-  # might be easier to read for some people.
-  # residsq <- dx*(axAge-exAge)^2
-  # residsq %>%
-  #   rev() %>%
-  #   cumsum() %>%
-  #   rev() %>%
-  #   '/'(lx) %>%
-  #   round(1) # Alyson added this
-  # 
-  rev(cumsum(rev(dx * (axAge - exAge)^2))) / lx
+  for (i in 1:n){
+    axAge    <- age0[1:(n+1-i)] + ax[i:n]
+    out[i] <- sum(dx[i:n] * (axAge - ex[i])^2) / lx[i]
+  }
+  out
+  
 }
 
 
@@ -155,9 +151,10 @@ ineq_sd <- function(age, dx, lx, ex, ax){
 #' CoV[11]
 
 
-ineq_cov <- function(age, dx, lx, ex, ax){
+ineq_cov <- function(age, dx, lx, ex, ax, distribution_type="achieved_age"){
+  age_constant <- ifelse(distribution_type=="achieved_age", age, age*0)
   V <- ineq_var(age, dx, lx, ex, ax)
-  sqrt(V) / (ex + age) 
+  sqrt(V) / (ex + age_constant)
 }
 
 
@@ -227,7 +224,7 @@ ineq_edag <- function(age, dx, lx, ex, ax){
 
 
 ineq_H <- function(age, dx, lx, ex, ax){
-  ineq_edag(age, dx, lx, ex, ax) / (ex + age)
+  ineq_edag(age, dx, lx, ex, ax) / ex
 }
 
 
@@ -259,20 +256,17 @@ ineq_theil <- function(age, dx, lx, ex, ax){
   
   stopifnot(age_length_equal)
   
-  axAge <- ax + age
-  exAge <- ex + age
-  nages <- length(age)
+  N     <- length(age)
   
-  T1 <- rep(NA,nages)
-    for(i in 1:nages){
-      T1[i] <- sum(
-                dx[i:nages]*(axAge[i:nages]/exAge[i]*
-                               (log (axAge[i:nages]/exAge[i])))
-                   ) / lx[i]
-      T1 <- ifelse(T1<0,0,T1)
-      }
-    return(T1)
+  T1 <- rep(NA,N)
+  for(i in 1:N){
+    axAge <- age[1:(N+1-i)] + ax[i:N]
+    T1[i] <- sum(dx[i:N] * (axAge / ex[i] * log( axAge / ex[i]))) / lx[i]
+  }
+  T1[T1 < 0] <- 0
+  return(T1)
 }
+
 
 
 
@@ -296,27 +290,25 @@ ineq_theil <- function(age, dx, lx, ex, ax){
 #' MLD[11]
 
 
-ineq_mld <- function(age, dx, lx, ex, ax){
+ineq_mld <-  function(age, dx, lx, ex, ax){
   age_length_equal <- all.equal(length(age),length(dx),
                                 length(lx),length(ex),
                                 length(ax))
-  
   stopifnot(age_length_equal)
   
-  axAge <- ax + age
-  exAge <- ex + age
-  nages <- length(age)
+  N     <- length(age)
   
-  MLD <- rep(NA,nages)
-  for(i in 1:nages){
+  MLD <- rep(NA, N )
+  for(i in 1: N ){
+    axAge <- age[1:(N+1-i)] + ax[i:N]
     MLD[i] <- sum(
-                dx[i:nages]* (log (exAge[i]/axAge[i:nages]))
-                   ) / lx[i]
-    MLD <- ifelse(MLD<0,0,MLD) 
+      dx[i:N]* (log (ex[i]/axAge))
+    ) / lx[i]
+    
   }
+  MLD[MLD < 0] <- 0
   return(MLD)
 }
-
 
 
 #' @title ineq_gini
@@ -578,7 +570,13 @@ ineq <- function(age, dx, lx, ex, ax, method = c("var","sd","cov","iqr","aid","g
   # what do we need and what do we have?
   need_args      <- names(formals(fun))
 
-  have_args      <- lapply(as.list(match.call())[-1], eval)
+  #have_args      <- lapply(as.list(match.call())[-1], eval)
+  cl        <- sys.call(0)
+  f         <- get(as.character(cl[[1]]), mode="function", sys.frame(-1))
+  cl        <- match.call(definition=f, call=cl)
+  have_args <- as.list(cl)[-1]
+  
+
   names_have_arg <- names(have_args)
 
   # remove unneeded args
@@ -599,9 +597,6 @@ ineq <- function(age, dx, lx, ex, ax, method = c("var","sd","cov","iqr","aid","g
   # pass in fitlered-down args as list
   do.call(fun, use_args)
 }
-
-
-
 
 
 
