@@ -10,8 +10,9 @@ ineq(
   lx,
   ex,
   ax,
-  method = c("var", "sd", "cov", "iqr", "aid", "gini", "mld", "edag", "cp", "theil",
-    "H", "mad"),
+  method = c("var", "sd", "cov", "iqr", "aid", "gini", "mld", "edag", "cp", "theil", "H",
+    "mad"),
+  check = TRUE,
   ...
 )
 }
@@ -27,6 +28,8 @@ ineq(
 \item{ax}{numeric. vector of the average time spent in the age}
 
 \item{method}{one of \code{c("var","sd","cov","iqr","aid","gini","mld","edag","cp","theil","H","mad")}}
+
+\item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 
 \item{...}{other optional arguments used by particular methods.}
 }

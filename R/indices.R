@@ -3,12 +3,7 @@
 #'
 #' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}). 
 #'   
-#'
-#' @param age numeric. vector of lower age bounds.
-#' @param dx numeric. vector of the lifetable death distribution.
-#' @param lx numeric. vector of the lifetable survivorship.
-#' @param ex numeric. vector of remaining life expectancy.
-#' @param ax numeric. vector of the average time spent in the age interval of those dying within the interval.
+#' @inheritParams ineq_var
 #' @param center_type character either, \code{"ex"}, \code{"mean"} (same thing), or \code{"median"}
 #'
 #' @seealso 
@@ -33,10 +28,19 @@
 #'   lx = LT$lx, ex = LT$ex, ax = LT$ax, 
 #'   center_type = "median")
 
-ineq_mad <- function(age, dx, lx, ex, ax, center_type = c("ex","mean","median")){
-  age_length_equal <- all.equal(length(age),length(dx),
-                                length(lx),length(ex),
-                                length(ax))
+ineq_mad <- function(age, 
+                     dx, 
+                     lx, 
+                     ex, 
+                     ax, 
+                     center_type = c("ex","mean","median"),
+                     check = TRUE){
+  dx <- dx / sum(dx)
+  if (check){
+    my_args <- as.list(environment())
+    check_args(my_args)
+  }
+  
   
   # center on conditional mean or median
   center_type <- match.arg(center_type)
@@ -46,7 +50,7 @@ ineq_mad <- function(age, dx, lx, ex, ax, center_type = c("ex","mean","median"))
                         quantile = .5)
   }
   
-  stopifnot(age_length_equal)
+
   
   axAge <- age + ax
   exAge <- ex + age
@@ -65,6 +69,7 @@ ineq_mad <- function(age, dx, lx, ex, ax, center_type = c("ex","mean","median"))
 #' @param lx numeric. vector of the lifetable survivorship.
 #' @param ex numeric. vector of remaining life expectancy.
 #' @param ax numeric. vector of the average time spent in the age interval of those dying within the interval.
+#' @param check logical. Shall we perform basic checks on input vectors? Default TRUE
 #'
 #' @seealso 
 #' \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
@@ -84,12 +89,14 @@ ineq_mad <- function(age, dx, lx, ex, ax, center_type = c("ex","mean","median"))
 #' # The variance in age at death conditional upon survival to age 10
 #' V[11]
 
-ineq_var <- function(age, dx, lx, ex, ax){
-  age_length_equal <- all.equal(length(age),length(dx),
-  length(lx),length(ex),
-  length(ax))
+ineq_var <- function(age, dx, lx, ex, ax, check = TRUE){
+
+  dx <- dx / sum(dx)
+  if (check){
+    my_args <- as.list(environment())
+    check_args(my_args)
+  }
   
-  stopifnot(age_length_equal)
 
   age0 <- age - age[1]
   n   <- length(age)
@@ -124,8 +131,14 @@ ineq_var <- function(age, dx, lx, ex, ax){
 #' S[11]
 
 
-ineq_sd <- function(age, dx, lx, ex, ax){
-   V <- ineq_var(age, dx, lx, ex, ax)
+ineq_sd <- function(age, dx, lx, ex, ax, check = TRUE){
+   dx <- dx / sum(dx)
+   V <- ineq_var(age = age, 
+                 dx = dx, 
+                 lx = lx, 
+                 ex = ex, 
+                 ax = ex, 
+                 check = check)
    sqrt(V) 
 }
 
@@ -136,6 +149,7 @@ ineq_sd <- function(age, dx, lx, ex, ax){
 #' @description Calculate a lifetable column for the conditional coefficient of variation in lifetable ages at death 
 #'
 #' @inheritParams ineq_var
+#' @param distribution_type character. Either \code{"achieved_age"} or \code{"remaining_years"}
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
 #'
@@ -151,9 +165,18 @@ ineq_sd <- function(age, dx, lx, ex, ax){
 #' CoV[11]
 
 
-ineq_cov <- function(age, dx, lx, ex, ax, distribution_type="achieved_age"){
-  age_constant <- ifelse(distribution_type=="achieved_age", age, age*0)
-  V <- ineq_var(age, dx, lx, ex, ax)
+ineq_cov <- function(age, dx, lx, ex, ax, distribution_type = c("achieved_age","remaining_years"), check = TRUE){
+  
+  distribution_type <- match.arg(distribution_type)
+  dx <- dx / sum(dx)
+  
+  age_constant <- ifelse(distribution_type == "achieved_age", age, age * 0)
+  V <- ineq_var(age = age, 
+                dx = dx, 
+                lx = lx, 
+                ex = ex, 
+                ax = ax, 
+                check = check)
   sqrt(V) / (ex + age_constant)
 }
 
@@ -180,12 +203,13 @@ ineq_cov <- function(age, dx, lx, ex, ax, distribution_type="achieved_age"){
 #' plot(0:110, edag, type='l')
 #' }
 
-ineq_edag <- function(age, dx, lx, ex, ax){
-  age_length_equal <- all.equal(length(age),length(dx),
-                                length(lx),length(ex),
-                                length(ax))
-  
-  stopifnot(age_length_equal)
+ineq_edag <- function(age, dx, lx, ex, ax, check = TRUE){
+  dx <- dx / sum(dx)
+
+  if (check){
+    my_args <- as.list(environment())
+    check_args(my_args)
+  }
   
   # length of the age interval
   n <- c(diff(age),1)
@@ -224,6 +248,7 @@ ineq_edag <- function(age, dx, lx, ex, ax){
 
 
 ineq_H <- function(age, dx, lx, ex, ax){
+  dx <- dx / sum(dx)
   ineq_edag(age, dx, lx, ex, ax) / ex
 }
 
@@ -249,12 +274,12 @@ ineq_H <- function(age, dx, lx, ex, ax){
 #' Theil[11]
 
 
-ineq_theil <- function(age, dx, lx, ex, ax){
-  age_length_equal <- all.equal(length(age),length(dx),
-                                length(lx),length(ex),
-                                length(ax))
-  
-  stopifnot(age_length_equal)
+ineq_theil <- function(age, dx, lx, ex, ax, check = TRUE){
+  dx <- dx / sum(dx)
+  if (check){
+    my_args <- as.list(environment())
+    check_args(my_args)
+  }
   
   N     <- length(age)
   
@@ -290,11 +315,12 @@ ineq_theil <- function(age, dx, lx, ex, ax){
 #' MLD[11]
 
 
-ineq_mld <-  function(age, dx, lx, ex, ax){
-  age_length_equal <- all.equal(length(age),length(dx),
-                                length(lx),length(ex),
-                                length(ax))
-  stopifnot(age_length_equal)
+ineq_mld <-  function(age, dx, lx, ex, ax, check = TRUE){
+  dx <- dx / sum(dx)
+  if (check){
+    my_args <- as.list(environment())
+    check_args(my_args)
+  }
   
   N     <- length(age)
   
@@ -338,12 +364,11 @@ ineq_mld <-  function(age, dx, lx, ex, ax){
 #' # The Gini coefficient conditional upon survival to age 10
 #' G[11]
 
-ineq_gini <- function(age, lx, ex, ax){
-  age_length_equal <- all.equal(length(age),length(lx),
-                                length(ex),length(ax))
-  
-  stopifnot(age_length_equal)
-  
+ineq_gini <- function(age, lx, ex, ax, check = TRUE){
+  if (check){
+    my_args <- as.list(environment())
+    check_args(my_args)
+  }
   
   nages <- length(age)
   # vector of the length of the age interval
@@ -367,9 +392,11 @@ ineq_gini <- function(age, lx, ex, ax){
 #' 
 #' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
 #' 
-#' The formula for calculating the AID was taken from the citet{Shkolnikov2010} spreadsheet, and is a simplification of the formula described in citet{Shkolnikov2003}.
+#' The formula for calculating the AID was taken from the Shkolnikov 2010 spreadsheet, and is a simplification of the formula described in Shkolnikov 2003.
+#' @references 
+#' \insertRef{Shkolnikov2010}{LifeIneq} 
+#' \insertRef{Shkolnikov2003}{LifeIneq} 
 #' 
-#'
 #' @inheritParams ineq_var
 #' @inherit ineq_var seealso
 #'
@@ -385,8 +412,8 @@ ineq_gini <- function(age, lx, ex, ax){
 #' aid[11]
 
 
-ineq_aid <- function(age, lx, ex, ax){
-  aid <- ineq_gini(age=age,lx=lx,ex=ex,ax=ax) * ex
+ineq_aid <- function(age, lx, ex, ax, check = TRUE){
+  aid <- ineq_gini(age = age, lx = lx, ex = ex, ax = ax, check = check) * ex
   return(aid)
 }
 
@@ -417,6 +444,7 @@ ineq_aid <- function(age, lx, ex, ax){
 #' ineq_quantile_lower(age=LT$Age,lx=LT$lx,quantile=0.9)
 
 ineq_quantile_lower <- function(age, lx, quantile = .5){
+  stopifnot(length(age) == length(lx))
   lx   <- lx / lx[1]
   # make this monotonic
   splinefun(age~lx)(quantile)
@@ -446,6 +474,7 @@ ineq_quantile_lower <- function(age, lx, quantile = .5){
 
 
 ineq_quantile <- function(age, lx, quantile = .5){
+  stopifnot(length(age) == length(lx))
   n    <- length(age)
   # make sure it closes out
   lx   <- c(lx, 0)
@@ -482,6 +511,7 @@ ineq_quantile <- function(age, lx, quantile = .5){
 
 
 ineq_iqr <- function(age, lx, upper = .75, lower = .25){
+  stopifnot(length(age) == length(lx))
   q1 <- ineq_quantile_lower(age = age, lx = lx, quantile = lower) 
   q3 <- ineq_quantile_lower(age = age, lx = lx, quantile = upper)
   q1 - q3
@@ -556,46 +586,73 @@ ineq_cp <- function(age, lx, p = .5){
 #' @param ex numeric. vector of remaining life expectancy.
 #' @param ax numeric. vector of the average time spent in the age
 #' @param method one of \code{c("var","sd","cov","iqr","aid","gini","mld","edag","cp","theil","H","mad")}
+#' @param check logical. Shall we perform basic checks on input vectors? Default TRUE
 #' @param ... other optional arguments used by particular methods.
 #'
 #' @export
 
-ineq <- function(age, dx, lx, ex, ax, method = c("var","sd","cov","iqr","aid","gini","mld","edag","cp","theil","H","mad"),...){
+ineq <- function(age, 
+                 dx, 
+                 lx, 
+                 ex, 
+                 ax, 
+                 method = c("var","sd","cov","iqr","aid",
+                            "gini","mld","edag","cp","theil","H","mad"), 
+                 check = TRUE, 
+                 ...){
   
   # make sure just one
   method         <- match.arg(method)
   # fun is now the function we need
+  fun_name       <- paste0("ineq_", method)
   fun            <- match.fun(paste0("ineq_", method))
   
   # what do we need and what do we have?
-  need_args      <- names(formals(fun))
-
-  #have_args      <- lapply(as.list(match.call())[-1], eval)
-  cl        <- sys.call(0)
-  f         <- get(as.character(cl[[1]]), mode="function", sys.frame(-1))
-  cl        <- match.call(definition=f, call=cl)
-  have_args <- as.list(cl)[-1]
+  # mget(names(formals(sys.function(sys.parent()))), sys.frame(sys.nframe() - 1L))
+  given_args <- mget(names(formals()),sys.frame(sys.nframe()))
+  given_args[["..."]] <- NULL
   
-
-  names_have_arg <- names(have_args)
+  
+  my_args     <- lapply(as.list(match.call())[-1], eval)
+  # cl        <- sys.call(0)
+  # f         <- get(as.character(cl[[1]]), mode="function", sys.frame(-1))
+  # cl        <- match.call(definition=f, call=cl)
+  # my_args <- as.list(cl)[-1]
+  have_args <- c(as.list(environment()), list(...)) 
+  # remove objects created in this function prior to this line..
+  have_args <- have_args[!names(have_args)
+                         %in%
+                          c("need_args","fun","have_args","fun_name",
+                            "given_args","my_args","cl","f")]
+  have_args <- c(have_args,given_args[!names(given_args) %in% names(have_args)])
+  # names_have_arg <- names(have_args)
 
   # remove unneeded args
-  use_args       <- have_args[need_args]
+  need_args      <- names(formals(fun))
+  use_args       <- have_args[names(have_args) %in% need_args]
   # remove NULL entries
-  use_args       <- use_args[!is.na(names(use_args))]
-  
-  # warn about unused arguments
+  use_args       <- use_args[!is.na(use_args)]
+  use_args <- use_args[!lapply(use_args,is.symbol) |> unlist()]
+  # potentially warn about unused arguments
   superfluous_args <- 
-    names_have_arg[!names_have_arg %in% 
-                     c(names(use_args), "need_args","fun","method")]
+    names(have_args[!names(have_args) %in% 
+                     c(need_args, "need_args","fun","method")])
   
-  if (length(superfluous_args) > 0){
+  # throw error if arg missing
+  if (!all(need_args %in% names(use_args))){
+    missing_arg <- need_args[!need_args %in% names(use_args)] |>
+      paste(collapse = ", ")
+    stop(paste(method,"method requires missing argument(s)",missing_arg))
+  }
+ 
+  
+  if (length(superfluous_args) > 0 & check){
     superfluous_args <- paste(superfluous_args,collapse = ", ")
     message("following arguments not used: ",superfluous_args)
   }
   
-  # pass in fitlered-down args as list
-  do.call(fun, use_args)
+  # pass in filtered-down args as list
+  do.call(fun, as.list(use_args))
 }
 
 
