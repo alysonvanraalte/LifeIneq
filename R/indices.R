@@ -632,7 +632,7 @@ ineq <- function(age,
   use_args       <- have_args[names(have_args) %in% need_args]
   # remove NULL entries
   use_args       <- use_args[!is.na(use_args)]
-  use_args <- use_args[!lapply(use_args,is.symbol) |> unlist()]
+  use_args       <- use_args[!lapply(use_args,is.symbol) |> unlist()]
   # potentially warn about unused arguments
   superfluous_args <- 
     names(have_args[!names(have_args) %in% 
