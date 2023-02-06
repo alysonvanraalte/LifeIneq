@@ -4,7 +4,15 @@
 \alias{ineq_mad}
 \title{ineq_mad}
 \usage{
-ineq_mad(age, dx, lx, ex, ax, center_type = c("ex", "mean", "median"))
+ineq_mad(
+  age,
+  dx,
+  lx,
+  ex,
+  ax,
+  center_type = c("ex", "mean", "median"),
+  check = TRUE
+)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
@@ -18,6 +26,8 @@ ineq_mad(age, dx, lx, ex, ax, center_type = c("ex", "mean", "median"))
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
 
 \item{center_type}{character either, \code{"ex"}, \code{"mean"} (same thing), or \code{"median"}}
+
+\item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
 Calculate a lifetable column for the conditional mean absolute deviation in lifetable ages at death. This may be with respect to either conditional life expectancy or conditional median remaining lifespan.

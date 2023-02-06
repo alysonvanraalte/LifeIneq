@@ -4,7 +4,7 @@
 \alias{ineq_aid}
 \title{ineq_aid}
 \usage{
-ineq_aid(age, lx, ex, ax)
+ineq_aid(age, lx, ex, ax, check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
@@ -14,6 +14,8 @@ ineq_aid(age, lx, ex, ax)
 \item{ex}{numeric. vector of remaining life expectancy.}
 
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
+
+\item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
 Calculate a lifetable column for the conditional absolute inter-individual difference in lifespan (AID)
@@ -21,7 +23,7 @@ Calculate a lifetable column for the conditional absolute inter-individual diffe
 \details{
 All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
 
-The formula for calculating the AID was taken from the citet{Shkolnikov2010} spreadsheet, and is a simplification of the formula described in citet{Shkolnikov2003}.
+The formula for calculating the AID was taken from the Shkolnikov 2010 spreadsheet, and is a simplification of the formula described in Shkolnikov 2003.
 }
 \examples{
 
@@ -32,6 +34,10 @@ aid = ineq_aid(age=LT$Age,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 aid[1]
 # The absolute inter-individual difference in lifespan from age 10
 aid[11]
+}
+\references{
+\insertRef{Shkolnikov2010}{LifeIneq} 
+\insertRef{Shkolnikov2003}{LifeIneq}
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}

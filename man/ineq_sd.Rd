@@ -4,7 +4,7 @@
 \alias{ineq_sd}
 \title{ineq_sd}
 \usage{
-ineq_sd(age, dx, lx, ex, ax)
+ineq_sd(age, dx, lx, ex, ax, check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
@@ -16,6 +16,8 @@ ineq_sd(age, dx, lx, ex, ax)
 \item{ex}{numeric. vector of remaining life expectancy.}
 
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
+
+\item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
 Calculate a lifetable column for the conditional standard deviation in lifetable ages at death
