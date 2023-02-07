@@ -137,7 +137,7 @@ ineq_sd <- function(age, dx, lx, ex, ax, check = TRUE){
                  dx = dx, 
                  lx = lx, 
                  ex = ex, 
-                 ax = ex, 
+                 ax = ax, 
                  check = check)
    sqrt(V) 
 }
@@ -413,7 +413,12 @@ ineq_gini <- function(age, lx, ex, ax, check = TRUE){
 
 
 ineq_aid <- function(age, lx, ex, ax, check = TRUE){
-  aid <- ineq_gini(age = age, lx = lx, ex = ex, ax = ax, check = check) * ex
+ 
+  aid <- ineq_gini(age = age, 
+                   lx = lx, 
+                   ex = ex, 
+                   ax = ax, 
+                   check = check) * ex
   return(aid)
 }
 

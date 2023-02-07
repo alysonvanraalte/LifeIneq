@@ -1,6 +1,6 @@
 
 library(devtools)
-
+run_examples()
 document()
 check()
 

@@ -38,13 +38,13 @@ check_ex <- function(ex, age){
   check_nas(x=ex)
 }
 
-check_vec_arg <- function(x,item = c("age","lx","ax","dx","ex"),...){
+check_vec_arg <- function(x,item = c("age","lx","ax","dx","ex"),age){
   switch(item,
-         age = check_age(age),
-         lx = check_lx(lx),
-         ax = check_ax(ax,age),
-         dx = check_dx(dx),
-         ex = check_ex(ex,age))
+         age = check_age(x),
+         lx = check_lx(x),
+         ax = check_ax(x,age),
+         dx = check_dx(x),
+         ex = check_ex(x,age))
 }
 check_args <- function(arg_list){
   L <- lapply(arg_list, length) |> unlist()
@@ -55,7 +55,7 @@ check_args <- function(arg_list){
               length(arg_list$ax))
   # dx not in some functions...
   if (any(names(arg_list) == "dx")){
-    check_vec_arg(x=arg_list$dx, "dx")
+    check_vec_arg(x=arg_list$dx, item="dx")
     age_lengths <- c(age_lengths, length(arg_list$dx))
   }
   lengths_match <- diff(range(age_lengths)) == 0
@@ -63,10 +63,10 @@ check_args <- function(arg_list){
     stop("vector argument lengths must match")
   }
   
-  check_vec_arg(x=arg_list$age, "age")
-  check_vec_arg(x=arg_list$lx, "lx")
-  check_vec_arg(x=arg_list$ex, "ex", age = arg_list$age)
-  check_vec_arg(x=arg_list$ax, "ax", age = arg_list$age)
+  check_vec_arg(x = arg_list$age, item="age")
+  check_vec_arg(x = arg_list$lx, item="lx")
+  check_vec_arg(x= arg_list$ex, item="ex", age = arg_list$age)
+  check_vec_arg(x = arg_list$ax, item="ax", age = arg_list$age)
 }
 
 # to remove CMD check warning
