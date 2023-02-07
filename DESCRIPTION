@@ -1,8 +1,8 @@
 Package: LifeIneq
 Type: Package
 Title: Calculate indices of lifespan variation
-Version: 00.03.02
-Date: 2021-12-06  
+Version: 00.03.03
+Date: 2023-02-06  
 Authors@R: c(
    person("Alyson", "van Raalte", role = c("aut","cre"), email = "vanraalte@demogr.mpg.de", comment = c(ORCID = "0000-0002-0676-8921")),
    person("Tim", "Riffe", role = c("aut"), email = "tim.riffe@gmail.com", comment = c(ORCID = "0000-0002-2673-4622")),
@@ -11,7 +11,7 @@ Authors@R: c(
 Description: Calculate a selection of indices of lifespan variation from a life table.
 LazyLoad: yes
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.2.3
 Depends:
     R (>= 3.6)
 RdMacros: Rdpack

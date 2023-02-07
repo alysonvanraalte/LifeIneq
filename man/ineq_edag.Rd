@@ -4,7 +4,7 @@
 \alias{ineq_edag}
 \title{ineq_edag}
 \usage{
-ineq_edag(age, dx, lx, ex, ax)
+ineq_edag(age, dx, lx, ex, ax, check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
@@ -16,6 +16,8 @@ ineq_edag(age, dx, lx, ex, ax)
 \item{ex}{numeric. vector of remaining life expectancy.}
 
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
+
+\item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
 Calculate a lifetable column for the conditional life disparity (\eqn{e^\dagger}) of a population.

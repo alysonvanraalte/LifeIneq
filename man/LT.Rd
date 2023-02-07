@@ -4,7 +4,9 @@
 \name{LT}
 \alias{LT}
 \title{Year 2016 female Canadian single age lifetable from HMD}
-\format{A data.frame with 111 rows and 11 columns}
+\format{
+A data.frame with 111 rows and 11 columns
+}
 \source{
 \url{www.mortality.org}
 }

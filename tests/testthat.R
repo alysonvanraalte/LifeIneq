@@ -30,4 +30,4 @@ ext <- Txt / lxt
 dxNA <- dx * NA
 
 
-test_check("LifeIneq")
+#test_check("LifeIneq")

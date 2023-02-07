@@ -4,7 +4,7 @@
 \alias{ineq_var}
 \title{ineq_var}
 \usage{
-ineq_var(age, dx, lx, ex, ax)
+ineq_var(age, dx, lx, ex, ax, check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
@@ -16,6 +16,8 @@ ineq_var(age, dx, lx, ex, ax)
 \item{ex}{numeric. vector of remaining life expectancy.}
 
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
+
+\item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
 Calculate a lifetable column for the conditional variance in lifetable ages at death

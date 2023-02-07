@@ -4,7 +4,7 @@
 \alias{ineq_gini}
 \title{ineq_gini}
 \usage{
-ineq_gini(age, lx, ex, ax)
+ineq_gini(age, lx, ex, ax, check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
@@ -14,6 +14,8 @@ ineq_gini(age, lx, ex, ax)
 \item{ex}{numeric. vector of remaining life expectancy.}
 
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
+
+\item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
 Calculate a lifetable column for the conditional Gini coefficient of inequality in survivorship
