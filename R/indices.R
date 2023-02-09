@@ -326,7 +326,8 @@ ineq_mld <-  function(age, dx, lx, ex, ax, check = TRUE){
   
   MLD <- rep(NA, N )
   for(i in 1: N ){
-    axAge <- age[1:(N+1-i)] + ax[i:N]
+    # axAge <- age[1:(N+1-i)] + ax[i:N]
+    axAge <- age[i:N] - age[i] + ax[i:N]
     MLD[i] <- sum(
       dx[i:N]* (log (ex[i]/axAge))
     ) / lx[i]
