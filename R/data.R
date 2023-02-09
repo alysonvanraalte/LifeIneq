@@ -6,8 +6,9 @@
 # # install.packages("usethis")
 # #options(scipen=3)
 # # an HMD life table as example data
-# LT <- readHMD("C:\\hmd_statistics\\lt_female\\fltper_1x1\\CAN.fltper_1x1.txt") %>%
-#   filter(Year==max(Year))
+# LT <- readHMDweb("CAN","fltper_1x1",username =Sys.getenv("us"),password=Sys.getenv("pw")) |>
+# filter(Year == 2016)
+# usethis::use_data(LT, overwrite = TRUE)
 # 
 # usethis::use_data(LT, overwrite = TRUE)
 
@@ -20,7 +21,20 @@
 #' @format 
 #' A data.frame with 111 rows and 11 columns
 #' @source 
-#' \url{www.mortality.org}
+#' \url{https://mortality.org}
 "LT"
 
 # Note: use a bibtex citation in future for HMD.
+# LTabr <- readHMDweb("CAN","fltper_5x1",username =Sys.getenv("us"),password=Sys.getenv("pw")) |>
+# filter(Year == 2016)
+# usethis::use_data(LTabr, overwrite = TRUE)
+
+#' Year 2016 female Canadian abridged age lifetable from HMD
+#'
+#' @description Data taken from the file \code{fltper_1x1} using the default settings of the \code{HMDHFDplus} package.
+#'
+#' @format 
+#' A data.frame with 24 rows and 11 columns
+#' @source 
+#' \url{https://mortality.org}
+"LTabr"
