@@ -35,7 +35,7 @@ ineq_mad <- function(age,
                      ax, 
                      center_type = c("ex","mean","median"),
                      check = TRUE){
-  dx <- dx / sum(dx)
+  # dx <- dx / sum(dx)
   if (check){
     my_args <- as.list(environment())
     check_args(my_args)
@@ -91,20 +91,20 @@ ineq_mad <- function(age,
 
 ineq_var <- function(age, dx, lx, ex, ax, check = TRUE){
 
-  dx <- dx / sum(dx)
+  # dx <- dx / sum(dx)
   if (check){
     my_args <- as.list(environment())
     check_args(my_args)
   }
   
-
   age0 <- age - age[1]
   n   <- length(age)
   out <- rep(NA, n)
   
   for (i in 1:n){
     axAge    <- age0[1:(n+1-i)] + ax[i:n]
-    out[i] <- sum(dx[i:n] * (axAge - ex[i])^2) / lx[i]
+    dxi <- dx[i:n] / sum(dx[i:n])
+    out[i] <- sum(dxi * (axAge - ex[i])^2) / lx[i]
   }
   out
   
@@ -132,7 +132,7 @@ ineq_var <- function(age, dx, lx, ex, ax, check = TRUE){
 
 
 ineq_sd <- function(age, dx, lx, ex, ax, check = TRUE){
-   dx <- dx / sum(dx)
+   # dx <- dx / sum(dx)
    V <- ineq_var(age = age, 
                  dx = dx, 
                  lx = lx, 
@@ -168,7 +168,7 @@ ineq_sd <- function(age, dx, lx, ex, ax, check = TRUE){
 ineq_cov <- function(age, dx, lx, ex, ax, distribution_type = c("achieved_age","remaining_years"), check = TRUE){
   
   distribution_type <- match.arg(distribution_type)
-  dx <- dx / sum(dx)
+  # dx <- dx / sum(dx)
   
   age_constant <- ifelse(distribution_type == "achieved_age", age, age * 0)
   V <- ineq_var(age = age, 
@@ -204,7 +204,7 @@ ineq_cov <- function(age, dx, lx, ex, ax, distribution_type = c("achieved_age","
 #' }
 
 ineq_edag <- function(age, dx, lx, ex, ax, check = TRUE){
-  dx <- dx / sum(dx)
+  # dx <- dx / sum(dx)
 
   if (check){
     my_args <- as.list(environment())
@@ -248,7 +248,7 @@ ineq_edag <- function(age, dx, lx, ex, ax, check = TRUE){
 
 
 ineq_H <- function(age, dx, lx, ex, ax){
-  dx <- dx / sum(dx)
+  # dx <- dx / sum(dx)
   ineq_edag(age, dx, lx, ex, ax) / ex
 }
 
@@ -275,7 +275,7 @@ ineq_H <- function(age, dx, lx, ex, ax){
 
 
 ineq_theil <- function(age, dx, lx, ex, ax, check = TRUE){
-  dx <- dx / sum(dx)
+  # dx <- dx / sum(dx)
   if (check){
     my_args <- as.list(environment())
     check_args(my_args)
@@ -316,7 +316,7 @@ ineq_theil <- function(age, dx, lx, ex, ax, check = TRUE){
 
 
 ineq_mld <-  function(age, dx, lx, ex, ax, check = TRUE){
-  dx <- dx / sum(dx)
+  # dx <- dx / sum(dx)
   if (check){
     my_args <- as.list(environment())
     check_args(my_args)

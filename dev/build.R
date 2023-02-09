@@ -2,8 +2,8 @@
 library(devtools)
 run_examples()
 document()
-check()
-
+check(vignettes = FALSE)
+devtools::test()
 # do a once-off library() action on our package structure.
 # without actually having to install it or build it.
 load_all()
