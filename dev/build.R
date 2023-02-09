@@ -10,7 +10,7 @@ load_all()
 
 # testing code:
 
-?ineq_variance
+?ineq_var
 ?ineq_edag
 ?ineq_H
 ?ineq_Theil

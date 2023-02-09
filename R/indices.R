@@ -103,8 +103,8 @@ ineq_var <- function(age, dx, lx, ex, ax, check = TRUE){
   
   for (i in 1:n){
     axAge    <- age0[1:(n+1-i)] + ax[i:n]
-    dxi <- dx[i:n] / sum(dx[i:n])
-    out[i] <- sum(dxi * (axAge - ex[i])^2) / lx[i]
+    # dxi <- dx[i:n] / sum(dx[i:n])
+    out[i] <- sum(dx[i:n] * (axAge - ex[i])^2) / lx[i]
   }
   out
   
