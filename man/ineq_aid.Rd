@@ -36,8 +36,8 @@ aid[1]
 aid[11]
 }
 \references{
-\insertRef{Shkolnikov2010}{LifeIneq} 
-\insertRef{Shkolnikov2003}{LifeIneq}
+\insertRef{shkolnikov2010}{LifeIneq} 
+\insertRef{shkolnikov2003}{LifeIneq}
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}

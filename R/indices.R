@@ -137,7 +137,7 @@ ineq_sd <- function(age, dx, lx, ex, ax, check = TRUE){
                  dx = dx, 
                  lx = lx, 
                  ex = ex, 
-                 ax = ex, 
+                 ax = ax, 
                  check = check)
    sqrt(V) 
 }
@@ -226,24 +226,24 @@ ineq_edag <- function(age, dx, lx, ex, ax, check = TRUE){
 
 
 #' @title ineq_H
-#' @description Calculate a lifetable column for the quantity \emph{H}, generally referred to as either the lifetable entropy (Keyfitz, 1977) or the elasticity of life expectancy (Leser, 1955).
+#' @description Calculate a lifetable column for the quantity *H*, generally referred to as either the lifetable entropy Keyfitz (1977) or the elasticity of life expectancy Leser (1955).
 #'
 #' @inheritParams ineq_var
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
 #' @references
-#' \insertRef{Keyfitz1977}{LifeIneq}
-#' \insertRef{Leser1955}{LifeIneq}
+#' \insertRef{keyfitz1977mortality}{LifeIneq}
+#' \insertRef{leser1955variations}{LifeIneq}
 #' 
 #' @export
 #' @examples 
 #'
 #' data(LT)
-#' # A vector containing the conditional \emph{H} values
+#' # A vector containing the conditional H values
 #' H = ineq_H(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
-#' # The \emph{H} from birth
+#' # The H from birth
 #' H[1]
-#' # The \emph{H} conditional upon survival to age 10
+#' # The H conditional upon survival to age 10
 #' H[11]
 
 
@@ -346,7 +346,7 @@ ineq_mld <-  function(age, dx, lx, ex, ax, check = TRUE){
 #' 
 #' @inheritParams ineq_var
 #' @inherit ineq_var seealso
-#'
+#' 
 #' @references 
 #' \insertRef{hanada1983}{LifeIneq}
 #' \insertRef{shkolnikov2003}{LifeIneq}
@@ -394,8 +394,8 @@ ineq_gini <- function(age, lx, ex, ax, check = TRUE){
 #' 
 #' The formula for calculating the AID was taken from the Shkolnikov 2010 spreadsheet, and is a simplification of the formula described in Shkolnikov 2003.
 #' @references 
-#' \insertRef{Shkolnikov2010}{LifeIneq} 
-#' \insertRef{Shkolnikov2003}{LifeIneq} 
+#' \insertRef{shkolnikov2010}{LifeIneq} 
+#' \insertRef{shkolnikov2003}{LifeIneq} 
 #' 
 #' @inheritParams ineq_var
 #' @inherit ineq_var seealso
@@ -413,7 +413,12 @@ ineq_gini <- function(age, lx, ex, ax, check = TRUE){
 
 
 ineq_aid <- function(age, lx, ex, ax, check = TRUE){
-  aid <- ineq_gini(age = age, lx = lx, ex = ex, ax = ax, check = check) * ex
+ 
+  aid <- ineq_gini(age = age, 
+                   lx = lx, 
+                   ex = ex, 
+                   ax = ax, 
+                   check = check) * ex
   return(aid)
 }
 
@@ -588,7 +593,7 @@ ineq_cp <- function(age, lx, p = .5){
 #' @param method one of \code{c("var","sd","cov","iqr","aid","gini","mld","edag","cp","theil","H","mad")}
 #' @param check logical. Shall we perform basic checks on input vectors? Default TRUE
 #' @param ... other optional arguments used by particular methods.
-#'
+#' @importFrom Rdpack reprompt
 #' @export
 
 ineq <- function(age, 
@@ -632,7 +637,7 @@ ineq <- function(age,
   use_args       <- have_args[names(have_args) %in% need_args]
   # remove NULL entries
   use_args       <- use_args[!is.na(use_args)]
-  use_args <- use_args[!lapply(use_args,is.symbol) |> unlist()]
+  use_args       <- use_args[!lapply(use_args,is.symbol) |> unlist()]
   # potentially warn about unused arguments
   superfluous_args <- 
     names(have_args[!names(have_args) %in% 

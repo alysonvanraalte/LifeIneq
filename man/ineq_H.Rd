@@ -18,7 +18,7 @@ ineq_H(age, dx, lx, ex, ax)
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
 }
 \description{
-Calculate a lifetable column for the quantity \emph{H}, generally referred to as either the lifetable entropy (Keyfitz, 1977) or the elasticity of life expectancy (Leser, 1955).
+Calculate a lifetable column for the quantity *H*, generally referred to as either the lifetable entropy Keyfitz (1977) or the elasticity of life expectancy Leser (1955).
 }
 \details{
 All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
@@ -26,16 +26,16 @@ All input vectors must be the same length. Also, we recommend using input data f
 \examples{
 
 data(LT)
-# A vector containing the conditional \emph{H} values
+# A vector containing the conditional H values
 H = ineq_H(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
-# The \emph{H} from birth
+# The H from birth
 H[1]
-# The \emph{H} conditional upon survival to age 10
+# The H conditional upon survival to age 10
 H[11]
 }
 \references{
-\insertRef{Keyfitz1977}{LifeIneq}
-\insertRef{Leser1955}{LifeIneq}
+\insertRef{keyfitz1977mortality}{LifeIneq}
+\insertRef{leser1955variations}{LifeIneq}
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
