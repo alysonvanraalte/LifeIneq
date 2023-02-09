@@ -17,6 +17,7 @@
 #' Year 2016 female Canadian single age lifetable from HMD
 #'
 #' @description Data taken from the file \code{fltper_1x1} using the default settings of the \code{HMDHFDplus} package.
+#' @details Data downloaded 9 Feb 2023.
 #'
 #' @format 
 #' A data.frame with 111 rows and 11 columns
@@ -32,7 +33,8 @@
 #' Year 2016 female Canadian abridged age lifetable from HMD
 #'
 #' @description Data taken from the file \code{fltper_1x1} using the default settings of the \code{HMDHFDplus} package.
-#'
+#' @details Data downloaded 9 Feb 2023.
+#' 
 #' @format 
 #' A data.frame with 24 rows and 11 columns
 #' @source 
