@@ -38,7 +38,7 @@ check_dx <- function(dx){
 }
 
 check_ex <- function(ex, age){
-  check_positive(x=ex)
+  check_non_negative(x=ex)
   stopifnot(diff(age + ex)>= 0)
   check_nas(x=ex)
 }
