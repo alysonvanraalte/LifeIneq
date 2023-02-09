@@ -19,9 +19,9 @@ Calculate Kannisto's C-measures from a lifetable
 \details{
 The age and lx vectors must be the same length. This function estimates the shortest distance between two ages containing p percent of the life table cohort's death. The mechanics behind the function are to fit a cubic spline through the survival curve to estimate surivorship between age intervals. If your data have an upper age bound lower than 110, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws').
 
- This function is currently very slow because the author is a better demographer than she is programmer. For ideas of how to improve this function, please let email vanraalte@demogr.mpg.de.
- 
-  The concept behind Kannisto's C-measures is found in Kannisto (2000)
+This function is currently very slow because the author is a better demographer than she is programmer. For ideas of how to improve this function, please let email vanraalte@demogr.mpg.de.
+
+The concept behind Kannisto's C-measures is found in Kannisto (2000)
 }
 \examples{
 

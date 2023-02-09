@@ -1,4 +1,4 @@
-
+context("assorted tests")
 
 # 1) test against real conditions, ie data likely to be encountered
 # incl abridged, or strange age groups, what about NAs? Should NA and Inf
@@ -70,7 +70,8 @@ expect_equal(ineq(age = 0:110,
      lx = lxr,
      ex = exr,
      ax = axr,
-     method = "edag")[-N], rep(0,N-1))
+     method = "edag",
+     check = FALSE)[-N], rep(0,N-1))
 })
 # expect length errors
 # TODO: add length checking to ineq()

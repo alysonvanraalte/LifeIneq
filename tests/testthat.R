@@ -25,9 +25,5 @@ Txt <- rev(cumsum(rev(Lxt)))
 ext <- Txt / lxt
 
 # ----------------------------------------
-# Tests are thematically grouped, can follow the pattern
-
-dxNA <- dx * NA
-
 
 test_check("LifeIneq")

@@ -12,6 +12,7 @@ Description: Calculate a selection of indices of lifespan variation from a life 
 LazyLoad: yes
 LazyData: true
 RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 3.6)
 RdMacros: Rdpack
@@ -20,5 +21,8 @@ Imports:
 BugReports: https://github.com/alysonvanraalte/LifeIneq/issues
 Encoding: UTF-8
 Suggests: 
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    knitr,
+    rmarkdown
 License: GPL-3
+VignetteBuilder: knitr

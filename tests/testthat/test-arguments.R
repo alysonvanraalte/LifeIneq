@@ -1,4 +1,4 @@
-
+context("test vector arguments")
 # here we should see what happens if 0s or negatives are in inputs
 
 data(LT)
@@ -158,3 +158,4 @@ test_that("check dx for negatives, NAs, and 0s", {
            check = TRUE),'double'))
   }
 )
+
