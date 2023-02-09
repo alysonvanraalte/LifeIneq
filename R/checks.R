@@ -32,9 +32,12 @@ check_ax <- function(ax,age){
   check_nas(x=ax)
 }
 
-check_dx <- function(dx){
+check_dx <- function(dx,lx){
   check_non_negative(x=dx)
   check_nas(x=dx)
+  # ensure reasonabl;y constrained dx and lx
+  stopifnot(sum(dx) / lx[1] > .9999 &
+            lx[1] / sum(dx) > .9999 )
 }
 
 check_ex <- function(ex, age){
@@ -43,12 +46,13 @@ check_ex <- function(ex, age){
   check_nas(x=ex)
 }
 
-check_vec_arg <- function(x,item = c("age","lx","ax","dx","ex"),age){
+
+check_vec_arg <- function(x,item = c("age","lx","ax","dx","ex"),age,lx){
   switch(item,
          age = check_age(x),
          lx = check_lx(x),
          ax = check_ax(x,age),
-         dx = check_dx(x),
+         dx = check_dx(x,lx),
          ex = check_ex(x,age))
 }
 check_args <- function(arg_list){
@@ -60,7 +64,7 @@ check_args <- function(arg_list){
               length(arg_list$ax))
   # dx not in some functions...
   if (any(names(arg_list) == "dx")){
-    check_vec_arg(x=arg_list$dx, item="dx")
+    check_vec_arg(x=arg_list$dx, item="dx",lx=arg_list$lx)
     age_lengths <- c(age_lengths, length(arg_list$dx))
   }
   lengths_match <- diff(range(age_lengths)) == 0

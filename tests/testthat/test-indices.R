@@ -1,6 +1,4 @@
-context("assorted tests")
-
------------
+source("setup.R")
 
 # test rectangular population against expectations.
 test_that("rectangle boundary condition", {
@@ -15,8 +13,10 @@ expect_equal(ineq(age = age,
      ex = exr,
      ax = axr,
      method = "edag",
-     check = FALSE)[-N], rep(0,N-1))
+     check = FALSE)[-N],
+     rep(0,N-1))
 })
+
 # expect length errors
 # TODO: add length checking to ineq()
 # expect_error(ineq(age = age,

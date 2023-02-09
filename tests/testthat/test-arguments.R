@@ -1,4 +1,4 @@
-context("test vector arguments")
+source("setup.R")
 # here we should see what happens if 0s or negatives are in inputs
 
 # these are basically tests for our checks?
@@ -7,26 +7,26 @@ context("test vector arguments")
 test_that("check age for negatives, NAs, and irregular order", {
   expect_error(
     ineq(age = age_w_neg, 
-         lx = LT$lx, 
-         dx = LT$dx, 
-         ex = LT$ex, 
-         ax = LT$ax, 
+         lx = lx, 
+         dx = dx, 
+         ex = ex, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))
   expect_error(
     ineq(age = age_w_na, 
-         lx = LT$lx, 
-         dx = LT$dx, 
-         ex = LT$ex, 
-         ax = LT$ax, 
+         lx = lx, 
+         dx = dx, 
+         ex = ex, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))
   expect_error(
     ineq(age = age_w_z, 
-         lx = LT$lx, 
-         dx = LT$dx, 
-         ex = LT$ex, 
-         ax = LT$ax, 
+         lx = lx, 
+         dx = dx, 
+         ex = ex, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))}
 )
@@ -36,25 +36,25 @@ test_that("check lx for negatives, NAs, and irregular order", {
   expect_error(
     ineq(age = 0:110, 
          lx = lx_w_neg, 
-         dx = LT$dx, 
-         ex = LT$ex, 
-         ax = LT$ax, 
+         dx = dx, 
+         ex = ex, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))
   expect_error(
     ineq(age = 0:110, 
          lx = lx_w_na, 
-         dx = LT$dx, 
-         ex = LT$ex, 
-         ax = LT$ax, 
+         dx = dx, 
+         ex = ex, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))
   expect_error(
     ineq(age = 0:110, 
          lx = lx_w_z, 
-         dx = LT$dx, 
-         ex = LT$ex, 
-         ax = LT$ax, 
+         dx = dx, 
+         ex = ex, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))}
 )
@@ -64,26 +64,26 @@ test_that("check lx for negatives, NAs, and irregular order", {
 test_that("check ex for negatives, NAs, and irregular order", {
   expect_error(
     ineq(age = 0:110, 
-         lx = LT$lx, 
-         dx = LT$dx, 
+         lx = lx, 
+         dx = dx, 
          ex = ex_w_neg, 
-         ax = LT$ax, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))
   expect_error(
     ineq(age = 0:110, 
-         lx = LT$lx, 
-         dx = LT$dx, 
+         lx = lx, 
+         dx = dx, 
          ex = ex_w_na, 
-         ax = LT$ax, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))
   expect_error(
     ineq(age = 0:110, 
-         lx = LT$lx, 
-         dx = LT$dx, 
+         lx = lx, 
+         dx = dx, 
          ex = ex_w_z ,
-         ax = LT$ax, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))
   }
@@ -94,28 +94,28 @@ test_that("check ex for negatives, NAs, and irregular order", {
 test_that("check dx for negatives, NAs, and 0s", {
   expect_error(
     ineq(age = 0:110, 
-         lx = LT$lx, 
+         lx = lx, 
          dx = dx_w_neg, 
-         ex = LT$ex, 
-         ax = LT$ax, 
+         ex = ex, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))
   expect_error(
     ineq(age = 0:110, 
          lx = lx, 
          dx = dx_w_na, 
-         ex = LT$ex, 
-         ax = LT$ax, 
+         ex = ex, 
+         ax = ax, 
          method = "sd", 
          check = TRUE))
   # 0s are allowable for dx
  
   expect_no_error(
       ineq(age = 0:110, 
-           lx = LT$lx, 
+           lx = lx, 
            dx = dx_w_z, 
-           ex = LT$ex,
-           ax = LT$ax, 
+           ex = ex,
+           ax = ax, 
            method = "sd", 
            check = TRUE)
       )
@@ -123,10 +123,10 @@ test_that("check dx for negatives, NAs, and 0s", {
   
     expect_no_error(
       ineq(age = 0:110, 
-           lx = LT$lx, 
+           lx = lx, 
            dx = dx_w_z, 
-           ex = LT$ex,
-           ax = LT$ax, 
+           ex = ex,
+           ax = ax, 
            method = "cov", 
            distribution_type = "achieved_age")
     )
