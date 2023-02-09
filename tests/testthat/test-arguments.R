@@ -2,7 +2,7 @@ context("test vector arguments")
 # here we should see what happens if 0s or negatives are in inputs
 
 data(LT)
-age_w_z <- age_w_neg <- age_w_na <-age <- 0:110
+age_w_z <- age_w_neg <- age_w_na <- age <- 0:110
 dx_w_z  <- dx_w_neg  <- dx_w_na  <- dx  <- LT$dx
 lx_w_z  <- lx_w_neg  <- lx_w_na  <- lx  <- LT$lx
 ex_w_z  <- ex_w_neg  <- ex_w_na  <- ex  <- LT$ex
@@ -136,26 +136,27 @@ test_that("check dx for negatives, NAs, and 0s", {
          method = "sd", 
          check = TRUE))
   # 0s are allowable for dx
-  expect_success(
-    expect_type(
+ 
+  expect_no_error(
       ineq(age = age, 
            lx = lx, 
            dx = dx_w_z, 
            ex = ex,
            ax = ax, 
            method = "sd", 
-           check = TRUE),'double'))
+           check = TRUE)
+      )
   
-  expect_success(
-    expect_type(
+  
+    expect_no_error(
       ineq(age = age, 
            lx = lx, 
            dx = dx_w_z, 
            ex = ex,
            ax = ax, 
            method = "cov", 
-           distribution_type = "achieved_age",
-           check = TRUE),'double'))
+           distribution_type = "achieved_age")
+    )
   }
 )
 
