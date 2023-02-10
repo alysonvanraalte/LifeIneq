@@ -13,13 +13,13 @@ load_all()
 ?ineq_var
 ?ineq_edag
 ?ineq_H
-?ineq_Theil
-?ineq_MLD
-?ineq_Gini
-?ineq_AID
+?ineq_theil
+?ineq_mld
+?ineq_gini
+?ineq_aid
 ?ineq_quantile
 ?ineq_iqr
-?ineq_Cp
+?ineq_cp
 
 
 #install_github("timriffe/LifeIneq",force=TRUE)

@@ -149,7 +149,7 @@ ineq_sd <- function(age, dx, lx, ex, ax, check = TRUE){
 #' @description Calculate a lifetable column for the conditional coefficient of variation in lifetable ages at death 
 #'
 #' @inheritParams ineq_var
-#' @param distribution_type character. Either \code{"achieved_age"} or \code{"remaining_years"}
+#' @param distribution_type character. Either \code{"aad"} (age at death) or \code{"rl"} (remaining life)
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
 #'
@@ -165,12 +165,12 @@ ineq_sd <- function(age, dx, lx, ex, ax, check = TRUE){
 #' CoV[11]
 
 
-ineq_cov <- function(age, dx, lx, ex, ax, distribution_type = c("achieved_age","remaining_years"), check = TRUE){
+ineq_cov <- function(age, dx, lx, ex, ax, distribution_type = c("aad","rl"), check = TRUE){
   
   distribution_type <- match.arg(distribution_type)
   # dx <- dx / sum(dx)
   
-  age_constant <- ifelse(distribution_type == "achieved_age", age, age * 0)
+  age_constant <- ifelse(distribution_type == "aad", age, age * 0)
   V <- ineq_var(age = age, 
                 dx = dx, 
                 lx = lx, 
@@ -328,9 +328,10 @@ ineq_mld <-  function(age, dx, lx, ex, ax, check = TRUE){
   for(i in 1: N ){
     # axAge <- age[1:(N+1-i)] + ax[i:N]
     axAge <- age[i:N] - age[i] + ax[i:N]
+    dxi <- dx[i:N] / sum(dx[i:N])
     MLD[i] <- sum(
-      dx[i:N]* (log (ex[i]/axAge))
-    ) / lx[i]
+      dxi* (log (ex[i]/axAge))
+    ) #/ lx[i]
     
   }
   MLD[MLD < 0] <- 0
@@ -346,6 +347,7 @@ ineq_mld <-  function(age, dx, lx, ex, ax, check = TRUE){
 #'   The formula for calculating the Gini was taken from the Shkolnikov (2010) spreadsheet, and is a simplification of the formulas described in Shkolnikov (2003) and Hanada (1983).
 #' 
 #' @inheritParams ineq_var
+#' @param distribution_type character. Either \code{"aad"} (age at death) or \code{"rl"} (remaining life)
 #' @inherit ineq_var seealso
 #' 
 #' @references 
@@ -365,25 +367,59 @@ ineq_mld <-  function(age, dx, lx, ex, ax, check = TRUE){
 #' # The Gini coefficient conditional upon survival to age 10
 #' G[11]
 
-ineq_gini <- function(age, lx, ex, ax, check = TRUE){
+# this is the Hanada version, which we didn't 
+# retool to have both add and rle versions
+# ineq_gini <- function(age, lx, ex, ax, check = TRUE){
+#   if (check){
+#     my_args <- as.list(environment())
+#     check_args(my_args)
+#   }
+#   
+#   nages <- length(age)
+#   # vector of the length of the age interval
+#   n <- c(diff(age),ax[nages])
+#   
+#   # squared survivorship
+#   lx2 <- lx^2 / lx[1]^2
+#   lx2plusn <- c(lx2[-1], 0)
+#   
+#   # the expression that will be integrated and the Gini 
+#   intlx2 <- lx2plusn * n + ax * (lx2 - lx2plusn)
+# 
+#   G <- 1 - rev(cumsum(rev(intlx2))) / (ex * lx2)
+#   G[G<0] <- 0
+#   return(G)
+# }
+ineq_gini <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check = TRUE){
+  
+  distribution_type <- match.arg(distribution_type)
+
+  age_constant <- if (distribution_type == "aad"){
+    age_constant <- age
+  } else {
+    age_constant <- age * 0
+  }
   if (check){
     my_args <- as.list(environment())
     check_args(my_args)
   }
   
-  nages <- length(age)
-  # vector of the length of the age interval
-  n <- c(diff(age),ax[nages])
+  N        <- length(age)
+  g_out    <- rep(0, N)
+  dx       <- dx / sum(dx)
+  axage    <- age + ax
+  denom    <- ex + age_constant
+  ad       <- outer(axage, axage,"-") * lower.tri(diag(N),TRUE)
+  pd       <- outer(dx, dx, "*")
   
-  # squared survivorship
-  lx2 <- lx^2 / lx[1]^2
-  lx2plusn <- c(lx2[-1],0)
+  for (i in 1:N){
+    g_out[i] <- sum(abs(ad) * pd) / (denom[i])
+    ad       <- ad[-1, -1, drop = FALSE]
+    pd       <- pd[-1, -1, drop = FALSE]
+    pd       <- pd / sum(pd)
+  }
   
-  # the expression that will be integrated and the Gini 
-  intlx2 <- lx2plusn*n + ax*(lx2-lx2plusn)*n
-  G <- 1 - rev(cumsum(rev(intlx2)))/(ex*lx2)
-  G[G<0] <- 0
-  return(G)
+  return(g_out)
 }
 
 
@@ -419,6 +455,7 @@ ineq_aid <- function(age, lx, ex, ax, check = TRUE){
                    lx = lx, 
                    ex = ex, 
                    ax = ax, 
+                   distribution_type = "rl",
                    check = check) * ex
   return(aid)
 }
@@ -427,7 +464,8 @@ ineq_aid <- function(age, lx, ex, ax, check = TRUE){
 
 
 #' @title calculate a survivorship quantile 
-#' @description Calculate quantiles of survivorship from a lifetable. Not vectorized: this function jsut calculates for the lowest age in the vector given/
+#' @description Calculate quantiles of survivorship from a lifetable. Not vectorized: this function just calculates for the lowest age in the vector given. 
+#' @details Any of the quantile-based functions in 
 #'
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
