@@ -15,6 +15,8 @@ ineq_theil(age, dx, ex, ax, distribution_type = c("aad", "rl"), check = TRUE)
 
 \item{ax}{numeric. vector of the average time spent in the age}
 
+\item{distribution_type}{character. Either \code{"aad"} (age at death) or \code{"rl"} (remaining life)}
+
 \item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
@@ -26,14 +28,14 @@ All input vectors must be the same length. Also, we recommend using input data f
 \examples{
 data(LT)
 # A vector containing the conditional Theil indices
-Theil = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
+Theil = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
 # The Theil index from birth
 Theil[1]
 # The Theil index conditional upon survival to age 10
 Theil[11]
 
 # A shortfall (remaining years) version of the same:
-Theilrel = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+Theilrel = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
 Theilrel[1]
 Theilrel[11]
 }

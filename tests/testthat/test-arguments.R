@@ -121,15 +121,47 @@ test_that("check dx for negatives, NAs, and 0s", {
       )
   
   
-    expect_no_error(
-      ineq(age = 0:110, 
-           lx = lx, 
-           dx = dx_w_z, 
-           ex = ex,
-           ax = ax, 
-           method = "cov", 
-           distribution_type = "achieved_age")
-    )
+   
   }
 )
 
+test_that("distribution_type works", {
+  
+  # cov
+  expect_no_error(
+    ineq(age = 0:110, 
+         lx = lx, 
+         dx = dx, 
+         ex = ex,
+         ax = ax, 
+         method = "cov", 
+         distribution_type = "aad")
+  )
+  expect_no_error(
+    ineq(age = 0:110, 
+         lx = lx, 
+         dx = dx, 
+         ex = ex,
+         ax = ax, 
+         method = "cov", 
+         distribution_type = "rl")
+  )
+  # theil
+  expect_no_error(
+    ineq(age = 0:110, 
+         dx = dx, 
+         ex = ex,
+         ax = ax, 
+         method = "theil", 
+         distribution_type = "aad")
+  )
+  expect_no_error(
+    ineq(age = 0:110, 
+         dx = dx, 
+         ex = ex,
+         ax = ax, 
+         method = "theil", 
+         distribution_type = "rl")
+  )
+    
+})

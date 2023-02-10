@@ -31,7 +31,7 @@ The formula for calculating the Gini was taken from the Shkolnikov (2010) spread
 
 data(LT)
 # A vector containing the conditional Gini coefficients
-G = ineq_gini(age=LT$Age,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+G = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
 # The Gini coefficient from birth
 G[1]
 # The Gini coefficient conditional upon survival to age 10

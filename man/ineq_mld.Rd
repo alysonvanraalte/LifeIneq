@@ -29,7 +29,7 @@ All input vectors must be the same length. Also, we recommend using input data f
 
 data(LT)
 # A vector containing the conditional MLD indices
-MLD = ineq_mld(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+MLD = ineq_mld(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
 # The MLD from birth
 MLD[1]
 # The MLD conditional upon survival to age 10

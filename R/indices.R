@@ -337,6 +337,7 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 #' @description Calculate a lifetable column for the conditional Theil index of inequality in survivorship
 #'
 #' @inheritParams ineq
+#' @param distribution_type  character. Either `"aad"` (age at death) or `"rl"` (remaining life)
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
 #'
@@ -349,14 +350,14 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 
 #' data(LT)
 #' # A vector containing the conditional Theil indices
-#' Theil = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
+#' Theil = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
 #' # The Theil index from birth
 #' Theil[1]
 #' # The Theil index conditional upon survival to age 10
 #' Theil[11]
 #' 
 #' # A shortfall (remaining years) version of the same:
-#' Theilrel = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+#' Theilrel = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
 #' Theilrel[1]
 #' Theilrel[11]
 
@@ -408,7 +409,7 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 #'
 #' data(LT)
 #' # A vector containing the conditional MLD indices
-#' MLD = ineq_mld(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+#' MLD = ineq_mld(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
 #' # The MLD from birth
 #' MLD[1]
 #' # The MLD conditional upon survival to age 10
@@ -469,7 +470,7 @@ ineq_mld <-  function(age, dx, ex, ax, distribution_type = c("aad","rl"), check 
 #'
 #' data(LT)
 #' # A vector containing the conditional Gini coefficients
-#' G = ineq_gini(age=LT$Age,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+#' G = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
 #' # The Gini coefficient from birth
 #' G[1]
 #' # The Gini coefficient conditional upon survival to age 10
@@ -550,17 +551,17 @@ ineq_gini <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check 
 #'
 #' data(LT)
 #' # A vector containing the conditional absolute inter-individual difference in lifespan
-#' aid = ineq_aid(age=LT$Age,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+#' aid = ineq_aid(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
 #' # The absolute inter-individual difference in lifespan from birth
 #' aid[1]
 #' # The absolute inter-individual difference in lifespan from age 10
 #' aid[11]
 
 
-ineq_aid <- function(age, lx, ex, ax, check = TRUE){
+ineq_aid <- function(age, dx, ex, ax, check = TRUE){
  
   aid <- ineq_gini(age = age, 
-                   lx = lx, 
+                   dx = dx, 
                    ex = ex, 
                    ax = ax, 
                    distribution_type = "rl",
@@ -777,6 +778,7 @@ ineq <- function(age,
                           c("need_args","fun","have_args","fun_name",
                             "given_args","my_args","cl","f")]
   have_args <- c(have_args,given_args[!names(given_args) %in% names(have_args)])
+  have_args <- have_args[lapply(have_args,class) |> unlist() != "name"]
   # names_have_arg <- names(have_args)
 
   # remove unneeded args
