@@ -2,7 +2,7 @@
 % Please edit documentation in R/indices.R
 \name{ineq_quantile_lower}
 \alias{ineq_quantile_lower}
-\title{calculate a survivorship quantile}
+\title{ineq_quantile_lower}
 \usage{
 ineq_quantile_lower(age, lx, quantile = 0.5)
 }
