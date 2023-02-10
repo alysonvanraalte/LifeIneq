@@ -25,17 +25,30 @@ Calculate a lifetable column for the conditional Gini coefficient of inequality 
 \details{
 All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
 
-The formula for calculating the Gini was taken from the Shkolnikov (2010) spreadsheet, and is a simplification of the formulas described in Shkolnikov (2003) and Hanada (1983).
+The formula for calculating the Gini was taken from the Shkolnikov (2010) spreadsheet, and is a simplification of the formulas described in Shkolnikov (2003) and Hanada (1983). This implementation allows the gini coefficient for both shortfall (remaining life) Shkolnikov (2010) and age-at-death (Permanyer 2019) distributions. This is the inverse of the Drewnowski index.
 }
 \examples{
 
 data(LT)
-# A vector containing the conditional Gini coefficients
-G = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
+# A vector containing the conditional age-at-death Gini coefficients
+G = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
 # The Gini coefficient from birth
 G[1]
 # The Gini coefficient conditional upon survival to age 10
 G[11]
+#  A vector containing the conditional remaining life Gini coefficients
+Gr = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+# The Gini coefficient from birth
+Gr[1]
+# The Gini coefficient conditional upon survival to age 10
+Gr[11]
+
+\dontrun{
+plot(0:110, Gr, type='l',col="red",ylab="conditional Gini",xlab="Age")
+lines(0:110, G, col = "blue")
+legend("topleft",col = c("red","blue"), lty=1,legend = c("remaining life","age at death"))
+}
+
 }
 \references{
 \insertRef{hanada1983}{LifeIneq}

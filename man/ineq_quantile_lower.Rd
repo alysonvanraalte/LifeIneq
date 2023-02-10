@@ -17,7 +17,7 @@ ineq_quantile_lower(age, lx, quantile = 0.5)
 Calculate quantiles of survivorship from a lifetable. Not vectorized: this function just calculates for the lowest age in the \code{lx} vector given.
 }
 \details{
-Any of the quantile-based functions in
+This uses a monotonic spline through the survival curve to approximate continuous survivorship. Quantile-based methods including \code{iqr} and \code{cp} make use of this function internally.
 }
 \examples{
 

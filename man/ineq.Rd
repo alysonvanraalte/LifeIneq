@@ -10,8 +10,8 @@ ineq(
   lx,
   ex,
   ax,
-  method = c("var", "sd", "cov", "iqr", "aid", "gini", "mld", "edag", "eta_dag", "cp",
-    "theil", "H", "ineq_rel_eta_dag", "mad"),
+  method = c("var", "sd", "cov", "iqr", "aid", "gini", "drewnowski", "mld", "edag",
+    "eta_dag", "cp", "theil", "H", "ineq_rel_eta_dag", "mad"),
   check = TRUE,
   ...
 )
@@ -27,12 +27,12 @@ ineq(
 
 \item{ax}{numeric. vector of the average time spent in the age}
 
-\item{method}{one of \code{c("var","sd","cov","iqr","aid","gini","mld","edag","eta_dag","cp","theil","H","ineq_rel_eta_dag","mad")}}
+\item{method}{one of \code{c("var","sd","cov","iqr","aid","gini","drewnowski","mld","edag","eta_dag","cp","theil","H","ineq_rel_eta_dag","mad")}}
 
 \item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 
 \item{...}{other optional arguments used by particular methods.}
 }
 \description{
-Choose from variance \code{var}, standard deviation \code{sd}, coefficient of variation \code{cov}, interquartile range \code{iqr}, \code{gini}, absolute inter individual difference (absolute gini) \code{aid}, \code{edag} e-dagger, Kannisto's compression measure \code{cp}, \code{eta_dag} the mean age at death lost at death (that we just made up), Leser-Keyfitz entropy \code{H} (elasticity of life expectancy to proportional age specific changes in mortality),\code{ineq_rel_eta_dag} (a relative version of \code{eta_dag}), \code{theil}, mean log deviation \code{mld}, mean absolute deviation \code{mad} (wrt mean or median).
+Choose from variance \code{var}, standard deviation \code{sd}, coefficient of variation \code{cov}, interquartile range \code{iqr}, \code{gini}, absolute inter individual difference (both age at death and remaining life), \code{drewnowski} (complement of Gini), \code{aid} (relative Gini), \code{edag} e-dagger, Kannisto's compression measure \code{cp}, \code{eta_dag} the mean age at death lost at death (that we just made up), Leser-Keyfitz entropy \code{H} (elasticity of life expectancy to proportional age specific changes in mortality),\code{ineq_rel_eta_dag} (a relative version of \code{eta_dag}), \code{theil}, mean log deviation \code{mld}, mean absolute deviation \code{mad} (wrt mean or median).
 }

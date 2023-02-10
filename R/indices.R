@@ -329,7 +329,6 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 
 #' @title ineq_theil
 #' @description Calculate a lifetable column for the conditional Theil index of inequality in survivorship
-#'
 #' @inheritParams ineq
 #' @param distribution_type  character. Either `"aad"` (age at death) or `"rl"` (remaining life)
 #' @inherit ineq_var details
@@ -344,16 +343,22 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 
 #' data(LT)
 #' # A vector containing the conditional Theil indices
-#' Theil = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
+#' Ta = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
 #' # The Theil index from birth
-#' Theil[1]
+#' Ta[1]
 #' # The Theil index conditional upon survival to age 10
-#' Theil[11]
+#' Ta[11]
 #' 
 #' # A shortfall (remaining years) version of the same:
-#' Theilrel = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
-#' Theilrel[1]
-#' Theilrel[11]
+#' Tr = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+#' Tr[1]
+#' Tr[11]
+#' \dontrun{
+#' plot(0:110, Tr, type='l',col="red",ylab="conditional Theil",xlab="Age")
+#' lines(0:110, Ta, col = "blue")
+#' legend("topleft",col = c("red","blue"), lty=1,legend = c("remaining life","age at death"))
+#' }
+
 
 ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check = TRUE){
   
@@ -373,21 +378,23 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
   N     <- length(age)
   
   exAge <- age_constant + ex
-  axAge <- ax + age_constant
+  axAge <- ax + age
   
   T1 <- rep(NA, N)
   for(i in 1:N){
+    if (distribution_type == "rl"){
+      axi = axAge[i:N] - age[i]
+    } else {
+      axi = axAge[i:N]
+    }
     dxi <- dx[i:N] / sum(dx[i:N])
-    am  <- axAge[i:N] / exAge[i]
+    am  <- axi / exAge[i]
     # per the hackert terms
     T1[i] <- sum(dxi * (am * log( am ))) 
   }
 
   return(T1)
 }
-
-
-
 
 
 #' @title ineq_mld
@@ -399,6 +406,8 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 #' @inherit ineq_var seealso
 #'
 #' @export
+#' @references 
+#' \insertRef{van2012contribution}{LifeIneq}
 #' @examples 
 #'
 #' data(LT)
@@ -447,7 +456,7 @@ ineq_mld <-  function(age, dx, ex, ax, distribution_type = c("aad","rl"), check 
 #'
 #' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in `MortalityLaws::MortalityLaw`). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package `ungroup` or with a penalized B-spline approach in package `MortalitySmooth`). 
 #' 
-#'   The formula for calculating the Gini was taken from the Shkolnikov (2010) spreadsheet, and is a simplification of the formulas described in Shkolnikov (2003) and Hanada (1983).
+#' The formula for calculating the Gini was taken from the Shkolnikov (2010) spreadsheet, and is a simplification of the formulas described in Shkolnikov (2003) and Hanada (1983). This implementation allows the gini coefficient for both shortfall (remaining life) Shkolnikov (2010) and age-at-death (Permanyer 2019) distributions. This is the inverse of the Drewnowski index.
 #' 
 #' @inheritParams ineq_var
 #' @param distribution_type character. Either `"aad"` (age at death) or `"rl"` (remaining life)
@@ -457,21 +466,35 @@ ineq_mld <-  function(age, dx, ex, ax, distribution_type = c("aad","rl"), check 
 #' \insertRef{hanada1983}{LifeIneq}
 #' \insertRef{shkolnikov2003}{LifeIneq}
 #' \insertRef{shkolnikov2010}{LifeIneq}
+# #' \insertRef{permanyer2019}{LifeIneq}
 #' 
 #' @export
 #' 
 #' @examples 
 #'
 #' data(LT)
-#' # A vector containing the conditional Gini coefficients
-#' G = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
+#' # A vector containing the conditional age-at-death Gini coefficients
+#' G = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
 #' # The Gini coefficient from birth
 #' G[1]
 #' # The Gini coefficient conditional upon survival to age 10
 #' G[11]
-
+#' #  A vector containing the conditional remaining life Gini coefficients
+#' Gr = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+#' # The Gini coefficient from birth
+#' Gr[1]
+#' # The Gini coefficient conditional upon survival to age 10
+#' Gr[11]
+#' 
+#' \dontrun{
+#' plot(0:110, Gr, type='l',col="red",ylab="conditional Gini",xlab="Age")
+#' lines(0:110, G, col = "blue")
+#' legend("topleft",col = c("red","blue"), lty=1,legend = c("remaining life","age at death"))
+#' }
+#' 
 # this is the Hanada version, which we didn't 
-# retool to have both add and rle versions
+# retool to have both add and rle versions; probably someone
+# using CAL inputs for lx would want this version however.
 # ineq_gini <- function(age, lx, ex, ax, check = TRUE){
 #   if (check){
 #     my_args <- as.list(environment())
@@ -525,14 +548,50 @@ ineq_gini <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check 
   return(g_out)
 }
 
-
+#' @title ineq_drewnowski
+#' @description This index is the simple complement of the gini coefficient, and we include it due to Aburto et al (2022)
+#' @inherit ineq_gini details
+#' @inheritParams ineq_gini
+#' @export
+#' @references 
+#' \insertRef{aburto2022drewnowski}{LifeIneq}
+#' \insertRef{hanada1983}{LifeIneq}
+#' \insertRef{shkolnikov2003}{LifeIneq}
+#' \insertRef{shkolnikov2010}{LifeIneq}
+# #' \insertRef{permanyer2019}{LifeIneq}
+#' @examples 
+#' data(LT)
+#' # A vector containing the conditional age-at-death Drewnowski coefficients
+#' D = ineq_drewnowski(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
+#' #  A vector containing the conditional remaining life Gini coefficients
+#' Dr = ineq_drewnowski(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+#' # To show how this relates to Gini:
+#' G = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
+#' Gr = ineq_gini(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+#' \dontrun{
+#' plot(0:110, Dr, type='l',col="red",ylab="conditional Gini",xlab="Age",ylim=c(0,1))
+#' lines(0:110, D, col = "blue")
+#' lines(0:110, Gr, col = "red", lty=2)
+#' lines(0:110, G, col = "blue", lty=2)
+#' legend("left",col = c("red","blue","red","blue"), lty=c(1,1,2,2),
+#'        legend = c("remaining life Drewnowski","age at death Drewnowski",
+#'                   "remaining life Gini", "age at death Gini"))
+#' }
+ineq_drewnowski <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check = TRUE){
+  1 - ineq_gini(age = age, 
+                dx = dx, 
+                ex = ex, 
+                ax = ax, 
+                distribution_type = distribution_type, 
+                check = check)
+}
 
 #' @title ineq_aid
-#' @description Calculate a lifetable column for the conditional absolute inter-individual difference in lifespan (AID)
+#' @description Calculate a lifetable column for the conditional absolute inter-individual difference in lifespan (AID). 
 #' 
-#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth'). 
+#' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package `MortalityLaws`). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package `ungroup` or with a penalized B-spline approach in package `MortalitySmooth`). 
 #' 
-#' The formula for calculating the AID was taken from the Shkolnikov 2010 spreadsheet, and is a simplification of the formula described in Shkolnikov 2003.
+#' The formula for calculating the AID was taken from the Shkolnikov 2010 spreadsheet, and is a simplification of the formula described in Shkolnikov 2003. This is the absolute version of `ineq_gini`. Note that although `ineq_gini()` has both distribution types possible (age-at-death or remaining life), the `aid` would be the same value no matter how you calculate the gini. 
 #' @references 
 #' \insertRef{shkolnikov2010}{LifeIneq} 
 #' \insertRef{shkolnikov2003}{LifeIneq} 
@@ -568,7 +627,7 @@ ineq_aid <- function(age, dx, ex, ax, check = TRUE){
 
 #' @title ineq_quantile_lower
 #' @description Calculate quantiles of survivorship from a lifetable. Not vectorized: this function just calculates for the lowest age in the `lx` vector given. 
-#' @details Any of the quantile-based functions in 
+#' @details This uses a monotonic spline through the survival curve to approximate continuous survivorship. Quantile-based methods including `iqr` and `cp` make use of this function internally.
 #'
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
@@ -599,7 +658,7 @@ ineq_quantile_lower <- function(age, lx, quantile = .5){
 
 #' @title ineq_quantile 
 #' @description Calculate conditioned quantiles of survivorship from a lifetable, returns full lifetable column.
-#'
+#' @details This uses a monotonic spline through the survival curve to approximate continuous survivorship.
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
 #'
@@ -655,7 +714,9 @@ ineq_quantile <- function(age, lx, quantile = .5){
 #' # The iqr range of survival age
 #' iqr <- ineq_iqr(age=LT$Age,lx=LT$lx)
 #' iqr
-
+#' # age distance between 10th and 90th percentiles
+#' idr <- ineq_iqr(age=LT$Age,lx=LT$lx,upper=.9,lower=.1)
+#' idr
 
 ineq_iqr <- function(age, lx, upper = .75, lower = .25){
   stopifnot(length(age) == length(lx))
@@ -669,11 +730,9 @@ ineq_iqr <- function(age, lx, upper = .75, lower = .25){
 #' @title ineq_cp
 #' @description Calculate Kannisto's C-measures from a lifetable
 #'
-#' @details The age and lx vectors must be the same length. This function estimates the shortest distance between two ages containing p percent of the life table cohort's death. The mechanics behind the function are to fit a cubic spline through the survival curve to estimate surivorship between age intervals. If your data have an upper age bound lower than 110, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws').
-#' 
-#'  This function is currently very slow because the author is a better demographer than she is programmer. For ideas of how to improve this function, please let email vanraalte@@demogr.mpg.de.
+#' @details The `age` and `lx` vectors must be the same length. This function estimates the shortest distance between two ages containing `p` proportion of the life table cohort's death. The mechanics behind the function are to fit a monotonic cubic spline through the survival curve to estimate continuous surivorship between age intervals. If your data have an upper age bound lower than 110, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package `MortalityLaws`).
 #'  
-#'   The concept behind Kannisto's C-measures is found in Kannisto (2000) 
+#' The concept behind Kannisto's C-measures is found in Kannisto (2000) 
 #' 
 #'
 #' @inheritParams ineq_mad
@@ -690,7 +749,8 @@ ineq_iqr <- function(age, lx, upper = .75, lower = .25){
 #' data(LT)
 #' # The shortest age range containing half of the deaths
 #' (C50 <- ineq_cp(age=LT$Age,lx=LT$lx,p=.5))
-
+#' # The shortest age range containing 80% the deaths
+#' (C80 <- ineq_cp(age=LT$Age,lx=LT$lx,p=.8))
 ineq_cp <- function(age, lx, p = .5){
 
   stopifnot(length(age) == length(lx))
@@ -726,13 +786,13 @@ ineq_cp <- function(age, lx, p = .5){
 # wrapper function
 
 #' @title calculate a lifespan inequality measure
-#' @description Choose from variance `var`, standard deviation `sd`, coefficient of variation `cov`, interquartile range `iqr`, `gini`, absolute inter individual difference (absolute gini) `aid`, `edag` e-dagger, Kannisto's compression measure `cp`, `eta_dag` the mean age at death lost at death (that we just made up), Leser-Keyfitz entropy `H` (elasticity of life expectancy to proportional age specific changes in mortality),`ineq_rel_eta_dag` (a relative version of `eta_dag`), `theil`, mean log deviation `mld`, mean absolute deviation `mad` (wrt mean or median).
+#' @description Choose from variance `var`, standard deviation `sd`, coefficient of variation `cov`, interquartile range `iqr`, `gini`, absolute inter individual difference (both age at death and remaining life), `drewnowski` (complement of Gini), `aid` (relative Gini), `edag` e-dagger, Kannisto's compression measure `cp`, `eta_dag` the mean age at death lost at death (that we just made up), Leser-Keyfitz entropy `H` (elasticity of life expectancy to proportional age specific changes in mortality),`ineq_rel_eta_dag` (a relative version of `eta_dag`), `theil`, mean log deviation `mld`, mean absolute deviation `mad` (wrt mean or median).
 #' @param age numeric. vector of lower age bounds.
 #' @param dx numeric. vector of the lifetable death distribution.
 #' @param lx numeric. vector of the lifetable survivorship.
 #' @param ex numeric. vector of remaining life expectancy.
 #' @param ax numeric. vector of the average time spent in the age
-#' @param method one of `c("var","sd","cov","iqr","aid","gini","mld","edag","eta_dag","cp","theil","H","ineq_rel_eta_dag","mad")`
+#' @param method one of `c("var","sd","cov","iqr","aid","gini","drewnowski","mld","edag","eta_dag","cp","theil","H","ineq_rel_eta_dag","mad")`
 #' @param check logical. Shall we perform basic checks on input vectors? Default TRUE
 #' @param ... other optional arguments used by particular methods.
 #' @importFrom Rdpack reprompt
@@ -744,7 +804,7 @@ ineq <- function(age,
                  ex, 
                  ax, 
                  method = c("var","sd","cov","iqr","aid",
-                            "gini","mld","edag","eta_dag","cp","theil","H","ineq_rel_eta_dag","mad"), 
+                            "gini","drewnowski","mld","edag","eta_dag","cp","theil","H","ineq_rel_eta_dag","mad"), 
                  check = TRUE, 
                  ...){
   

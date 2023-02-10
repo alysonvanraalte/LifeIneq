@@ -28,16 +28,21 @@ All input vectors must be the same length. Also, we recommend using input data f
 \examples{
 data(LT)
 # A vector containing the conditional Theil indices
-Theil = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
+Ta = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
 # The Theil index from birth
-Theil[1]
+Ta[1]
 # The Theil index conditional upon survival to age 10
-Theil[11]
+Ta[11]
 
 # A shortfall (remaining years) version of the same:
-Theilrel = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
-Theilrel[1]
-Theilrel[11]
+Tr = ineq_theil(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+Tr[1]
+Tr[11]
+\dontrun{
+plot(0:110, Tr, type='l',col="red",ylab="conditional Theil",xlab="Age")
+lines(0:110, Ta, col = "blue")
+legend("topleft",col = c("red","blue"), lty=1,legend = c("remaining life","age at death"))
+}
 }
 \references{
 \insertRef{theil1967economics}{LifeIneq}

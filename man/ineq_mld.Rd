@@ -35,6 +35,9 @@ MLD[1]
 # The MLD conditional upon survival to age 10
 MLD[11]
 }
+\references{
+\insertRef{van2012contribution}{LifeIneq}
+}
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}
 
