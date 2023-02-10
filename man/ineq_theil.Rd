@@ -4,18 +4,16 @@
 \alias{ineq_theil}
 \title{ineq_theil}
 \usage{
-ineq_theil(age, dx, lx, ex, ax, check = TRUE)
+ineq_theil(age, dx, ex, ax, distribution_type = c("aad", "rl"), check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
 \item{dx}{numeric. vector of the lifetable death distribution.}
 
-\item{lx}{numeric. vector of the lifetable survivorship.}
-
 \item{ex}{numeric. vector of remaining life expectancy.}
 
-\item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
+\item{ax}{numeric. vector of the average time spent in the age}
 
 \item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
