@@ -46,8 +46,8 @@ legend("topleft",col = c("red","blue"), lty=1,legend = c("remaining life","age a
 }
 \references{
 \insertRef{theil1967economics}{LifeIneq}
-\insertRef{van2012contribution}{LifeIneq}
-\insertRef{hakkert1987life}{LifeIneq}
+\insertRef{vanraalte2012}{LifeIneq}
+\insertRef{hakkert1987}{LifeIneq}
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}

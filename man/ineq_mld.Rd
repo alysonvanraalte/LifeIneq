@@ -36,7 +36,7 @@ MLD[1]
 MLD[11]
 }
 \references{
-\insertRef{van2012contribution}{LifeIneq}
+\insertRef{vanraalte2012}{LifeIneq}
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}

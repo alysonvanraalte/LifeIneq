@@ -345,8 +345,8 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 #' @export
 #' @references
 #' \insertRef{theil1967economics}{LifeIneq}
-#' \insertRef{van2012contribution}{LifeIneq}
-#' \insertRef{hakkert1987life}{LifeIneq}
+#' \insertRef{vanraalte2012}{LifeIneq}
+#' \insertRef{hakkert1987}{LifeIneq}
 #' @examples 
 
 #' data(LT)
@@ -415,7 +415,7 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 #'
 #' @export
 #' @references 
-#' \insertRef{van2012contribution}{LifeIneq}
+#' \insertRef{vanraalte2012}{LifeIneq}
 #' @examples 
 #'
 #' data(LT)
