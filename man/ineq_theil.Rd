@@ -24,14 +24,23 @@ Calculate a lifetable column for the conditional Theil index of inequality in su
 All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
 }
 \examples{
-
 data(LT)
 # A vector containing the conditional Theil indices
-Theil = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+Theil = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
 # The Theil index from birth
 Theil[1]
 # The Theil index conditional upon survival to age 10
 Theil[11]
+
+# A shortfall (remaining years) version of the same:
+Theilrel = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+Theilrel[1]
+Theilrel[11]
+}
+\references{
+\insertRef{theil1967economics}{LifeIneq}
+\insertRef{van2012contribution}{LifeIneq}
+\insertRef{hakkert1987life}{LifeIneq}
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}

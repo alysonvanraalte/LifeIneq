@@ -28,7 +28,7 @@ This method is implemented for the sake of completeness, since \eqn{e^\dagger} a
 \examples{
 
 data(LT)
-# A vector containing the conditional H_eta values
+# A vector containing the conditional rel_eta_dag values
 H = ineq_rel_eta_dag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 # The H from birth
 H[1]

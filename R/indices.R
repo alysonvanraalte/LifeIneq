@@ -314,7 +314,7 @@ ineq_H <- function(age, dx, lx, ex, ax, check = TRUE){
 #' @examples 
 #'
 #' data(LT)
-#' # A vector containing the conditional H_eta values
+#' # A vector containing the conditional rel_eta_dag values
 #' H = ineq_rel_eta_dag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 #' # The H from birth
 #' H[1]
@@ -341,25 +341,35 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 #' @inherit ineq_var seealso
 #'
 #' @export
+#' @references
+#' \insertRef{theil1967economics}{LifeIneq}
+#' \insertRef{van2012contribution}{LifeIneq}
+#' \insertRef{hakkert1987life}{LifeIneq}
 #' @examples 
-#'
+
 #' data(LT)
 #' # A vector containing the conditional Theil indices
-#' Theil = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+#' Theil = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
 #' # The Theil index from birth
 #' Theil[1]
 #' # The Theil index conditional upon survival to age 10
 #' Theil[11]
-
+#' 
+#' # A shortfall (remaining years) version of the same:
+#' Theilrel = ineq_theil(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+#' Theilrel[1]
+#' Theilrel[11]
 
 ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check = TRUE){
+  
   distribution_type <- match.arg(distribution_type)
-  age_constant <- if (distribution_type == "aad"){
+ 
+   age_constant <- if (distribution_type == "aad"){
     age_constant <- age
   } else {
     age_constant <- age * 0
   }
-  # dx <- dx / sum(dx)
+ 
   if (check){
     my_args <- as.list(environment())
     check_args(my_args)
@@ -377,17 +387,7 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
     # per the hackert terms
     T1[i] <- sum(dxi * (am * log( am ))) 
   }
-  # 
-  for(i in 1:N){
-    dxi <- dx[i:N] / sum(dx[i:N])
-    am  <- (axAge[i:N] - age[i]) / (exAge[i] - age[i])
-    # per the hackert terms
-    T1[i] <- sum(dxi * (am * log( am ))) 
-  }
-  
-  # sum(dx * (axAge / exAge[1] * log( axAge / exAge[1]))) 
-  
-  #T1[T1 < 0] <- 0
+
   return(T1)
 }
 
@@ -399,6 +399,7 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 #' @description Calculate a lifetable column for the conditional mean log deviation index of inequality in survivorship
 #'
 #' @inheritParams ineq_var
+#' @param distribution_type character. Either `"aad"` (age at death) or `"rl"` (remaining life)
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
 #'
@@ -414,7 +415,13 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 #' MLD[11]
 
 
-ineq_mld <-  function(age, dx, lx, ex, ax, check = TRUE){
+ineq_mld <-  function(age, dx, ex, ax, distribution_type = c("aad","rl"), check = TRUE){
+  distribution_type <- match.arg(distribution_type)
+  age_constant <- if (distribution_type == "aad"){
+    age_constant <- age
+  } else {
+    age_constant <- age * 0
+  }
   # dx <- dx / sum(dx)
   if (check){
     my_args <- as.list(environment())
@@ -426,19 +433,16 @@ ineq_mld <-  function(age, dx, lx, ex, ax, check = TRUE){
   }
 
   N     <- length(age)
-  exAge <- age + ex
-  axAge <- ax + age
-  MLD <- rep(NA, N )
+  exAge <- age_constant + ex
+  axAge <- ax + age_constant
+  MLD   <- rep(NA, N )
   for(i in 1: N ){
-    # axAge <- age[1:(N+1-i)] + ax[i:N]
-    #axAge <- age[i:N] - age[i] + ax[i:N]
     dxi <- dx[i:N] / sum(dx[i:N])
     MLD[i] <- sum(
       dxi * (log(exAge[i]/axAge[i:N]))
-    ) #/ lx[i]
-    
+    )
   }
-  MLD[MLD < 0] <- 0
+
   return(MLD)
 }
 

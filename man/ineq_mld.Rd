@@ -4,18 +4,18 @@
 \alias{ineq_mld}
 \title{ineq_mld}
 \usage{
-ineq_mld(age, dx, lx, ex, ax, check = TRUE)
+ineq_mld(age, dx, ex, ax, distribution_type = c("aad", "rl"), check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
 \item{dx}{numeric. vector of the lifetable death distribution.}
 
-\item{lx}{numeric. vector of the lifetable survivorship.}
-
 \item{ex}{numeric. vector of remaining life expectancy.}
 
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
+
+\item{distribution_type}{character. Either \code{"aad"} (age at death) or \code{"rl"} (remaining life)}
 
 \item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
