@@ -2,7 +2,7 @@
 % Please edit documentation in R/indices.R
 \name{ineq_quantile_lower}
 \alias{ineq_quantile_lower}
-\title{calculate a survivorship quantile}
+\title{ineq_quantile_lower}
 \usage{
 ineq_quantile_lower(age, lx, quantile = 0.5)
 }
@@ -14,10 +14,10 @@ ineq_quantile_lower(age, lx, quantile = 0.5)
 \item{quantile}{numeric. value between zero and one indicating the quantile desired.}
 }
 \description{
-Calculate quantiles of survivorship from a lifetable. Not vectorized: this function jsut calculates for the lowest age in the vector given/
+Calculate quantiles of survivorship from a lifetable. Not vectorized: this function just calculates for the lowest age in the \code{lx} vector given.
 }
 \details{
-All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
+This uses a monotonic spline through the survival curve to approximate continuous survivorship. Quantile-based methods including \code{iqr} and \code{cp} make use of this function internally.
 }
 \examples{
 
