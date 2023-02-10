@@ -27,6 +27,9 @@ data(LT)
 # The iqr range of survival age
 iqr <- ineq_iqr(age=LT$Age,lx=LT$lx)
 iqr
+# age distance between 10th and 90th percentiles
+idr <- ineq_iqr(age=LT$Age,lx=LT$lx,upper=.9,lower=.1)
+idr
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}

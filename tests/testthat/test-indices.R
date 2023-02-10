@@ -36,12 +36,10 @@ expect_equal(ineq(age = age,
 test_that("missing args caught", {
   expect_error(ineq(age = age,
                     dx = dx,
-                    lx = lx,
                     ex = ex,
                     method = "edag"))
   expect_error(ineq(age = age,
                     dx = dx,
-                    lx = lx,
                     ex = ex,
                     method = "sd"))
 
@@ -53,24 +51,20 @@ test_that("wrapper equivalence", {
   # sd
   expect_equal(ineq_sd(age = age,
                        dx = dx,
-                       lx = lx,
                        ex = ex,
                        ax = ax), 
                ineq(age =  age,
                     dx =  dx,
-                    lx =  lx,
                     ex =  ex,
                     ax =  ax,
                     method = "sd"))
   # variance
   expect_equal(ineq_var(age = age,
                        dx = dx,
-                       lx = lx,
                        ex = ex,
                        ax = ax), 
                ineq(age = age,
                     dx = dx,
-                    lx = lx,
                     ex = ex,
                     ax = ax,
                     method = "var"))

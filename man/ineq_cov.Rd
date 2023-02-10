@@ -4,14 +4,12 @@
 \alias{ineq_cov}
 \title{ineq_cov}
 \usage{
-ineq_cov(age, dx, lx, ex, ax, distribution_type = c("aad", "rl"), check = TRUE)
+ineq_cov(age, dx, ex, ax, distribution_type = c("aad", "rl"), check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
 \item{dx}{numeric. vector of the lifetable death distribution.}
-
-\item{lx}{numeric. vector of the lifetable survivorship.}
 
 \item{ex}{numeric. vector of remaining life expectancy.}
 
@@ -31,7 +29,7 @@ All input vectors must be the same length. Also, we recommend using input data f
 
 data(LT)
 # A vector containing the conditional coefficient of variation in age at death 
-CoV = ineq_cov(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+CoV = ineq_cov(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
 # The coefficient of variation in age at death from birth
 CoV[1]
 # The coefficient of variation in age at death conditional upon survival to age 10

@@ -4,12 +4,12 @@
 \alias{ineq_aid}
 \title{ineq_aid}
 \usage{
-ineq_aid(age, lx, ex, ax, check = TRUE)
+ineq_aid(age, dx, ex, ax, check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
-\item{lx}{numeric. vector of the lifetable survivorship.}
+\item{dx}{numeric. vector of the lifetable death distribution.}
 
 \item{ex}{numeric. vector of remaining life expectancy.}
 
@@ -18,18 +18,18 @@ ineq_aid(age, lx, ex, ax, check = TRUE)
 \item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
-Calculate a lifetable column for the conditional absolute inter-individual difference in lifespan (AID)
+Calculate a lifetable column for the conditional absolute inter-individual difference in lifespan (AID).
 }
 \details{
-All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package 'MortalityLaws'). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package 'ungroup' or with a penalized B-spline approach in package 'MortalitySmooth').
+All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in package \code{MortalityLaws}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
 
-The formula for calculating the AID was taken from the Shkolnikov 2010 spreadsheet, and is a simplification of the formula described in Shkolnikov 2003.
+The formula for calculating the AID was taken from the Shkolnikov 2010 spreadsheet, and is a simplification of the formula described in Shkolnikov 2003. This is the absolute version of \code{ineq_gini}. Note that although \code{ineq_gini()} has both distribution types possible (age-at-death or remaining life), the \code{aid} would be the same value no matter how you calculate the gini.
 }
 \examples{
 
 data(LT)
 # A vector containing the conditional absolute inter-individual difference in lifespan
-aid = ineq_aid(age=LT$Age,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+aid = ineq_aid(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
 # The absolute inter-individual difference in lifespan from birth
 aid[1]
 # The absolute inter-individual difference in lifespan from age 10

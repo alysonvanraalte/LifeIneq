@@ -4,14 +4,12 @@
 \alias{ineq_var}
 \title{ineq_var}
 \usage{
-ineq_var(age, dx, lx, ex, ax, check = TRUE)
+ineq_var(age, dx, ex, ax, check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
 \item{dx}{numeric. vector of the lifetable death distribution.}
-
-\item{lx}{numeric. vector of the lifetable survivorship.}
 
 \item{ex}{numeric. vector of remaining life expectancy.}
 
@@ -29,7 +27,7 @@ All input vectors must be the same length. Also, we recommend using input data f
 
 data(LT)
 # A vector containing the conditional variance in age at death 
-V = ineq_var(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+V = ineq_var(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
 # The variance in age at death from birth
 V[1]
 # The variance in age at death conditional upon survival to age 10

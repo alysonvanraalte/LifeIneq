@@ -79,5 +79,8 @@ check_args <- function(arg_list){
   check_vec_arg(x = arg_list$ax, item="ax", age = arg_list$age)
 }
 
+is_single <- function(age){
+  all(diff(age) == 1)
+}
 # to remove CMD check warning
 globalVariables(names = c("age","ax","dx","lx", "ex","check"))

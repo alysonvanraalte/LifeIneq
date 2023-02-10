@@ -4,14 +4,12 @@
 \alias{ineq_sd}
 \title{ineq_sd}
 \usage{
-ineq_sd(age, dx, lx, ex, ax, check = TRUE)
+ineq_sd(age, dx, ex, ax, check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
 
 \item{dx}{numeric. vector of the lifetable death distribution.}
-
-\item{lx}{numeric. vector of the lifetable survivorship.}
 
 \item{ex}{numeric. vector of remaining life expectancy.}
 
@@ -29,7 +27,7 @@ All input vectors must be the same length. Also, we recommend using input data f
 
 data(LT)
 # A vector containing the conditional standard deviation in age at death 
-S = ineq_sd(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+S = ineq_sd(age=LT$Age,dx=LT$dx,ex=LT$ex,ax=LT$ax)
 # The standard deviation in age at death from birth
 S[1]
 # The standard deviation in age at death conditional upon survival to age 10
