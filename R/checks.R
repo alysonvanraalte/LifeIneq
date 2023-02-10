@@ -62,6 +62,7 @@ check_args <- function(arg_list){
               length(arg_list$lx),
               length(arg_list$ex),
               length(arg_list$ax))
+  age_lengths <- age_lengths[age_lengths > 0]
   # dx not in some functions...
   if (any(names(arg_list) == "dx")){
     check_vec_arg(x=arg_list$dx, item="dx",lx=arg_list$lx)

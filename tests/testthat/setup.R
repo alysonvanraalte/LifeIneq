@@ -1,4 +1,5 @@
 data(LT)
+data(LTabr)
 age <- 0:110
 dx  <- LT$dx
 lx  <- LT$lx
@@ -48,3 +49,9 @@ dx_w_na[10]   <- NA
 lx_w_na[10]   <- NA 
 ex_w_na[10]   <- NA 
 ax_w_na[10]   <- NA 
+
+age5 <- LTabr$Age
+dx5  <- LTabr$dx
+lx5  <- LTabr$lx
+ex5  <- LTabr$ex
+ax5  <- LTabr$ax

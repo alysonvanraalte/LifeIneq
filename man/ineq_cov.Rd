@@ -4,15 +4,7 @@
 \alias{ineq_cov}
 \title{ineq_cov}
 \usage{
-ineq_cov(
-  age,
-  dx,
-  lx,
-  ex,
-  ax,
-  distribution_type = c("achieved_age", "remaining_years"),
-  check = TRUE
-)
+ineq_cov(age, dx, lx, ex, ax, distribution_type = c("aad", "rl"), check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
@@ -25,7 +17,7 @@ ineq_cov(
 
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
 
-\item{distribution_type}{character. Either \code{"achieved_age"} or \code{"remaining_years"}}
+\item{distribution_type}{character. Either \code{"aad"} (age at death) or \code{"rl"} (remaining life)}
 
 \item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
