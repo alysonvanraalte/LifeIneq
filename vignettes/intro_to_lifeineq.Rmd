@@ -24,92 +24,35 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Abstract
-
-
-
-
 ## Introduction
 
-How unequal are ages at death spread within a population? There are many indices that can be calculated from a life table to answer this question, all generally going under the umbrella terms *lifespan inequality*,  *lifespan variation*, or *age-at-death variation*. 
+How unequal are ages at death spread within a population? There are many indices that can be calculated from a life table to answer this question, all generally going under the umbrella terms *lifespan inequality*, *lifespan variation*, *age-at-death variation*, *compression of mortality*, or *rectangularization of the survival curve*.
 
-In this R package we have implemented code to calculate such indices from life tables. In what follows, we will go through how to use the package with example Canadian life table data from the Human Mortality Database [@barbieri2015].
+In this R package we have implemented code to calculate such indices from life tables. In what follows, we will go through how to use the package with example Canadian and Hungarian life table data from the Human Mortality Database [@barbieri2015]. But first, we start with a more general discussion on the lifespan inequality indices themselves. This discussion is brief. Good overviews on the mathematical properties of the indices and how they differ empirically can be found in [@wilmoth1999; @shkolnikov2003;  @vanraalte2013; @wrycza2015]. 
 
 
-## Considerations in choosing a measure of lifespan inequality
 
-Variation is a broad concept. Since it is often used to make judgements on the inequality of a distribution, numerous indices have been developed differing in their mathematical properties and sensitivities to different parts of the distribution. As xx said, 'choice of concept'...
 
+## Choosing a measure of lifespan inequality
+
+Variation is a broad concept. Since it is often used to make judgements on the inequality of a distribution, numerous indices have been developed differing in their mathematical properties and sensitivities to different parts of the distribution. As Paul @Allison1978 (p. 865) noted,*“The choice of an inequality measure is properly regarded as a choice among alternative definitions of inequality rather than a choice among alternative ways of measuring a single theoretical construct.”*
+Here we outline some of the more important considerations.
 
 ### Absolute versus relative inequality
+A number of indices of lifespan variation are used to measure absolute and relative inequality in ages at death. Absolute measures are scale invariant, meaning that their values do not change when the same life years are added to everyone’s lifespan (i.e. the distribution is shifted to higher ages). Relative measures are translation invariant, meaning that they do not change when adding the same proportion of life to everyone’s lifespan. If an age-at-death distribution shifts to the right with increasing life expectancy, absolute inequality stays unchanged, but relative inequality declines. 
 
-A number of indices of lifespan variation are used to measure absolute and relative inequality in ages at death. Absolute measures are scale invariant, meaning that their values do not change when the same life years are added to everyone’s lifespan (i.e. the distribution is shifted to higher ages). Relative measures are translation invariant, meaning that they do not change when adding the same proportional life years to everyone’s lifespan. If an age-at-death distribution shifts to the right with increasing life expectancy, absolute inequality stays unchanged, but relative inequality declines. 
-
-Absolute measures are generally measured in years, making them easier to interpet, but relative measures have their own advantages. Relative measures are preferred by biologists to compare species with very different life histories and life expectancies [@eakin1995; @baudisch2011; @colchero2016]. This is less of an issue in comparing contemporary human populations, either across or within countries. Economists tend to use relative measures because they are not dependent on the currency. Survival is measured in standard time units, usually years.
-
-In the end, we feel that the choice between measuring absolute versus relative inequality is a normative one. If there is no inherent reason for preferring absolute or relative inequality, it is good practice to present both. 
+Absolute measures are generally measured in years, making them easier to interpret, but relative measures have their own advantages. Relative measures are preferred by biologists to compare species with very different life histories and life expectancies [@eakin1995; @baudisch2011; @colchero2016]. This is less of an issue in comparing contemporary human populations, either across or within countries. In the end, we feel that the choice between measuring absolute versus relative inequality is a normative one. If there is no inherent reason for preferring absolute or relative inequality, it is good practice to present both. 
 
 
-### Achievement versus shortfall distribution
-
-Age-at-death distributions can be conceived as either achievement distributions (achieved age at death) or shortfall distributions (remaining years of life). When following a cohort from birth, the means of the two distributions are the same---average age at death equals life expectancy at birth.
-
-Often though, we want to measure the lifespan inequality of populations or groups based on a conditional age-at-death distribution. As an example, completed education can only be defined from early adulthood. In this case, should inequality be made relative to the average age at death, conditional upon survival to age $x$, or to the average remaining life expectancy at age $x$?
-
-So far, few researchers have paid attention to this difference. Indeed some indices of variation, for example the Theil index, seem to always be calculated on the basis of achieved age at death [refs]. Other indices, for example the Keyfitz-Leser life table entropy measure, tend to be calculated from shortfall distributions [refs]. The coefficient of variation has been calculated from both.
-
-This matters. In Figure 1, we show trends in the coefficient of variation for Hungarian males, conditional upon survival to ages 30 and 65, between the years xx and yy. The data come from the HMD 1x1 period life tables. The orange lines tracks conditional relative variation in achieved ages at death, the blue lines tracks conditional relative variation in remaining life expectancy. **More to come**
-
-```{r echo=F}
-library(LifeIneq)
-
-# coefficient of variation in conditional achieved ages at death
-COV30_AAD <-
-COV65_AAD <- 
-
-# coefficient of variation in conditional remaining life expectancy
-COV30_ex <-
-COV65_ex <- 
-
-# plotting
-
-par(mfrow=c(1,2))
-
-plot(x=Year,y=COV30_AAD,t="l",lwd=2,col="darkorange")
-lines(x=Year,y=COV30_ex,lwd=2,col="navyblue")
-
-
-
-```
-
-
-
-
-
-
-Relative measures of lifespan inequality have an additional specification: whether the inequality is relative to an average achieved age at death (e.g. from an attainment distribution) or to a remaining life expectancy (e.g. from a shortfall distribution). This consideration is only important for conditional distributions. When measured from birth the average achieved age at death = remaining life expectancy. At higher ages, average achieved age at death conditional upon survival to age $x$ is equivalent to remaining life expectancy plus $x$.
-
-
-There is inconsistency in the literature about how we conceive and measure conditional distributions of survivorship. Let ex represent remaining life expectancy at age x. We could estimate  variation in the age-at-death distribution conditional upon survival to age x (i.e. ex + x), or in the distribution of remaining life expectancy (i.e. ex). To date, the choice seems to have mostly been determined by the choice of index rather than by any preference for one concept of inequality over the other. Should we be measuring inequality in lifespans or inequality in remaining life expectancy? Is there any reason to prefer one concept over the other? For absolute measures of inequality the choice does not matter. For relative measures, it makes an enormous difference.
-Figure 2 plots the change in the coefficient of variation conditional upon survival to various ages relative to its value at age zero under the two scenarios. The red line is the change across age when we measure variation in remaining life expectancy; the blue line is this change in variation in age at death. 
-Imagine conditioning the distribution on surviving to age 50. When we use remaining life expectancy we would have an e50 of 24.9 years. The distribution would run from 
-For the coefficient of variation the numerator would be the same. 
-
-
-
-Moving forward, 
-
- 
-For absolute measures of inequality this choice does not matter. For relative measures the relationship between variation and age is completely different.
-
-
-
-
+### Attainment versus shortfall distribution
+Relative measures of lifespan inequality have an additional specification: whether the inequality is relative to an average achieved age at death (e.g. from an attainment distribution) or to a remaining life expectancy (e.g. from a shortfall distribution). When following a cohort from birth, the means of the two distributions are the same---average age at death equals life expectancy at birth.
+Often though, we want to measure the lifespan inequality of populations or groups based on a conditional age-at-death distribution—in other words, a distribution with a starting age greater than zero, where the lifespan inequality is calculated conditional on surviving to that starting age. As an example, completed education can only be defined from early adulthood. 
+In such cases, should inequality be made relative to the average age at death, conditional upon survival to age $x$, or to the average remaining life expectancy at age $x$? So far, few researchers have paid attention to this difference. There are plenty of studies based on conditional distributions, including our own, but no reflection on how the choice of denominator (the distribution type) could impact the result. 
+Indeed, the choice of conditional distribution seems to depend on the measure used. The coefficient of variation, the Theil Index, and the Mean Log Deviation are generally calculated from the achieved age at death distribution [@Hakkert1987; @vanraalte2012; @Permanyer2019; @Shkolnikov2010; @Nemeth2014; @Permanyer2019; @Seaman2020]. The Keyfitz-Leser life table entropy measure has been calculated from shortfall distributions [@Bramajo2022]. The Gini coefficient, when calculated from the Kendall and Stuart definition, has used attained ages [@Permanyer2019], while when calculated based on the Hanada formulation has used remaining life expectancy [@Shkolnikov2003]. 
+Is there any reason to prefer one concept over the other? We ourselves cannot decide, and prefer to leave this debate to play out in the literature. All of these measures can be calculated in both ways, and the LifeIneq package has added an argument to relative measures to make this choice explicit. In the empirical examples of section XX, we demonstrate how important this distinction is.
 
 ## Built-in indices of variation
-
 Currently, the `LifeIneq` package contains the following indices of lifespan inequality: 
-
 - ***AID*** the Absolute Inter-individual Difference, also known as the absolute Gini Coefficient
 - ***COV*** the Coefficient of Variation 
 - ***cp*** Kannisto's *C* measures---the shortest distance between two ages containing $p$ percent of the life table cohort's deaths. 
@@ -123,24 +66,15 @@ Currently, the `LifeIneq` package contains the following indices of lifespan ine
 - ***T*** the Theil index of survival
 - ***V*** the variance in ages at death
 
+`Table 1` shows the formula we implemented to calculate the measure. All formulas are given in the discrete form which are easier to work with from life tables, with variables defined below the table. Since mortality is a continuous process, different assumptions made on how to discretize survival have resulted in several different formulations, not all of which are completely equivalent (although they are close). The column `Type` refers to whether the index measures absolute or relative inequality in ages at death. 
 
-`Table 1` shows the formula we implemented to calculate the measure. All formulas are given in the discrete form which are easier to work with from life tables. Since mortality is a continuous process, different assumptions made on how to discretize survival have resulted in several different formulations 
-
-The column `Type` refers to whether the indice measures absolute or relative inequality in ages at death. If everyone’s survival age increased by the same amount in years, absolute indices would remain unchanged (translation invariance). If everyone’s survival age increased by the same proportion, relative indices would remain unchanged (scale invariance). Ultimately this is a normative choice. 
-
-
-
-
-
-The column `Denominator` 
-
-|Indice|Formula|Type|Denominator|
-|------|-------|----|-----------|
+|Index|Formula|Type|
+|------|-------|----|
 |AID|
 
 
 
-We use the following notation, based on a single-age life table. The first few columns use the HMD life table notation, the last two are extra columns necessary for the calculations of some lifespan inequality indices, and tend not to be well standardized across the literature:
+We use the following notation, based on a single-age life table. The first few columns use the HMD life table notation, the last two are extra columns necessary for the calculations of some lifespan inequality indices, and tend not to be well standardized across the literature. We have dropped the ‘n’ subscript since we suggest users to calculate indices from single-year of age life tables, however all formulas could be equally calculate using age-intervals $[x,x+n)$ with some loss of accuracy:
 
 + $x$ is age 
 + $m_x$ is the death rate in the interval $[x,x+1)$
@@ -151,8 +85,8 @@ We use the following notation, based on a single-age life table. The first few c
 + $L_x$ is the number of person-years in the interval $[x,x+1)$
 + $T_x$ is the number of person-years above age $x$
 + $e_x$ is the remaining life expectancy above age $x$
-+ $E_x$ is the average age at death, conditional on survival to age $x$ (equivalent to $e_x$ + $x$)
-+ $A_x$ is the average age at death in the interval $[x,x+1)$ (equivalent to $a_x$ + $x$)
++ ${\Eta}_x$ is the average age at death, conditional on survival to age $x$ (equivalent to $e_x$ + $x$)
++ ${\Alpa}_x$ is the average age at death in the interval $[x,x+1)$ (equivalent to $a_x$ + $x$)
 
 
 ## Installing and loading the package
@@ -168,7 +102,7 @@ On subsequent uses, you can start from here, where we first load the package int
 
 
 ```{r}
-library(LifeIneq)
+#library(LifeIneq)
 ```
 
 We recommend to use data in a single-age format, although the package can handle abridged-data formats as well. We also recommend closing out a life table at an age with few deaths. Lifespan variation is far more sensitive to mortality at higher ages than life expectancy [@vanraalte2013], and assumptions on the mortality hazard in the open-ended age interval can make a considerable difference when this age is close to the modal age at death. 
@@ -181,10 +115,88 @@ Here are the first few lines of the life table. It is in the classic life table 
 
 
 ```{r, echo=F}
-head(LifeIneq::LT)
+#head(LifeIneq::LT)
 ```
 
 ## Calculating lifespan inequality
+
+
+
+
+## Minor issues to be aware of
+
+Some of the indices will return NaNs at the very oldest ages, beyond around the last one-tenth of a percent of deaths. This is usually owing to the package taking integer counts, with $d_x$ or $\ell_x$ counts being zero.   
+
+
+
+
+## Empirical examples
+
+
+```{r eval=F}
+library(LifeIneq)
+library(dplyr)
+library(ggplot2)
+
+LTs <- read.csv("HUNmltper_1x1.csv", head=T)
+
+ineq <- LTs %>%
+            filter(Age==30 | Age==65) %>%
+            group_by(Age,Year) %>%
+            mutate(COV_AD == ineq(age=Age,dx,lx,ex,ax,),
+                   COV_RL)
+
+# change to tidy code-----
+
+
+LT30 <- subset(LTs,Age>=30)
+LT65 <- subset(LTs,Age>=65)
+
+Years <- unique(LTs$Year)
+
+COV30_AAD <- COV65_AAD <- COV30_ex <- COV65_ex <- rep(NA,length(Years))
+
+for(i in 1:length(Years)){
+  # coefficient of variation in conditional achieved ages at death
+COV30_AAD[i] <- ineq_sd(age=30:110,
+                  dx=subset(LT30,Year==Years[i])$dx,
+                  lx=subset(LT30,Year==Years[i])$lx,
+                  ex=subset(LT30,Year==Years[i])$ex,
+                  ax=subset(LT30,Year==Years[i])$ax)[1] / (subset(LT30,Year==Years[i])$ex[1]+30)[1]
+
+COV65_AAD[i] <- ineq_sd(age=65:110,
+                  dx=subset(LT65,Year==Years[i])$dx,
+                  lx=subset(LT65,Year==Years[i])$lx,
+                  ex=subset(LT65,Year==Years[i])$ex,
+                  ax=subset(LT65,Year==Years[i])$ax)[1] / (subset(LT65,Year==Years[i])$ex[1]+65)[1]
+
+# coefficient of variation in conditional remaining life expectancy
+COV30_ex[i] <- ineq_sd(age=30:110,
+                  dx=subset(LT30,Year==Years[i])$dx,
+                  lx=subset(LT30,Year==Years[i])$lx,
+                  ex=subset(LT30,Year==Years[i])$ex,
+                  ax=subset(LT30,Year==Years[i])$ax)[1] / (subset(LT30,Year==Years[i])$ex[1])[1]
+
+COV65_ex[i] <- ineq_sd(age=65:110,
+                  dx=subset(LT65,Year==Years[i])$dx,
+                  lx=subset(LT65,Year==Years[i])$lx,
+                  ex=subset(LT65,Year==Years[i])$ex,
+                  ax=subset(LT65,Year==Years[i])$ax)[1] / (subset(LT65,Year==Years[i])$ex[1])[1]
+}
+
+# plotting
+
+par(mfrow=c(1,3))
+plot(x=Years,y=COV30_AAD/COV30_AAD[1],t="l",lwd=2,col="darkorange",ylim=c(0.8,1.2))
+lines(x=Years,y=COV30_ex/COV30_ex[1],lwd=2,col="navyblue")
+
+plot(x=Years,y=COV65_AAD/COV65_AAD[1],t="l",lwd=2,col="darkorange",ylim=c(0.8,1.2))
+lines(x=Years,y=COV65_ex/COV65_ex[1],lwd=2,col="navyblue")
+
+plot(x=Years,y=subset(LT30,Age==30)$ex/subset(LT30,Age==30)$ex[1],t="l",lwd=2,col="darkred",ylim=c(0.8,1.2))
+lines(x=Years,y=subset(LT30,Age==65)$ex/subset(LT30,Age==65)$ex[1],lwd=2,col="cornflowerblue")
+
+```
 
 
 
