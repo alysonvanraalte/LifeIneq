@@ -347,6 +347,7 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 #' \insertRef{theil1967economics}{LifeIneq}
 #' \insertRef{vanraalte2012}{LifeIneq}
 #' \insertRef{hakkert1987}{LifeIneq}
+#' \insertRef{cowell1980}{LifeIneq}
 #' @examples 
 
 #' data(LT)
@@ -367,7 +368,6 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 #' legend("topleft",col = c("red","blue"), lty=1,legend = c("remaining life","age at death"))
 #' }
 
-
 ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check = TRUE){
   
   distribution_type <- match.arg(distribution_type)
@@ -384,7 +384,6 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
   }
   
   N     <- length(age)
-  
   exAge <- age_constant + ex
   axAge <- ax + age
   
@@ -406,7 +405,7 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 
 
 #' @title ineq_mld
-#' @description Calculate a lifetable column for the conditional mean log deviation index of inequality in survivorship
+#' @description Calculate a lifetable column for the conditional mean log deviation index of inequality in survivorship.
 #'
 #' @inheritParams ineq_var
 #' @param distribution_type character. Either `"aad"` (age at death) or `"rl"` (remaining life)
@@ -416,6 +415,7 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 #' @export
 #' @references 
 #' \insertRef{vanraalte2012}{LifeIneq}
+#' \insertRef{cowell1980}{LifeIneq}
 #' @examples 
 #'
 #' data(LT)
