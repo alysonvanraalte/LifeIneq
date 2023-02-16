@@ -55,7 +55,8 @@ plot(age, M, type = "l", ylim = c(0,15))
 lines(age, ineq_edag(age = LT$Age, dx = LT$dx, lx = LT$lx, ex = LT$ex, ax = LT$ax), col = "red")
 lines(age, ineq_aid(age = LT$Age, dx = LT$dx, ex = LT$ex, ax = LT$ax), col = "blue")
 lines(age, ineq_sd(age = LT$Age, dx = LT$dx, ex = LT$ex, ax = LT$ax), col = "forestgreen")
-legend("bottomleft",legend = c("MAD","e-dagger","AID","sd"),col = c("black","red","blue","forestgreen"),lty=1)
+legend("bottomleft",legend = c("MAD","e-dagger","AID","sd"),
+col = c("black","red","blue","forestgreen"),lty=1)
 }
 }
 \seealso{

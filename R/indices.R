@@ -36,7 +36,8 @@
 #'lines(age, ineq_edag(age = LT$Age, dx = LT$dx, lx = LT$lx, ex = LT$ex, ax = LT$ax), col = "red")
 #'lines(age, ineq_aid(age = LT$Age, dx = LT$dx, ex = LT$ex, ax = LT$ax), col = "blue")
 #'lines(age, ineq_sd(age = LT$Age, dx = LT$dx, ex = LT$ex, ax = LT$ax), col = "forestgreen")
-#'legend("bottomleft",legend = c("MAD","e-dagger","AID","sd"),col = c("black","red","blue","forestgreen"),lty=1)
+#'legend("bottomleft",legend = c("MAD","e-dagger","AID","sd"),
+#' col = c("black","red","blue","forestgreen"),lty=1)
 #' }
 ineq_mad <- function(age, 
                      dx, 
@@ -630,7 +631,36 @@ ineq_aid <- function(age, dx, ex, ax, check = TRUE){
   return(aid)
 }
 
-
+#' @title maybe_dither_lx
+#' @description Force `lx` to be monotonically decreasing. Ties in consecutive values of `lx` produce problems to estimate quantiles from `lx` in various of our functions. These either result in warnings or errors. This function checks for ties, and if found, it adds a small amount of monotonically decreasing noise to lx. 
+#' @details This function is here for robustness, as this situation often occurs in lifetables with a radix of 100000 and integer expressed output, especially around closeout ages. This perturbation is only applied if needed. The perturbation has a trivial effect of estimated quantile ages along most of the age range. The argument `pert` should be a small positive amount.
+#' @param pert numeric scalar. The maximum size of the perturbation, default value of 0.0001
+#' @param lx numeric. vector of the lifetable survivorship. 
+#' @return a vector of lx, either perturbed or not.
+#' @export
+#' @examples 
+#' lx <- 10:0 / 10
+#' age <- 0:10
+#' all(maybe_dither_lx(lx) == lx)
+#' lx2 <- c(10,9,8,7,7,5,4,3,2,1,0) / 10
+#' lx2 - maybe_dither_lx(lx2)
+#' lx3 <- c(10:2,0,0)
+#' lx3 - maybe_dither_lx(lx3)
+maybe_dither_lx <- function(lx, pert = .0001){
+   if(any(duplicated(lx))){
+     N     <- length(lx)
+     radix <- lx[1]
+     # random values between 0 and 1000th of radix
+     dith  <- runif(N, 0, radix * pert) 
+     # sort to enforce monotonicity
+     dith  <- sort(dith, decreasing = TRUE)
+     # apply
+     lx    <- lx + dith
+     #rescale to same radix
+     lx    <- lx * radix / lx[1]
+   }
+  lx
+}
 
 
 #' @title ineq_quantile_lower
@@ -694,6 +724,8 @@ ineq_quantile <- function(age, lx, quantile = .5){
   lx   <- c(lx, 0)
   a    <- c(age, max(age) + 1)
   
+  # new
+  lx  <- maybe_dither_lx(lx,.0001)
   
   qs   <- rep(0,n)
   for (i in 1:n){
@@ -728,6 +760,9 @@ ineq_quantile <- function(age, lx, quantile = .5){
 
 ineq_iqr <- function(age, lx, upper = .75, lower = .25){
   stopifnot(length(age) == length(lx))
+  # new
+  lx  <- maybe_dither_lx(lx,.0001)
+  
   q1 <- ineq_quantile_lower(age = age, lx = lx, quantile = lower) 
   q3 <- ineq_quantile_lower(age = age, lx = lx, quantile = upper)
   q1 - q3
@@ -773,6 +808,8 @@ ineq_cp <- function(age, lx, p = .5){
   }
 
   lx  <- lx / lx[1]
+  # new
+  lx  <- maybe_dither_lx(lx,.0001)
   
   a2q <- splinefun(x = age, y = lx, method = "monoH.FC")
   q2a <- splinefun(x = lx, y = age, method = "monoH.FC")
