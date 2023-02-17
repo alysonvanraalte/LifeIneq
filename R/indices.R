@@ -637,6 +637,7 @@ ineq_aid <- function(age, dx, ex, ax, check = TRUE){
 #' @param pert numeric scalar. The maximum size of the perturbation, default value of 0.0001
 #' @param lx numeric. vector of the lifetable survivorship. 
 #' @return a vector of lx, either perturbed or not.
+#' @importFrom stats runif
 #' @export
 #' @examples 
 #' lx <- 10:0 / 10
