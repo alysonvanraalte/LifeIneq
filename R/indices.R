@@ -178,7 +178,14 @@ ineq_cov <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check =
   distribution_type <- match.arg(distribution_type)
   # dx <- dx / sum(dx)
   
-  age_constant <- ifelse(distribution_type == "aad", age, age * 0)
+  # AvR noticed this wasn't working as intended
+  # age_constant <- ifelse(distribution_type == "aad", age, age * 0)
+  age_constant <- if (distribution_type == "aad") {
+    age_constant <- age
+  }
+  else {
+    age_constant <- age * 0
+  }
   V <- ineq_var(age = age, 
                 dx = dx, 
                 ex = ex, 
