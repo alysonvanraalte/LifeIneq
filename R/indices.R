@@ -2,6 +2,8 @@
 #' @description Calculate a lifetable column for the conditional mean absolute deviation in lifetable ages at death. This may be with respect to either conditional life expectancy or conditional median remaining lifespan. 
 #'
 #' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in `MortalityLaws::MortalityLaw`). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package `ungroup` or with a penalized B-spline approach in package `MortalitySmooth`). 
+#' 
+#' This measure has not to our knowledge been used in the lifespan inequality literature. It is used more often in the literature on forecast evaluation or mortality estimation. But it makes sense according to us, so we include it. Values are on the same scale (years) and qualitatively comparable with both e-dagger, AID, or the standard deviation (See example plot).
 #'   
 #' @inheritParams ineq_var
 #' @param lx numeric. vector of the lifetable survivorship.
@@ -15,6 +17,7 @@
 #' \code{MortalitySmooth::\link[MortalitySmooth]{Mort1Dsmooth}}
 #' 
 #' @export
+#' 
 #' @examples 
 #'
 #' data(LT)
@@ -24,11 +27,18 @@
 #' M[1]
 #' # The MAD in age at death conditional upon survival to age 10
 #' M[11]
-#' # MAD wrt condition median
+#' # MAD wrt conditional median
 #' ineq_mad(age = LT$Age, dx = LT$dx,
 #'   lx = LT$lx, ex = LT$ex, ax = LT$ax, 
 #'   center_type = "median")
-
+#' \dontrun{
+#'plot(age, M, type = "l", ylim = c(0,15))
+#'lines(age, ineq_edag(age = LT$Age, dx = LT$dx, lx = LT$lx, ex = LT$ex, ax = LT$ax), col = "red")
+#'lines(age, ineq_aid(age = LT$Age, dx = LT$dx, ex = LT$ex, ax = LT$ax), col = "blue")
+#'lines(age, ineq_sd(age = LT$Age, dx = LT$dx, ex = LT$ex, ax = LT$ax), col = "forestgreen")
+#'legend("bottomleft",legend = c("MAD","e-dagger","AID","sd"),
+#' col = c("black","red","blue","forestgreen"),lty=1)
+#' }
 ineq_mad <- function(age, 
                      dx, 
                      lx, 
@@ -63,7 +73,6 @@ ineq_mad <- function(age,
 #' @description Calculate a lifetable column for the conditional variance in lifetable ages at death 
 #'
 #' @details All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in `MortalityLaws::MortalityLaw`). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package `ungroup` or with a penalized B-spline approach in package `MortalitySmooth`). 
-#'   
 #'
 #' @param age numeric. vector of lower age bounds.
 #' @param dx numeric. vector of the lifetable death distribution.
@@ -169,7 +178,14 @@ ineq_cov <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check =
   distribution_type <- match.arg(distribution_type)
   # dx <- dx / sum(dx)
   
-  age_constant <- ifelse(distribution_type == "aad", age, age * 0)
+  # AvR noticed this wasn't working as intended
+  # age_constant <- ifelse(distribution_type == "aad", age, age * 0)
+  age_constant <- if (distribution_type == "aad") {
+    age_constant <- age
+  }
+  else {
+    age_constant <- age * 0
+  }
   V <- ineq_var(age = age, 
                 dx = dx, 
                 ex = ex, 
@@ -337,8 +353,9 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 #' @export
 #' @references
 #' \insertRef{theil1967economics}{LifeIneq}
-#' \insertRef{van2012contribution}{LifeIneq}
-#' \insertRef{hakkert1987life}{LifeIneq}
+#' \insertRef{vanraalte2012}{LifeIneq}
+#' \insertRef{hakkert1987}{LifeIneq}
+#' \insertRef{cowell1980}{LifeIneq}
 #' @examples 
 
 #' data(LT)
@@ -359,7 +376,6 @@ ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 #' legend("topleft",col = c("red","blue"), lty=1,legend = c("remaining life","age at death"))
 #' }
 
-
 ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check = TRUE){
   
   distribution_type <- match.arg(distribution_type)
@@ -376,7 +392,6 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
   }
   
   N     <- length(age)
-  
   exAge <- age_constant + ex
   axAge <- ax + age
   
@@ -398,7 +413,7 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 
 
 #' @title ineq_mld
-#' @description Calculate a lifetable column for the conditional mean log deviation index of inequality in survivorship
+#' @description Calculate a lifetable column for the conditional mean log deviation index of inequality in survivorship.
 #'
 #' @inheritParams ineq_var
 #' @param distribution_type character. Either `"aad"` (age at death) or `"rl"` (remaining life)
@@ -407,7 +422,8 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 #'
 #' @export
 #' @references 
-#' \insertRef{van2012contribution}{LifeIneq}
+#' \insertRef{vanraalte2012}{LifeIneq}
+#' \insertRef{cowell1980}{LifeIneq}
 #' @examples 
 #'
 #' data(LT)
@@ -622,7 +638,37 @@ ineq_aid <- function(age, dx, ex, ax, check = TRUE){
   return(aid)
 }
 
-
+#' @title maybe_dither_lx
+#' @description Force `lx` to be monotonically decreasing. Ties in consecutive values of `lx` produce problems to estimate quantiles from `lx` in various of our functions. These either result in warnings or errors. This function checks for ties, and if found, it adds a small amount of monotonically decreasing noise to lx. 
+#' @details This function is here for robustness, as this situation often occurs in lifetables with a radix of 100000 and integer expressed output, especially around closeout ages. This perturbation is only applied if needed. The perturbation has a trivial effect of estimated quantile ages along most of the age range. The argument `pert` should be a small positive amount.
+#' @param pert numeric scalar. The maximum size of the perturbation, default value of 0.0001
+#' @param lx numeric. vector of the lifetable survivorship. 
+#' @return a vector of lx, either perturbed or not.
+#' @importFrom stats runif
+#' @export
+#' @examples 
+#' lx <- 10:0 / 10
+#' age <- 0:10
+#' all(maybe_dither_lx(lx) == lx)
+#' lx2 <- c(10,9,8,7,7,5,4,3,2,1,0) / 10
+#' lx2 - maybe_dither_lx(lx2)
+#' lx3 <- c(10:2,0,0)
+#' lx3 - maybe_dither_lx(lx3)
+maybe_dither_lx <- function(lx, pert = .0001){
+   if(any(duplicated(lx))){
+     N     <- length(lx)
+     radix <- lx[1]
+     # random values between 0 and 1000th of radix
+     dith  <- runif(N, 0, radix * pert) 
+     # sort to enforce monotonicity
+     dith  <- sort(dith, decreasing = TRUE)
+     # apply
+     lx    <- lx + dith
+     #rescale to same radix
+     lx    <- lx * radix / lx[1]
+   }
+  lx
+}
 
 
 #' @title ineq_quantile_lower
@@ -686,6 +732,8 @@ ineq_quantile <- function(age, lx, quantile = .5){
   lx   <- c(lx, 0)
   a    <- c(age, max(age) + 1)
   
+  # new
+  lx  <- maybe_dither_lx(lx,.0001)
   
   qs   <- rep(0,n)
   for (i in 1:n){
@@ -720,6 +768,9 @@ ineq_quantile <- function(age, lx, quantile = .5){
 
 ineq_iqr <- function(age, lx, upper = .75, lower = .25){
   stopifnot(length(age) == length(lx))
+  # new
+  lx  <- maybe_dither_lx(lx,.0001)
+  
   q1 <- ineq_quantile_lower(age = age, lx = lx, quantile = lower) 
   q3 <- ineq_quantile_lower(age = age, lx = lx, quantile = upper)
   q1 - q3
@@ -765,6 +816,8 @@ ineq_cp <- function(age, lx, p = .5){
   }
 
   lx  <- lx / lx[1]
+  # new
+  lx  <- maybe_dither_lx(lx,.0001)
   
   a2q <- splinefun(x = age, y = lx, method = "monoH.FC")
   q2a <- splinefun(x = lx, y = age, method = "monoH.FC")
