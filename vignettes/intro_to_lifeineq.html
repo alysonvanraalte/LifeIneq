@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2023-06-05" />
+
+<title>Introduction to LifeIneq</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to LifeIneq</h1>
+<h4 class="date">2023-06-05</h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>How unequally distributed are the ages at death within a population?
+There are many indices around to answer this question, all generally
+going under the umbrella terms <em>lifespan inequality</em>,
+<em>lifespan variation</em>, <em>age-at-death variation</em>,
+<em>compression of mortality</em>, or <em>rectangularization of the
+survival curve</em>.</p>
+<p>In this R package we have implemented code to calculate such indices
+from life tables. In what follows, we will go through how to use the
+package with example Canadian and Hungarian life table data from the
+Human Mortality Database (add HMD ref) <span class="citation">(Barbieri
+et al. 2015; HMD 2023)</span>.</p>
+<p>For a good overview of the mathematical properties of the indices, as
+well as comparisons of how they perform when applied to empirical data,
+we suggest consulting the following <span class="citation">(Wilmoth and
+Horiuchi 1999; Shkolnikov, Andreev, and Begun 2003; van Raalte and
+Caswell 2013; Wrycza, Missov, and Baudisch 2015)</span>.</p>
+</div>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<div id="choosing-a-measure-of-lifespan-inequality" class="section level3">
+<h3>Choosing a measure of lifespan inequality</h3>
+<p>Variation is a broad concept. Since it is often used to make
+judgements on the inequality of a distribution, different indices have
+been developed which differ in their mathematical properties and
+sensitivities to different parts of the distribution. As Paul <span class="citation">Allison (1978)</span> (p. 865) noted,<em>“The choice of
+an inequality measure is properly regarded as a choice among alternative
+definitions of inequality rather than a choice among alternative ways of
+measuring a single theoretical construct.”</em> Here we outline some of
+the more important considerations.</p>
+</div>
+<div id="absolute-versus-relative-inequality" class="section level3">
+<h3>Absolute versus relative inequality</h3>
+<p>Indices of lifespan variation measure absolute or relative inequality
+in ages at death. Absolute measures are scale invariant, meaning that
+their values do not change when the same life years are added to
+everyone’s lifespan (i.e. the distribution is shifted to higher ages).
+Relative measures are translation invariant, meaning that they do not
+change when adding the same proportion of life to everyone’s lifespan.
+If an age-at-death distribution shifts to the right with increasing life
+expectancy, absolute inequality stays unchanged, but relative inequality
+declines.</p>
+<p>Absolute measures are generally measured in years, making them easier
+to interpret, but relative measures have their own advantages. Relative
+measures are preferred by biologists to compare species with very
+different life histories and life expectancies <span class="citation">(Eakin and Witten 1995; Baudisch 2011; Colchero et al.
+2016)</span>. This is less of an issue in comparing contemporary human
+populations, either across or within countries. In the end, we feel that
+the choice between measuring absolute versus relative inequality is a
+normative one. If there is no inherent reason for preferring absolute or
+relative inequality, it is good practice to present both.</p>
+</div>
+<div id="attainment-versus-shortfall-distribution" class="section level3">
+<h3>Attainment versus shortfall distribution</h3>
+<p>Relative measures of lifespan inequality have an additional
+specification: whether the inequality is relative to an average achieved
+age at death (e.g. from an attainment distribution) or to a remaining
+life expectancy (e.g. from a shortfall distribution). When following a
+cohort from birth, the means of the two distributions are the
+same—average age at death equals remaining life expectancy at birth.</p>
+<p>Often though, we want to measure the lifespan inequality of
+populations or groups based on a conditional age-at-death
+distribution—in other words, a distribution with a starting age greater
+than zero, where the lifespan inequality is calculated conditional on
+surviving to that starting age. As an example, lifespan inequality by
+level of completed education can only be defined from early
+adulthood.</p>
+<p>In such cases, should inequality be made relative to the average age
+at death, conditional upon survival to age <span class="math inline">\(x\)</span>, or to the average remaining life
+expectancy at age <span class="math inline">\(x\)</span>? So far, few
+researchers have paid attention to this difference. There are plenty of
+studies based on conditional distributions, including our own, but no
+reflection on how the choice of denominator (the distribution type)
+could impact the result.</p>
+<p>Indeed, a quick survey of the literature to date hints that the
+choice of conditional distribution type seems to mostly depend on the
+measure used rather than any theoretical justification. The coefficient
+of variation, the Theil Index, and the Mean Log Deviation are generally
+calculated from the achieved age at death distribution <span class="citation">(Hakkert 1987; van Raalte et al. 2012; Permanyer and
+Scholl 2019, 2019; Shkolnikov and Andreev 2010; Németh 2017; Seaman et
+al. 2020)</span>. The Keyfitz-Leser life table entropy measure is
+instead calculated from shortfall distributions <span class="citation">(Bramajo, Permanyer, and Blanes 2022)</span>. The Gini
+coefficient, when calculated from the Kendall and Stuart definition, has
+used attained ages <span class="citation">(Permanyer and Scholl
+2019)</span>, while when calculated based on the Hanada formulation has
+used remaining life expectancy <span class="citation">(Shkolnikov,
+Andreev, and Begun 2003)</span>.</p>
+<p>Is there any reason to prefer one concept over the other? We
+ourselves cannot decide, and prefer to leave this debate to play out in
+the literature. All of the relative measures of lifespan variation
+included in the LifeIneq package can be calculated in both ways, and we
+have added an argument to relative measures to make this choice
+explicit. In one of the empirical examples of this vignette, we
+demonstrate how important this distinction is.</p>
+</div>
+</div>
+<div id="built-in-indices-of-variation" class="section level2">
+<h2>Built-in indices of variation</h2>
+<p>Currently, the <code>LifeIneq</code> package contains the following
+indices of lifespan inequality (listed alphabetically):</p>
+<ul>
+<li><code>aid</code> the Absolute Inter-individual Difference, also
+known as the absolute Gini Coefficient</li>
+<li><code>cov</code> the Coefficient of Variation of survival or
+remaining life</li>
+<li><code>cp</code> Kannisto’s <em>C</em> measures—the shortest distance
+between two ages containing <span class="math inline">\(p\)</span>
+percent of the life table cohort’s deaths.</li>
+<li><code>edag</code> the life disparity <span class="math inline">\(e^{\dagger}\)</span> measure, also called the
+average life years lost due to death</li>
+<li><code>eta_dag</code> the mean age at death lost at death <span class="math inline">\(\eta^{\dagger}\)</span> (newly derived for this
+package–equivalent to <code>edag</code> but calculated by weighting the
+distribution of ages at death instead of remaining life by the death
+density)</li>
+<li><code>drewnowski</code> the Drewnowski index, which is the
+complement of the Gini coefficient</li>
+<li><code>gini</code> the Gini coefficient of survival or remaining
+life</li>
+<li><code>H</code> the Leser-Keyfitz life table index, also called the
+life table entropy, which is more properly described as the elasticity
+of life expectancy to proportional change in mortality. It is also the
+relative inequality index of <span class="math inline">\(e^{\dagger}\)</span> <span class="citation">Goldman and Lord (1986)</span>.</li>
+<li><code>iqr</code> the interquartile range of the age-at-death
+distribution, e.g. the difference between the 75th and 25th percentile
+of survival ages in the life table cohort</li>
+<li><code>mad</code> the mean absolute deviation in lifetable ages at
+death. This may be with respect to either the mean or median age at
+death</li>
+<li><code>mld</code> the mean log deviation of survival or remaining
+life</li>
+<li><code>quantile</code> and <code>quantile_lower</code> are quantiles
+of survivorship (the former is a vector made conditional upon survival
+to each age, the latter is a scalar). These are not inequality measures
+by themselves, generally, but are included for users to design own
+quantile-based measures beyond the <code>iqr</code> and <code>cp</code>
+measures.</li>
+<li><code>sd</code> the standard deviation in ages at death</li>
+<li><code>theil</code> the Theil index of survival or remaining
+life</li>
+<li><code>var</code> the variance in ages at death</li>
+</ul>
+<p><code>Table 1</code> shows the formula we implemented to calculate
+the measure from starting age <span class="math inline">\(a\)</span>.</p>
+<p>We have dropped the ‘n’ subscript typically used to denote the width
+of the age interval since we prefer to calculate indices from
+single-year of age life tables. However all formulas could be calculated
+using age-intervals <span class="math inline">\([x,x+n)\)</span> with
+some loss of accuracy.</p>
+<p>The notation is as follows.</p>
+<ul>
+<li><span class="math inline">\(x\)</span> is age</li>
+<li><span class="math inline">\(m_x\)</span> is the death rate in the
+interval <span class="math inline">\([x,x+1)\)</span></li>
+<li><span class="math inline">\(q_x\)</span> is the probability of dying
+in the interval <span class="math inline">\([x,x+1)\)</span></li>
+<li><span class="math inline">\(a_x\)</span> is the number of
+person-years lived in the interval <span class="math inline">\([x,x+1)\)</span></li>
+<li><span class="math inline">\(\ell_x\)</span> is the number of
+survivors at exact age <span class="math inline">\(x\)</span></li>
+<li><span class="math inline">\(d_x\)</span> is the number of deaths in
+the interval <span class="math inline">\([x,x+1)\)</span></li>
+<li><span class="math inline">\(L_x\)</span> is the number of
+person-years in the interval <span class="math inline">\([x,x+1)\)</span></li>
+<li><span class="math inline">\(T_x\)</span> is the number of
+person-years above age <span class="math inline">\(x\)</span></li>
+<li><span class="math inline">\(e_x\)</span> is the remaining life
+expectancy above age <span class="math inline">\(x\)</span></li>
+<li><span class="math inline">\(\eta_x\)</span> is the average age at
+death, conditional on survival to age <span class="math inline">\(x\)</span> (equivalent to <span class="math inline">\(e_x\)</span> + <span class="math inline">\(x\)</span>)</li>
+<li><span class="math inline">\(\alpha_x\)</span> is the average age at
+death in the interval <span class="math inline">\([x,x+1)\)</span>
+(equivalent to <span class="math inline">\(a_x\)</span> + <span class="math inline">\(x\)</span>)</li>
+<li><span class="math inline">\(q_1\)</span> and <span class="math inline">\(q_3\)</span> are the first and third quantiles of
+survivorship, defaulting to the age achieved by the 25th and 75th
+percentiles of survivors.</li>
+</ul>
+<p>In order to calculate some indices of lifespan inequality, two
+columns were added to a standard life table: <span class="math inline">\(\alpha_{x}\)</span> and <span class="math inline">\(\eta_{x}\)</span> defined above. Two indices, the
+<code>iqr</code> and the <code>cp</code> measures, use spline
+interpolation of the survival curve to estimate the age (to several
+decimals) at which a given percentile or <code>quantile</code> of the
+life table cohort survive to.</p>
+<p>The formulas are given in the discrete form which are easier to work
+with from life tables. Since mortality is a continuous process,
+different assumptions made on how to discretize survival have resulted
+in several different formulations, not all of which are completely
+equivalent (although they are close).</p>
+<p>The column <code>Type</code> refers to whether the index measures
+absolute or relative inequality in ages at death. For relative indices,
+we indicate in brackets after the index name whether the index was
+calculated from an achieved (achieved age at death) or shortfall
+(remaining life expectancy) distribution.</p>
+<table class=" lightable-paper lightable-hover" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+Table 1: LifeIneq Formulas
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Index
+</th>
+<th style="text-align:left;">
+Formula
+</th>
+<th style="text-align:left;">
+Type
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<code>aid</code>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{2\ell_{a}^2 }
+\sum_{x=a}^{\omega}\sum_{y=a}^{\omega}d_{x}d_{y}\left | \alpha_{x} -
+\alpha_{y} \right |\)</span>
+</td>
+<td style="text-align:left;">
+Absolute
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>cov</code> (achieved)
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{S_{a}}{{\eta}_{x}}\)</span>
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>cov</code> (shortfall)
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{S_{a}}{e_{x}}\)</span>
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>cp</code>
+</td>
+<td style="text-align:left;">
+min(x-y), where lx - ly = p*la. Ha ha, I’m obviously not a
+mathematician. Tim, can you help make this a real formula?
+</td>
+<td style="text-align:left;">
+Absolute
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>edag</code>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{\ell_{a}} \sum_{x=a} ^{\omega}
+d_{x} \left [ e_{x} + \frac{a_x}{n}\left ( e_{x+1} - e_{x} \right )
+\right ]\)</span>
+</td>
+<td style="text-align:left;">
+Absolute
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>eta_dag</code>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{\ell_{a}} \sum_{x=a} ^{\omega}
+d_{x} \left [ \eta_{x} + \frac{a_x}{n}\left ( \eta_{x+1} - \eta_{x}
+\right ) \right ]\)</span>
+</td>
+<td style="text-align:left;">
+Absolute
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>drewnowski</code> (achieved)
+</td>
+<td style="text-align:left;">
+1 - <code>G</code>(achieved)
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>drewnowski</code> (shortfall)
+</td>
+<td style="text-align:left;">
+1 - <code>G</code>(shortfall)
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>gini</code> (achieved)
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{2\ell_{a}^2 \eta_{a}}
+\sum_{x=a}^{\omega} \sum_{y=a}^{\omega} d_{x}d_{y} \left | \alpha_{x} -
+\alpha_{y} \right |\)</span>
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>gini</code> (shortfall)
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{2\ell_{a}^2 e_{a}}
+\sum_{x=a}^{\omega} \sum_{y=a}^{\omega} d_{x}d_{y} \left | \alpha_{x} -
+\alpha_{y} \right |\)</span>
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>H</code> (shortfall)
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(e^{\dagger} / e_{a}\)</span>
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>iqr</code>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(q_{3} - q_{1}\)</span>
+</td>
+<td style="text-align:left;">
+Absolute
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>mad</code><span class="math inline">\(^1\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{\ell_{a}} \sum_{x=a} ^{\omega}
+d_{x} \left | \alpha_{x} - \eta_{x} \right |\)</span>
+</td>
+<td style="text-align:left;">
+Absolute
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>mld</code> (achieved)
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{\ell_{a}} \sum_{x=a} ^{\omega}
+d_{x} \log \left (\frac{\eta_{x}}{\alpha_{x}} \right )\)</span>
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>mld</code> (shortfall)
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{\ell_{a}} \sum_{x=a} ^{\omega}
+d_{x} \log \left (\frac{e_{x}}{a_{x}} \right )\)</span>
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>sd</code>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\sqrt{\frac{1}{\ell_{a}} \sum_{x=a}^{\omega}
+d_{x} \left ( \alpha_{x}-\eta_{x} \right )^2}\)</span>
+</td>
+<td style="text-align:left;">
+Absolute
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>theil</code> (achieved)
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{\ell_{a}} \sum_{x=a} ^{\omega}
+d_{x} \left (\frac{\alpha_{x}}{\eta_{x}} \right ) \log \left
+(\frac{\alpha_{x}}{\eta_{x}} \right )\)</span>
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>theil</code> (shortfall)
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{\ell_{a}} \sum_{x=a} ^{\omega}
+d_{x} \left (\frac{a_{x}}{e_{x}} \right ) \log \left
+(\frac{a_{x}}{e_{x}} \right )\)</span>
+</td>
+<td style="text-align:left;">
+Relative
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<code>var</code>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(\frac{1}{\ell_{a}} \sum_{x=a}^{\omega} d_{x}
+\left ( \alpha_{x}-\eta_{x} \right )^2\)</span>
+</td>
+<td style="text-align:left;">
+Absolute
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>1</sup> the <code>mad</code> can also be calculated by using the
+distance to the median - see help file
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<div id="installing-and-loading-the-package" class="section level2">
+<h2>Installing and loading the package</h2>
+<p>When using the package for the first time, you need to install the
+package from CRAN.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;LifeIneq&quot;</span>)</span></code></pre></div>
+<p>On subsequent uses, you can start from here, where we first load the
+package into our workspace.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(LifeIneq)</span></code></pre></div>
+<p>We recommend to use data in a single-age format, although the package
+can handle abridged-data formats as well. We also recommend closing out
+a life table at an age with few deaths. Lifespan variation is far more
+sensitive to mortality at higher ages than life expectancy <span class="citation">(van Raalte and Caswell 2013)</span>, and assumptions
+on the mortality hazard in the open-ended age interval can make a
+considerable difference when this age is close to the modal age at
+death.</p>
+<p>If your data have a lower than desired upper age bound, consider
+extrapolation methods, for instance a parametric Kannisto model
+(implemented in <code>MortalityLaws::MortalityLaw</code>). If your data
+are abridged, consider first smoothing over age, and calculating a life
+table by single year of age (for instance by smoothing with a pclm model
+in the package <code>ungroup</code> <span class="citation">(Pascariu
+2019)</span> or with a penalized B-spline approach in the package
+<code>MortalitySmooth</code> <span class="citation">(Camarda
+2012)</span>).</p>
+<div id="minor-issues-to-be-aware-of" class="section level3">
+<h3>Minor issues to be aware of</h3>
+<p>Some of the indices will return NaNs at the very oldest ages, beyond
+around the last one-tenth of a percent of deaths. This is usually owing
+to the package taking integer counts, especially either the <span class="math inline">\(d_x\)</span> or <span class="math inline">\(\ell_x\)</span> counts being zero.</p>
+</div>
+</div>
+<div id="empirical-examples" class="section level2">
+<h2>Empirical examples</h2>
+<div id="example-1-using-lifeineq-to-calculate-lifespan-inequality" class="section level3">
+<h3>Example 1: Using LifeIneq to calculate lifespan inequality</h3>
+<p>This first example calculates various measures of lifespan inequality
+from a lifetable.</p>
+<p>Installed in the package are the Canadian female 1x1 <code>LT</code>
+and 5x1 <code>LTabr</code> 2016 period life tables, taken from the HMD.
+The HMD data is freely available after registration. The 1x1 lifetable
+presents data by single year of age and single calendar year, and the
+5x1 lifetable is the classic age-abridged format for a single calendar
+year. Both lifetables have an open-ended age interval of 110+.</p>
+<p>Here are the first few lines of the life tables. To make the data
+easier to handle, the <code>Age</code> column is an integer referring to
+the starting age. The column <code>OpenInterval</code> is an indicator
+column which is <code>FALSE</code> for all single or abridged age
+intervals, but <code>TRUE</code> for the open-ended age interval 110+.
+This handy life table structure comes from reading in the HMD data using
+the <code>HMDHFDPlus</code> R package <span class="citation">(Riffe,
+Boe, and Hilton 2023)</span>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(LifeIneq<span class="sc">::</span>LT)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Year Age      mx      qx   ax     lx  dx    Lx      Tx    ex OpenInterval</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 2016   0 0.00444 0.00442 0.14 100000 442 99620 8406544 84.07        FALSE</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 2016   1 0.00029 0.00029 0.50  99558  29 99543 8306925 83.44        FALSE</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 2016   2 0.00012 0.00012 0.50  99529  12 99522 8207382 82.46        FALSE</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 2016   3 0.00013 0.00013 0.50  99516  12 99510 8107859 81.47        FALSE</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 2016   4 0.00011 0.00011 0.50  99504  11 99498 8008349 80.48        FALSE</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 2016   5 0.00011 0.00011 0.50  99493  11 99487 7908851 79.49        FALSE</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(LifeIneq<span class="sc">::</span>LTabr)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Year Age      mx      qx   ax     lx  dx     Lx      Tx    ex OpenInterval</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 2016   0 0.00444 0.00442 0.14 100000 442  99620 8406544 84.07        FALSE</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 2016   1 0.00016 0.00065 1.58  99558  65 398074 8306925 83.44        FALSE</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 2016   5 0.00009 0.00043 2.19  99493  43 497345 7908851 79.49        FALSE</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 2016  10 0.00011 0.00057 3.15  99450  57 497147 7411505 74.52        FALSE</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 2016  15 0.00023 0.00113 2.79  99394 113 496720 6914358 69.57        FALSE</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 2016  20 0.00032 0.00160 2.55  99281 159 496017 6417638 64.64        FALSE</span></span></code></pre></div>
+<p>The <code>ineq</code> function calculates lifespan inequality. Life
+table columns are taken as standard arguments, specifically
+<code>age</code>, <code>dx</code>, <code>lx</code>, <code>ex</code>, and
+<code>ax</code>, all defined earlier. The <code>method</code> argument
+asks you to choose the index of variation. As of 2023, the indices
+listed in the previous section <em>Built-in indices of variation</em>
+are implemented. An up-to-date list can be accessed by typing
+<code>args(ineq)</code>.</p>
+<p>As a first example, we can calculate the standard deviation from the
+1x1 table.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating the standard deviation in 2016</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sd <span class="ot">&lt;-</span> <span class="fu">ineq</span>(<span class="at">age=</span>LT<span class="sc">$</span>Age, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">dx=</span>LT<span class="sc">$</span>dx,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">lx=</span>LT<span class="sc">$</span>lx,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">ex=</span>LT<span class="sc">$</span>ex,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">ax=</span>LT<span class="sc">$</span>ax,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">method=</span><span class="st">&#39;sd&#39;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; following arguments not used: lx</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sd)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 14.35488 13.25026 13.17634 13.14636 13.11704 13.09078</span></span></code></pre></div>
+<p>The function returns a vector (i.e., a life table column) of standard
+deviations, conditional upon survival to each age,
+e.g. <code>sd[1] =</code> 14.3548836 is the standard deviation in
+survival age at birth (age 0); <code>sd[11] =</code> 12.992353 is the
+standard deviation conditional upon survival to age 10.</p>
+<p>Not all measures require all input arguments. In the example above,
+the <span class="math inline">\(\ell_x\)</span> column was superfluous
+input for the standard deviation calculations, and running the code
+above returned the warning message
+<code>following arguments not used: lx</code>. Thus, the <code>lx</code>
+argument could be (but does not need to be) deleted from the code in
+this case.</p>
+<p>Changing the index can be as simple as changing one line of code.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating the life disparity</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>edag <span class="ot">&lt;-</span> <span class="fu">ineq</span>(<span class="at">age=</span>LT<span class="sc">$</span>Age, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">dx=</span>LT<span class="sc">$</span>dx, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">lx=</span>LT<span class="sc">$</span>lx, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">ex=</span>LT<span class="sc">$</span>ex, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">ax=</span>LT<span class="sc">$</span>ax, </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">method=</span><span class="st">&#39;edag&#39;</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(edag)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 9.988916 9.660415 9.639061 9.630436 9.621832 9.614053</span></span></code></pre></div>
+<p>No warning messages were returned because the <code>edag</code>
+method uses all input arguments.</p>
+<p>For some measures, additional arguments are required, and you will be
+prompted to do so by an error message:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating the interquartile range in 2016</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>iqr <span class="ot">&lt;-</span> <span class="fu">ineq</span>(<span class="at">age=</span>LT<span class="sc">$</span>Age, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">dx=</span>LT<span class="sc">$</span>dx,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">lx=</span>LT<span class="sc">$</span>lx,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">ex=</span>LT<span class="sc">$</span>ex,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">ax=</span>LT<span class="sc">$</span>ax,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">method=</span><span class="st">&#39;iqr&#39;</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in ineq(age = LT$Age, dx = LT$dx, lx = LT$lx, ex = LT$ex, ax = LT$ax, : iqr method requires missing argument(s) upper, lower</span></span></code></pre></div>
+<p>We fix this by adding the additional arguments necessary for the
+measure. These can be seen from the help file for the measure
+<code>?LifeIneq::ineq_iqr</code>. In this case, we are told that in
+addition to <code>age</code>, and <code>lx</code>, we require
+<code>upper</code> “numeric. upper survival quantile, default .75”, and
+<code>lower</code> “numeric. lower survival quantile, default .25”.</p>
+<p>[Tim: <strong><em>QUESTION: should we change this from an error to a
+warning?</em></strong>]</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating the interquartile range in 2016</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>iqr <span class="ot">&lt;-</span> <span class="fu">ineq</span>(<span class="at">age=</span>LT<span class="sc">$</span>Age, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">lx=</span>LT<span class="sc">$</span>lx,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">method=</span><span class="st">&#39;iqr&#39;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">upper =</span> <span class="fl">0.75</span>, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">lower =</span> <span class="fl">0.25</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; following arguments not used: check</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iqr)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 14.62875</span></span></code></pre></div>
+<p>Relative measures all require an additional argument
+<code>distribution_type</code> (more on this in example 2).</p>
+<p>Calculating measures from abridged life tables does not require any
+additional input compared to the single age tables–just be sure that
+your <code>age</code> vector is numeric, and contains the lower age
+bounds (e.g. Age = c(0,1,seq(5,110,5)).</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating the interquartile range in 2016</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>iqr_abr <span class="ot">&lt;-</span> <span class="fu">ineq</span>(<span class="at">age=</span>LTabr<span class="sc">$</span>Age, </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">lx=</span>LTabr<span class="sc">$</span>lx,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">method=</span><span class="st">&#39;iqr&#39;</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">upper =</span> <span class="fl">0.75</span>, </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">lower =</span> <span class="fl">0.25</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; following arguments not used: check</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iqr_abr)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 14.58792</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iqr)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 14.62875</span></span></code></pre></div>
+</div>
+<div id="example-2-comparing-relative-variation-in-achieved-ages-at-death-to-relative-variation-in-remaining-life-expectancy-at-ages-30-and-65" class="section level3">
+<h3>Example 2: Comparing relative variation in achieved ages at death to
+relative variation in remaining life expectancy, at ages 30 and 65</h3>
+<p>This example compares relative measures of lifespan variation using
+Hungarian period male life table data from the HMD. Hungary was
+explicitly chosen because it experienced age-specific mortality trends
+which differed by age in magnitude, and sometimes even direction.</p>
+<p>First we read in a time series of Hungarian male life tables,
+downloaded from the HMD.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>LTs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;HUNmltper_1x1.csv&quot;</span>, <span class="at">head=</span>T)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(LTs)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7,881 × 10</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     Year   Age      mx      qx    ax     lx    dx    Lx      Tx    ex</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;dbl&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1950     0 0.0997  0.0932    0.3 100000  9320 93468 5993031  59.9</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1950     1 0.00756 0.00753   0.5  90680   683 90339 5899563  65.1</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1950     2 0.00348 0.00347   0.5  89997   313 89841 5809224  64.6</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1950     3 0.00278 0.00277   0.5  89685   249 89560 5719383  63.8</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1950     4 0.00198 0.00198   0.5  89436   177 89348 5629823  63.0</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1950     5 0.00149 0.00149   0.5  89259   133 89193 5540475  62.1</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1950     6 0.00172 0.00172   0.5  89126   153 89050 5451283  61.2</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1950     7 0.00118 0.00118   0.5  88973   105 88921 5362233  60.3</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1950     8 0.00133 0.00132   0.5  88868   118 88810 5273312  59.3</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1950     9 0.00118 0.00118   0.5  88751   105 88698 5184503  58.4</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 7,871 more rows</span></span></code></pre></div>
+<p>Next we calculate relative measures of lifespan variation for each
+year. While in the first example we used the generic <code>ineq</code>
+function, specifying the index with the <code>measure</code> argument,
+here we show that you can also use functions that are specific to each
+measure (e.g. ineq_cov = ineq(…, measure=cov)).</p>
+<p>Setting <code>distribution_type = &quot;aad&quot;</code> calculates the
+relative measure from a distribution of ages at death. Setting
+<code>distribution_type = &quot;rl&quot;</code> calculates the relative measure
+from a distribution of remaining life expectancies.</p>
+<p>A special case concerns the Keyfitz-Leser life table entropy measure
+<code>H</code> calculated from the age-at-death type of distribution. It
+is included in the package mainly for completeness, as we are unaware of
+anyone using this measure. In contrast to the other measures, we thought
+it was more logical to also calculate the numerator from the
+age-at-death rather than remaining life expectancy distribution. We have
+called this numerator <code>ineq_eta_dag</code> to distinguish it from
+<code>ineq_edag</code>, and the relative measure
+<code>ineq_rel_eta_dag</code>.</p>
+<p>[<em>Tim: Thinking about this more, does it make sense to do so? The
+trends are really different.</em>]</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>ineq <span class="ot">&lt;-</span> LTs <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">mutate</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">COV_AAD =</span> <span class="fu">ineq_cov</span>(<span class="at">age=</span>Age,dx,ex,ax,<span class="at">distribution_type =</span> <span class="st">&quot;aad&quot;</span>),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">COV_RL =</span> <span class="fu">ineq_cov</span>(<span class="at">age=</span>Age,dx,ex,ax,<span class="at">distribution_type =</span> <span class="st">&quot;rl&quot;</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">H_AAD =</span> <span class="fu">ineq_rel_eta_dag</span>(<span class="at">age=</span>Age,dx,lx,ex,ax),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">H_RL =</span> <span class="fu">ineq_H</span>(<span class="at">age=</span>Age,dx,lx,ex,ax),</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">T_AAD =</span> <span class="fu">ineq_theil</span>(<span class="at">age=</span>Age,dx,ex,ax,<span class="at">distribution_type =</span> <span class="st">&quot;aad&quot;</span>),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">T_RL =</span> <span class="fu">ineq_theil</span>(<span class="at">age=</span>Age,dx,ex,ax,<span class="at">distribution_type =</span> <span class="st">&quot;rl&quot;</span>),</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">GINI_AAD =</span> <span class="fu">ineq_gini</span>(<span class="at">age=</span>Age,dx,ex,ax,<span class="at">distribution_type =</span> <span class="st">&quot;aad&quot;</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">GINI_RL =</span> <span class="fu">ineq_gini</span>(<span class="at">age=</span>Age,dx,ex,ax,<span class="at">distribution_type =</span> <span class="st">&quot;rl&quot;</span>),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">RL =</span> ex,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">AAD =</span> ex <span class="sc">+</span> Age) <span class="sc">%&gt;%</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># keeping results for conditional survival to ages 30 or 65</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>            <span class="fu">filter</span>(Age<span class="sc">==</span><span class="dv">30</span> <span class="sc">|</span> Age<span class="sc">==</span><span class="dv">65</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            <span class="fu">select</span>(Year, Age, </span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                   RL, AAD, </span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>                   COV_AAD, COV_RL, </span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>                   H_AAD, H_RL,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>                   T_AAD, T_RL,</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>                   GINI_AAD, GINI_RL)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(ineq)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 142 × 12</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     Year   Age    RL   AAD COV_AAD COV_RL H_AAD  H_RL   T_AAD   T_RL GINI_AAD</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1950    30  39.7  69.7  0.197   0.346  1.16 0.282 0.0208  0.0714   0.110 </span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1950    65  12.5  77.5  0.0933  0.579  1.09 0.536 0.00435 0.185    0.0533</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1951    30  39.5  69.5  0.190   0.335  1.15 0.271 0.0193  0.0669   0.106 </span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1951    65  11.9  76.9  0.0899  0.581  1.08 0.536 0.00401 0.187    0.0514</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1952    30  39.6  69.6  0.186   0.327  1.15 0.265 0.0184  0.0635   0.104 </span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1952    65  11.8  76.8  0.0889  0.580  1.08 0.536 0.00395 0.186    0.0507</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1953    30  39.9  69.9  0.178   0.311  1.14 0.251 0.0169  0.0573   0.0986</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1953    65  11.5  76.5  0.0862  0.572  1.08 0.530 0.00367 0.181    0.0492</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1954    30  40.4  70.4  0.177   0.309  1.14 0.251 0.0167  0.0562   0.0986</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1954    65  11.9  76.9  0.0891  0.576  1.08 0.534 0.00396 0.183    0.0509</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 132 more rows</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 1 more variable: GINI_RL &lt;dbl&gt;</span></span></code></pre></div>
+<p>We can then plot these.</p>
+<p>To use <code>ggplot2</code> it is handy to first manipulate data into
+long format. This is done with <code>tidyr</code> package.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;tidyr&#39; was built under R version 4.2.2</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># putting our results into a &#39;long format&#39; and adding new columnn</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># adding a couple of columns to describe the measure more fully </span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>New_cols <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Measure =</span> <span class="fu">c</span>(<span class="st">&quot;AAD&quot;</span>,<span class="st">&quot;RL&quot;</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;COV_AAD&quot;</span>, <span class="st">&quot;COV_RL&quot;</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;H_AAD&quot;</span>, <span class="st">&quot;H_RL&quot;</span>, </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;T_AAD&quot;</span>, <span class="st">&quot;T_RL&quot;</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;GINI_AAD&quot;</span>, <span class="st">&quot;GINI_RL&quot;</span>),</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dist_type =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;Age at Death&quot;</span>,<span class="st">&quot;Remaining Life&quot;</span>),<span class="dv">5</span>),</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Family =</span> <span class="fu">c</span>(<span class="st">&quot;*Life Expectancy&quot;</span>, <span class="st">&quot;*Life Expectancy&quot;</span>, </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>             <span class="st">&quot;Coef. of variation&quot;</span>, <span class="st">&quot;Coef. of variation&quot;</span>, </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>             <span class="st">&quot;Keyfitz-Leser H&quot;</span>,<span class="st">&quot;Keyfitz-Leser H&quot;</span>, </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>             <span class="st">&quot;Theil Index&quot;</span>, <span class="st">&quot;Theil Index&quot;</span>,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>             <span class="st">&quot;Gini Coefficient&quot;</span>, <span class="st">&quot;Gini Coefficient&quot;</span>))</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># long format</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>Ineq_long <span class="ot">&lt;-</span> ineq <span class="sc">%&gt;%</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pivot_longer</span>(<span class="at">cols =</span> RL<span class="sc">:</span>GINI_RL,</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>                   <span class="at">names_to =</span> <span class="st">&quot;Measure&quot;</span>,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>                   <span class="at">values_to =</span> <span class="st">&quot;Value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(New_cols)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Joining with `by = join_by(Measure)`</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(Ineq_long)</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1,420 × 6</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     Year   Age Measure    Value Dist_type      Family            </span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;             </span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1950    30 RL       39.7    Remaining Life *Life Expectancy  </span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1950    30 AAD      69.7    Age at Death   *Life Expectancy  </span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1950    30 COV_AAD   0.197  Age at Death   Coef. of variation</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1950    30 COV_RL    0.346  Remaining Life Coef. of variation</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1950    30 H_AAD     1.16   Age at Death   Keyfitz-Leser H   </span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1950    30 H_RL      0.282  Remaining Life Keyfitz-Leser H   </span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1950    30 T_AAD     0.0208 Age at Death   Theil Index       </span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1950    30 T_RL      0.0714 Remaining Life Theil Index       </span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1950    30 GINI_AAD  0.110  Age at Death   Gini Coefficient  </span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1950    30 GINI_RL   0.193  Remaining Life Gini Coefficient  </span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 1,410 more rows</span></span></code></pre></div>
+<p>To put these measures on the same scale, we will look at relative
+change in the measure since 1950.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Ineq_change <span class="ot">&lt;-</span> Ineq_long <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Age, Measure) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Prop_change =</span> Value <span class="sc">/</span> Value[<span class="dv">1</span>])</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(Ineq_change)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 7</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Groups:   Age, Measure [6]</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Year   Age Measure    Value Dist_type      Family           Prop_change</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;                  &lt;dbl&gt;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  2020    65 H_AAD    1.10    Age at Death   Keyfitz-Leser H         1.01</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  2020    65 H_RL     0.544   Remaining Life Keyfitz-Leser H         1.01</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  2020    65 T_AAD    0.00545 Age at Death   Theil Index             1.25</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  2020    65 T_RL     0.193   Remaining Life Theil Index             1.04</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  2020    65 GINI_AAD 0.0597  Age at Death   Gini Coefficient        1.12</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  2020    65 GINI_RL  0.336   Remaining Life Gini Coefficient        1.02</span></span></code></pre></div>
+<p>The top rows show trends in the relative measures, while the bottom
+rows show trends in the average (remaining life expectancy or average
+age at death).</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># comparison conditional upon survival to ages 30 and 65</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>Ineq_change,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>          <span class="fu">aes</span>(<span class="at">x=</span>Year, <span class="at">y=</span>Prop_change, <span class="at">colour=</span>Dist_type)) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>     <span class="fu">geom_line</span>(<span class="at">size=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">facet_grid</span>(Age <span class="sc">~</span> Family) <span class="sc">+</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">&quot;Proportional change&quot;</span>) <span class="sc">+</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_colour_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;darkred&quot;</span>, <span class="st">&quot;darkorange&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Proportional change in measure since 1950&quot;</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Conditional upon survival to ages 30 (top row) and 65 (bottom row)&quot;</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">&quot;*Life expectancy is not a lifespan inequality measure, but is shown for interpretation&quot;</span>) <span class="sc">+</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_trans</span>(<span class="at">y=</span><span class="st">&quot;log2&quot;</span>) <span class="sc">+</span> <span class="co">#for our friend Ilya</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">8</span>),</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.position=</span><span class="st">&quot;bottom&quot;</span>,</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.title=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.text.x  =</span> <span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">45</span>, <span class="at">vjust=</span><span class="fl">0.5</span>, <span class="at">size=</span><span class="dv">10</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>So as this example makes clear, what goes in the denominator for
+conditional measures of lifespan variation can make an enormous
+difference in interpreting the variability. This is especially important
+at older ages, when relative differences over time (or between
+populations) in remaining life will be much larger than relative
+differences in ages at death.</p>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-allison1978" class="csl-entry">
+Allison, Paul D. 1978. <span>“Measures of Inequality.”</span>
+<em>American Sociological Review</em>, 865–80.
+</div>
+<div id="ref-barbieri2015" class="csl-entry">
+Barbieri, Magali, John R Wilmoth, Vladimir M Shkolnikov, Dana Glei,
+Domantas Jasilionis, Dmitri Jdanov, Carl Boe, Timothy Riffe, Pavel
+Grigoriev, and Celeste Winant. 2015. <span>“Data Resource Profile: The
+Human Mortality Database (HMD).”</span> <em>International Journal of
+Epidemiology</em> 44 (5): 1549–56.
+</div>
+<div id="ref-baudisch2011" class="csl-entry">
+Baudisch, Annette. 2011. <span>“The Pace and Shape of Ageing.”</span>
+<em>Methods in Ecology and Evolution</em> 2 (4): 375–82.
+</div>
+<div id="ref-bramajo2022" class="csl-entry">
+Bramajo, Octavio, Iñaki Permanyer, and Amand Blanes. 2022.
+<span>“Regional Inequalities in Life Expectancy and Lifespan Variation
+by Educational Attainment in Spain, 2014–2018.”</span> <em>Population,
+Space and Place</em>, e28.
+</div>
+<div id="ref-Camarda2012" class="csl-entry">
+Camarda, Carlo G. 2012. <span>“<span>MortalitySmooth</span>: An
+<span>R</span> Package for Smoothing <span>P</span>oisson Counts with
+<span>P</span>-Splines.”</span> <em>Journal of Statistical Software</em>
+50 (1): 1–24. <a href="http://www.jstatsoft.org/v50/i01/">http://www.jstatsoft.org/v50/i01/</a>.
+</div>
+<div id="ref-colchero2016" class="csl-entry">
+Colchero, Fernando, Roland Rau, Owen R Jones, Julia A Barthold, Dalia A
+Conde, Adam Lenart, Laszlo Nemeth, et al. 2016. <span>“The Emergence of
+Longevous Populations.”</span> <em>Proceedings of the National Academy
+of Sciences</em> 113 (48): E7681–90.
+</div>
+<div id="ref-eakin1995" class="csl-entry">
+Eakin, Tim, and Matthew Witten. 1995. <span>“How Square Is the Survival
+Curve of a Given Species?”</span> <em>Experimental Gerontology</em> 30
+(1): 33–64.
+</div>
+<div id="ref-goldman1986" class="csl-entry">
+Goldman, Noreen, and Graham Lord. 1986. <span>“A New Look at Entropy and
+the Life Table.”</span> <em>Demography</em> 23 (2): 275–82.
+</div>
+<div id="ref-hakkert1987" class="csl-entry">
+Hakkert, Ralph. 1987. <span>“Life Table Transformations and Inequality
+Measures: Some Noteworthy Formal Relationships.”</span>
+<em>Demography</em>, 615–22.
+</div>
+<div id="ref-HMD2023" class="csl-entry">
+HMD. 2023. <em>Human Mortality Database</em>. <a href="https://mortality.org/">https://mortality.org/</a>.
+</div>
+<div id="ref-nemeth2017" class="csl-entry">
+Németh, László. 2017. <span>“Life Expectancy Versus Lifespan Inequality:
+A Smudge or a Clear Relationship?”</span> <em>PLoS One</em> 12 (9):
+e0185702.
+</div>
+<div id="ref-Pascariu2019" class="csl-entry">
+Pascariu, Marius D. 2019. <em>MortalityLaws: Parametric Mortality
+Models, Life Tables and HMD</em>. <a href="https://CRAN.R-project.org/package=MortalityLaws">https://CRAN.R-project.org/package=MortalityLaws</a>.
+</div>
+<div id="ref-permanyer2019" class="csl-entry">
+Permanyer, Iñaki, and Nathalie Scholl. 2019. <span>“Global Trends in
+Lifespan Inequality: 1950-2015.”</span> <em>PloS One</em> 14 (5):
+e0215742.
+</div>
+<div id="ref-Riffe2023" class="csl-entry">
+Riffe, Tim, Carl Boe, and Jason Hilton. 2023. <em>HMDHFDplus: Read Human
+Mortality Database and Human Fertility</em>. <a href="https://CRAN.R-project.org/package=HMDHFDplus">https://CRAN.R-project.org/package=HMDHFDplus</a>.
+</div>
+<div id="ref-seaman2020" class="csl-entry">
+Seaman, Rosie, Andreas Höhn, Rune Lindahl-Jacobsen, Pekka Martikainen,
+Alyson van Raalte, and Kaare Christensen. 2020. <span>“Rethinking
+Morbidity Compression.”</span> <em>European Journal of Epidemiology</em>
+35 (5): 381–88.
+</div>
+<div id="ref-shkolnikov2010" class="csl-entry">
+Shkolnikov, Vladimir M, and Evgeny M Andreev. 2010. <span>“Spreadsheet
+for Calculation of Life-Table Dispersion Measures.”</span> <em>Max
+Planck Institute for Demographic Research (MPIDR Technical Report
+TR–2012–002)</em>. <a href="https://doi.org/10.4054/MPIDR-TR-2010-001">https://doi.org/10.4054/MPIDR-TR-2010-001</a>.
+</div>
+<div id="ref-shkolnikov2003" class="csl-entry">
+Shkolnikov, Vladimir M, Evgueni M Andreev, and Alexander Z Begun. 2003.
+<span>“Gini Coefficient as a Life Table Function: Computation from
+Discrete Data, Decomposition of Differences and Empirical
+Examples.”</span> <em>Demographic Research</em> 8: 305–58.
+</div>
+<div id="ref-vanraalte2013" class="csl-entry">
+van Raalte, Alyson A, and Hal Caswell. 2013. <span>“Perturbation
+Analysis of Indices of Lifespan Variability.”</span> <em>Demography</em>
+50 (5): 1615–40.
+</div>
+<div id="ref-vanraalte2012" class="csl-entry">
+van Raalte, Alyson A, Anton E Kunst, Olle Lundberg, Mall Leinsalu, Pekka
+Martikainen, Barbara Artnik, Patrick Deboosere, Irina Stirbu, Bogdan
+Wojtyniak, and Johan P Mackenbach. 2012. <span>“The Contribution of
+Educational Inequalities to Lifespan Variation.”</span> <em>Population
+Health Metrics</em> 10 (1): 1–10.
+</div>
+<div id="ref-vaupel1986" class="csl-entry">
+Vaupel, James W. 1986. <span>“How Change in Age-Specific Mortality
+Affects Life Expectancy.”</span> <em>Population Studies</em> 40 (1):
+147–57.
+</div>
+<div id="ref-wilmoth1999" class="csl-entry">
+Wilmoth, John R, and Shiro Horiuchi. 1999. <span>“Rectangularization
+Revisited: Variability of Age at Death Within Human Populations.”</span>
+<em>Demography</em> 36 (4): 475–95.
+</div>
+<div id="ref-wrycza2015" class="csl-entry">
+Wrycza, Tomasz F, Trifon I Missov, and Annette Baudisch. 2015.
+<span>“Quantifying the Shape of Aging.”</span> <em>PloS One</em> 10 (3):
+e0119163.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
