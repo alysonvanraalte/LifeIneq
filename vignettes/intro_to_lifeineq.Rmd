@@ -276,24 +276,7 @@ iqr <- ineq(age=LT$Age,
 
 ```
 
-We fix this by adding the additional arguments necessary for the measure. These can be seen from the help file for the measure `?LifeIneq::ineq_iqr`. In this case, we are told that in addition to `age`, and `lx`, we require  `upper` "numeric. upper survival quantile, default .75", and `lower` "numeric. lower survival quantile, default .25". 
-
-[Tim: ***QUESTION: should we change this from an error to a warning?***]
-
-
-
-```{r, error=T}
-# calculating the interquartile range in 2016
-
-iqr <- ineq(age=LT$Age, 
-           lx=LT$lx,
-           method='iqr',
-           upper = 0.75, 
-           lower = 0.25)
-
-head(iqr)
-
-```
+Notice by default this call returns the age interval between lower and upper quantile bounds of 0.25 and 0.75, but we could modify these bounds if desired, see `?LifeIneq::ineq_iqr`. 
 
 Relative measures all require an additional argument `distribution_type` (more on this in example 2).
 
@@ -306,8 +289,8 @@ Calculating measures from abridged life tables does not require any additional i
 iqr_abr <- ineq(age=LTabr$Age, 
            lx=LTabr$lx,
            method='iqr',
-           upper = 0.75, 
-           lower = 0.25)
+           upper = 0.9, 
+           lower = 0.1)
 
 head(iqr_abr)
 head(iqr)
