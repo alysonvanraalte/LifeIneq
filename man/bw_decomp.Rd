@@ -39,3 +39,7 @@ implemented for Theil's index, e-dagger, variance, mean log deviation,
 the gini coeficient, mean absolute deviatation, the absolute inter-individual
 difference, and life table entropy (H).
 }
+\examples{
+# example code
+
+}

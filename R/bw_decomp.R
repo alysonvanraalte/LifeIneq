@@ -17,7 +17,9 @@
 #' @param method character one of \code{"theil", "edag","var","mld","gini","mad","aid","H"}
 #' @import LifeIneq
 #' @export
-
+#' @examples
+#' # example code
+#' 
 bw_decomp <- function(age, 
                       ax, 
                       dx, 
