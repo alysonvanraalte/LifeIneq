@@ -2,9 +2,9 @@
 % Please edit documentation in R/indices.R
 \name{ineq_rel_eta_dag}
 \alias{ineq_rel_eta_dag}
-\title{ineq_rel_eta_dag}
+\title{ineq_rel_edag}
 \usage{
-ineq_rel_eta_dag(age, dx, lx, ex, ax, check = TRUE)
+ineq_rel_eta_dag(age, dx, lx, ex, ax, check = TRUE, distribution_type = "aad")
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
@@ -29,7 +29,7 @@ This method is implemented for the sake of completeness, since \eqn{e^\dagger} a
 
 data(LT)
 # A vector containing the conditional rel_eta_dag values
-H = ineq_rel_eta_dag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+H = ineq_rel_edag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 # The H from birth
 H[1]
 # The H conditional upon survival to age 10

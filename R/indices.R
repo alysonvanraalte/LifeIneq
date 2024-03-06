@@ -178,8 +178,6 @@ ineq_cov <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check =
   distribution_type <- match.arg(distribution_type)
   # dx <- dx / sum(dx)
   
-  # AvR noticed this wasn't working as intended
-  # age_constant <- ifelse(distribution_type == "aad", age, age * 0)
   age_constant <- if (distribution_type == "aad") {
     age_constant <- age
   }
@@ -298,19 +296,24 @@ ineq_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 #' H[1]
 #' # The H conditional upon survival to age 10
 #' H[11]
-
-
-ineq_H <- function(age, dx, lx, ex, ax, check = TRUE){
+# ineq_H(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
+# ineq_H(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
+ineq_H <- function(age, dx, lx, ex, ax, check = TRUE, distribution_type = "rl"){
   # dx <- dx / sum(dx)
+  if(distribution_type == "rl"){
+    denom <- ex
+  } else {
+    denom <- age + ex
+  }
   ineq_edag(age = age, 
             dx = dx, 
             lx = lx, 
             ex = ex, 
             ax = ax, 
-            check = check) / ex
+            check = check) / denom
 }
 
-#' @title ineq_rel_eta_dag
+#' @title ineq_rel_edag
 #' @description Calculate a lifetable column for the elasticity of age at death, which is analogous to the Keyfitz-Leser `H` measure.
 #' @details This method is implemented for the sake of completeness, since \eqn{e^\dagger} and \eqn{H} give the absolute and relative shortfall metrics, we've included `eta_dag` and `rel_eta_dag` to give age-at-death versions of these. We're not aware of anyone having used this formulation, and we do not offer a demographic interpretation of the scale of this metric, but we do point out that the conditional shape over age is qualitatively similar to other conditional relative measures from attainment (achieved age) distributions.
 #' @inheritParams ineq_edag
@@ -325,16 +328,27 @@ ineq_H <- function(age, dx, lx, ex, ax, check = TRUE){
 #'
 #' data(LT)
 #' # A vector containing the conditional rel_eta_dag values
-#' H = ineq_rel_eta_dag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+#' H = ineq_rel_edag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 #' # The H from birth
 #' H[1]
 #' # The H conditional upon survival to age 10
 #' H[11]
 
 
-ineq_rel_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
+ineq_rel_eta_dag <- function(age, 
+                             dx, 
+                             lx, 
+                             ex, 
+                             ax, 
+                             check = TRUE, 
+                             distribution_type = "aad"){
+  if(distribution_type == "aad"){
+    denom <- age +ex
+  } else {
+    denom <- ex
+  }
   # dx <- dx / sum(dx)
-  ineq_eta_dag(age = age, 
+  ineq_rel_eta_dag(age = age, 
             dx = dx, 
             lx = lx, 
             ex = ex, 

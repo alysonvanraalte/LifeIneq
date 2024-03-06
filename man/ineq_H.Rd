@@ -4,7 +4,7 @@
 \alias{ineq_H}
 \title{ineq_H}
 \usage{
-ineq_H(age, dx, lx, ex, ax, check = TRUE)
+ineq_H(age, dx, lx, ex, ax, check = TRUE, distribution_type = "rl")
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
