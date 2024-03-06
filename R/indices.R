@@ -302,6 +302,10 @@ ineq_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 # ineq_H(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "rl")
 # ineq_H(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax, distribution_type = "aad")
 ineq_H <- function(age, dx, lx, ex, ax, check = TRUE, distribution_type = "rl"){
+  if (check){
+    my_args <- as.list(environment())
+    check_args(my_args)
+  }
   # dx <- dx / sum(dx)
   if(distribution_type == "rl"){
     denom <- ex
@@ -819,8 +823,11 @@ ineq_iqr <- function(age, lx, upper = .75, lower = .25){
 #' (C50 <- ineq_cp(age=LT$Age,lx=LT$lx,p=.5))
 #' # The shortest age range containing 80% the deaths
 #' (C80 <- ineq_cp(age=LT$Age,lx=LT$lx,p=.8))
-ineq_cp <- function(age, lx, p = .5){
-
+ineq_cp <- function(age, lx, p = .5, check = TRUE){
+  if (check){
+    my_args <- as.list(environment())
+    check_args(my_args)
+  }
   stopifnot(length(age) == length(lx))
   stopifnot(p <= 1)
   
@@ -864,7 +871,9 @@ ineq_cp <- function(age, lx, p = .5){
 #' @param ax numeric. vector of the average time spent in the age
 #' @param method one of `c("var","sd","cov","iqr","aid","gini","drewnowski","mld","edag","eta_dag","cp","theil","H","ineq_rel_eta_dag","mad")`
 #' @param check logical. Shall we perform basic checks on input vectors? Default TRUE
+#' @param distribution_type character, either `"rl"` for remaining life, or `"aad"` for age at death. 
 #' @param ... other optional arguments used by particular methods.
+#' @details The argument `distribution_type` is only relevant for relative indices. Different indices have different default values for this argument.
 #' @importFrom Rdpack reprompt
 #' @export
 
@@ -875,6 +884,7 @@ ineq <- function(age,
                  ax, 
                  method = c("var","sd","cov","iqr","aid",
                             "gini","drewnowski","mld","edag","eta_dag","cp","theil","H","ineq_rel_eta_dag","mad"), 
+                 distribution_type,
                  check = TRUE, 
                  ...){
   

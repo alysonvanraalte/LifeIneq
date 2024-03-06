@@ -12,6 +12,7 @@ ineq(
   ax,
   method = c("var", "sd", "cov", "iqr", "aid", "gini", "drewnowski", "mld", "edag",
     "eta_dag", "cp", "theil", "H", "ineq_rel_eta_dag", "mad"),
+  distribution_type,
   check = TRUE,
   ...
 )
@@ -29,10 +30,15 @@ ineq(
 
 \item{method}{one of \code{c("var","sd","cov","iqr","aid","gini","drewnowski","mld","edag","eta_dag","cp","theil","H","ineq_rel_eta_dag","mad")}}
 
+\item{distribution_type}{character, either \code{"rl"} for remaining life, or \code{"aad"} for age at death.}
+
 \item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 
 \item{...}{other optional arguments used by particular methods.}
 }
 \description{
 Choose from variance \code{var}, standard deviation \code{sd}, coefficient of variation \code{cov}, interquartile range \code{iqr}, \code{gini}, absolute inter individual difference (both age at death and remaining life), \code{drewnowski} (complement of Gini), \code{aid} (relative Gini), \code{edag} e-dagger, Kannisto's compression measure \code{cp}, \code{eta_dag} the mean age at death lost at death (that we just made up), Leser-Keyfitz entropy \code{H} (elasticity of life expectancy to proportional age specific changes in mortality),\code{ineq_rel_eta_dag} (a relative version of \code{eta_dag}), \code{theil}, mean log deviation \code{mld}, mean absolute deviation \code{mad} (wrt mean or median).
+}
+\details{
+The argument \code{distribution_type} is only relevant for relative indices. Different indices have different default values for this argument.
 }
