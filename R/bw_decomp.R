@@ -18,8 +18,30 @@
 #' @import LifeIneq
 #' @export
 #' @examples
-#' # example code
-#' 
+ # data(LT)
+ # data(LTm)
+ # 
+ # # rescale dx to exactly sum to radix,
+ # # this is a nerd step
+ # LT$dx <- LT$dx / sum(LT$dx)
+ # LTm$dx <- LTm$dx / sum(LTm$dx)
+ # 
+ # # make argument matrices (in this case just two columns)
+ # age <- 0:110
+ # ax  <- cbind(LT$ax,LTm$ax)
+ # dx  <- cbind(LT$dx,LTm$dx)
+ # lx  <- cbind(LT$lx,LTm$lx)
+ # ex  <- cbind(LT$ex,LTm$ex)
+ # mld makes difference
+# bw_decomp(age = age,
+#           ax = ax,
+#           dx = dx,
+#           lx = lx,
+#           ex = ex,
+#           prop = c(.4886,1-.4886),
+#           distribution_type = "rl",
+#           method = "theil")
+ # 
 bw_decomp <- function(age, 
                       ax, 
                       dx, 
@@ -106,6 +128,7 @@ bw_decomp <- function(age,
                    ax = ax[, k],
                    ex = ex[, k], 
                    distribution_type = distribution_type,
+                   check = FALSE,
                    method = method_lower)
     indices[k] <- suppressMessages(do.call("ineq", args = args_i, quote = TRUE)[1])
     

@@ -454,8 +454,6 @@ ineq_theil <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check
 #' MLD[1]
 #' # The MLD conditional upon survival to age 10
 #' MLD[11]
-
-
 ineq_mld <-  function(age, dx, ex, ax, distribution_type = c("aad","rl"), check = TRUE){
   distribution_type <- match.arg(distribution_type)
   age_constant <- if (distribution_type == "aad"){
