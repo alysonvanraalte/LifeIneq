@@ -195,13 +195,16 @@ ineq_cov <- function(age, dx, ex, ax, distribution_type = c("aad","rl"), check =
 
 
 #' @title ineq_edag
-#' @description Calculate a lifetable column for the conditional life disparity (\eqn{e^\dagger}) of a population.  
+#' @description Calculate a lifetable column for the average years of life lost at death (\eqn{e^\dagger}) of a population.  
 #'
 #' @inheritParams ineq_mad
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
 #'
 #' @export
+#' @references
+#' \insertRef{vaupel1986}{LifeIneq}
+#' \insertRef{goldman1986}{LifeIneq}
 #' @examples 
 #'
 #' data(LT)
