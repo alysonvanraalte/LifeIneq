@@ -889,7 +889,8 @@ ineq <- function(age,
   # names_have_arg <- names(have_args)
 
   # remove unneeded args
-  need_args      <- names(formals(fun))
+  f_formals      <- formals(fun)
+  need_args      <- names(f_formals)
   use_args       <- have_args[names(have_args) %in% need_args]
   # remove NULL entries
   use_args       <- use_args[!is.na(use_args)]
@@ -899,13 +900,21 @@ ineq <- function(age,
     names(have_args[!names(have_args) %in% 
                      c(need_args, "need_args","fun","method")])
   
+  # repopulate default args if necessary
+  defaults <- f_formals[!(f_formals |> lapply(is.symbol) |> unlist() )]
+  if (length(defaults) > 0){
+    defaults_use_ind <- !names(defaults) %in% names(use_args)
+    defaults <- defaults[defaults_use_ind]
+    use_args <- c(use_args,  defaults[defaults_use_ind])
+  }
+
   # throw error if arg missing
   if (!all(need_args %in% names(use_args))){
     missing_arg <- need_args[!need_args %in% names(use_args)] |>
       paste(collapse = ", ")
     stop(paste(method,"method requires missing argument(s)",missing_arg))
   }
- 
+  
   
   if (length(superfluous_args) > 0 & check){
     superfluous_args <- paste(superfluous_args,collapse = ", ")
