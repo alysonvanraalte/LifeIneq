@@ -1,0 +1,106 @@
+---
+title: "Additive decompositions of lifespan inequality"
+author: Christian Dudel, Alyson van Raalte, Tim Riffe
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{decomposition}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+header-includes:
+- \usepackage{amsmath}
+- \usepackage{amssymb}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6, 
+  fig.height = 6,
+  fig.align = "center"
+)
+```
+
+## Introduction
+
+What factors are driving lifespan inequalities? One way to answer this question
+is to use decomposition methods. Decomposing measures of lifespan inequality
+allows to attribute some of the variation in lifespans to variation between
+groups in the population, such as educational groups. The remaining variation
+comes from variation within the groups. 
+
+In this package, we implement several old and new decompositions of measures
+of lifespan inequality. This includes decompositions of lifespan disparity 
+($e^{\dagger}$), the Gini coefficient, absolute inter-individual difference 
+(AID; also known as absolute Gini coefficient), the Theil index, mean log 
+variation, mean absolute deviation (MAD), and the variance. 
+
+## Decomposing lifespan inequality
+
+### Additive decompositions
+
+All decompositions covered by this package are additive and they have the 
+following general form:
+\begin{align*}
+\textrm{Total inequality} = \textrm{Within-component} + \textrm{Between-component}.
+\end{align*}
+For each measure of lifespan inequality the within-component is a 
+weighted sum of the measure applied to each group. That is, the 
+within-component captures the average lifespan inequality across groups and
+thus the intra-group heterogeneity in lifespans. The between-component captures 
+how different lifespan inequality is between groups; i.e., the inter-group 
+heterogeneity in lifespan.
+
+For several measures of lifespan inequality additive decompositions have been
+published in the literature. Table 1 below provides an overview of all 
+decompositions covered in the package, whether new or not. $K$ is the total 
+number of groups and $\mathrm{Pr}(k)$ is the proportion of group $k$ in the 
+population, assumed to be measured at the starting age of the life table. $k$
+is also used as superscript and subscript to indicate group-specific measures;
+e.g., $e_0^k$ is the life expectancy at birth in group $k$. Additional details
+on the notation are provided below. 
+
+```{r tab, echo=F, warning=F}
+library(knitr)
+library(kableExtra)
+
+df <- data.frame(Index=c("`aid`",
+                         "`edag`",
+                         "`eta_dag`",
+                         "`gini` (achieved)",
+                         "`gini` (shortfall)",
+                         "`H` (shortfall)$^1$",
+                         "`mad`",
+                         "`mld` (achieved)",
+                         "`mld` (shortfall)",
+                         "`theil` (achieved)",
+                         "`theil` (shortfall)",
+                         "`var`"))
+
+df$within <- c("$\\sum_{k=1}^K \\mathrm{Pr}(k)\\frac{\\ell_a^k}{\\ell_a} \\mathrm{AID}_k$&",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) e^\\dagger_k$"
+               )
+df$between <- c("$\\frac{1}{2\\ell_a}\\sum_{k=1}^K B(k)+R(k)$",
+                "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\left(e^{\\dagger*}_k - e^\\dagger_k\\right)$")
+
+df %>%
+  kbl(escape = F, caption = "Table 1: Decomposition formulas") %>%
+  kable_paper("hover", full_width = T) 
+```
+
+## Decomposing lifespan disparity
+
+Here, we use two types of notation. The type of
+notation is often found in the economic and statistical literature on inequality 
+measurement, while the second is life table notation. Depending on the measure,
+the decomposition can be more easy to derive with one of the two notations. 
+
+## Decomposing the Gini coefficient. 
+
+## Example
+
+```{r setup}
+library(LifeIneq)
+```
+
+## References
