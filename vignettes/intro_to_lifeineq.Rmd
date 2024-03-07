@@ -352,12 +352,10 @@ Next we calculate relative measures of lifespan variation for each year. While i
 
 Setting `distribution_type = "aad"` calculates the relative measure from a distribution of ages at death. Setting `distribution_type = "rl"` calculates the relative measure from a distribution of remaining life expectancies.
 
-<!-- A special case concerns the Keyfitz-Leser life table entropy measure `H` calculated from the age-at-death type of distribution. It is included in the package mainly for completeness, as we are unaware of anyone using this measure. In contrast to the other measures, we thought it was more logical to also calculate the numerator from the age-at-death rather than remaining life expectancy distribution. We have called this numerator `ineq_eta_dag` to distinguish it from `ineq_edag`, and the relative measure `ineq_rel_eta_dag`. -->
-
 ```{r}
 
-ineq_compare <- LTs %>%
-            group_by(Year) %>%
+ineq_compare <- LTs |> 
+            group_by(Year) |> 
             mutate(
               COV_AAD = ineq_cov(age=Age,dx,ex,ax,distribution_type = "aad"),
               COV_RL = ineq_cov(age=Age,dx,ex,ax,distribution_type = "rl"),
@@ -368,10 +366,9 @@ ineq_compare <- LTs %>%
               GINI_AAD = ineq_gini(age=Age,dx,ex,ax,distribution_type = "aad"),
               GINI_RL = ineq_gini(age=Age,dx,ex,ax,distribution_type = "rl"),
               RL = ex,
-              AAD = ex + Age) %>%
-  
+              AAD = ex + Age) |>
 # keeping results for conditional survival to ages 30 or 65
-            filter(Age==30 | Age==65) %>%
+            filter(Age==30 | Age==65) |> 
             select(Year, Age, 
                    RL, AAD, 
                    COV_AAD, COV_RL, 
