@@ -18,30 +18,70 @@
 #' @import LifeIneq
 #' @export
 #' @examples
- # data(LT)
- # data(LTm)
- # 
- # # rescale dx to exactly sum to radix,
- # # this is a nerd step
- # LT$dx <- LT$dx / sum(LT$dx)
- # LTm$dx <- LTm$dx / sum(LTm$dx)
- # 
- # # make argument matrices (in this case just two columns)
- # age <- 0:110
- # ax  <- cbind(LT$ax,LTm$ax)
- # dx  <- cbind(LT$dx,LTm$dx)
- # lx  <- cbind(LT$lx,LTm$lx)
- # ex  <- cbind(LT$ex,LTm$ex)
- # mld makes difference
-# bw_decomp(age = age,
-#           ax = ax,
-#           dx = dx,
-#           lx = lx,
-#           ex = ex,
-#           prop = c(.4886,1-.4886),
-#           distribution_type = "rl",
-#           method = "theil")
- # 
+#'  data(LT)
+#'  data(LTm)
+#'  
+#'  # rescale dx to exactly sum to radix,
+#'  # this is a nerd step
+#'  LT$dx <- LT$dx / sum(LT$dx)
+#'  LTm$dx <- LTm$dx / sum(LTm$dx)
+#'  
+#'  # make argument matrices (in this case just two columns)
+#'  method <- "mld"
+#'  ind <- 26:11
+#'  age <- 0:110
+#'  ax  <- cbind(LT$ax,LTm$ax)
+#'  dx  <- cbind(LT$dx,LTm$dx)
+#'  lx  <- cbind(LT$lx,LTm$lx)
+#'  ex  <- cbind(LT$ex,LTm$ex)
+#'  
+#'  
+#' 
+#' 
+#'  # Choice of remaining life vs age-at-death
+#'  # makes no difference for age 0:
+#'  
+#'  method <- "mld"
+#'  # same story with other method choice
+#'  # (try "mld", theil", "edag","var","mld","gini","mad","aid", or "H")
+#'  bw_decomp(age = age,
+#'            ax = ax,
+#'            dx = dx,
+#'            lx = lx,
+#'            ex = ex,
+#'            prop = c(.4886,1-.4886),
+#'            distribution_type = "rl",
+#'            method = method)$fB
+#'  bw_decomp(age = age,
+#'            ax = ax,
+#'            dx = dx,
+#'            lx = lx,
+#'            ex = ex,
+#'            prop = c(.4886,1-.4886),
+#'            distribution_type = "aad",
+#'            method = method)$fB
+#'  
+#' # but if we age-condition, results should differ:
+#'  method <- "theil"
+#'  ind <- 26:111
+#'  bw_decomp(age = age[ind],
+#'            ax = ax[ind, ],
+#'            dx = dx[ind, ],
+#'            lx = lx[ind, ],
+#'            ex = ex[ind, ],
+#'            prop = c(.47,.53),
+#'            distribution_type = "rl",
+#'            method = method)$fB
+#'  bw_decomp(age = age[ind],
+#'            ax = ax[ind, ],
+#'            dx = dx[ind, ],
+#'            lx = lx[ind, ],
+#'            ex = ex[ind, ],
+#'            prop = c(.47,.53),
+#'            distribution_type = "aad",
+#'            method = method)$fB
+#' 
+
 bw_decomp <- function(age, 
                       ax, 
                       dx, 
