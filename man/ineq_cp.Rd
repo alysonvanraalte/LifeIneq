@@ -4,7 +4,7 @@
 \alias{ineq_cp}
 \title{ineq_cp}
 \usage{
-ineq_cp(age, lx, p = 0.5)
+ineq_cp(age, lx, p = 0.5, check = TRUE)
 }
 \arguments{
 \item{age}{numeric. vector of lower age bounds.}
@@ -12,6 +12,8 @@ ineq_cp(age, lx, p = 0.5)
 \item{lx}{numeric. vector of the lifetable survivorship.}
 
 \item{p}{numeric. What proportion of the life table cohort do you want captured in the C measure? The default is .5}
+
+\item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
 Calculate Kannisto's C-measures from a lifetable
