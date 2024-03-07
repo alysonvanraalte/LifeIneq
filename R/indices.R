@@ -472,13 +472,21 @@ ineq_mld <-  function(age, dx, ex, ax, distribution_type = c("aad","rl"), check 
   }
 
   N     <- length(age)
-  exAge <- age_constant + ex
-  axAge <- ax + age_constant
+  exAge <- ex + age_constant
+  #axAge <- ax + age_constant
   MLD   <- rep(NA, N )
-  for(i in 1: N ){
+  for(i in 1:N ){
+    
+    if (distribution_type == "aad"){
+      axAgei <- age[i:N] + ax[i:N]
+    } 
+    if (distribution_type == "rl"){
+      axAgei <- (i:N) - 1 + ax[i:N]
+    }
     dxi <- dx[i:N] / sum(dx[i:N])
+    
     MLD[i] <- sum(
-      dxi * (log(exAge[i]/axAge[i:N]))
+      dxi * (log(exAge[i]/axAgei))
     )
   }
 
