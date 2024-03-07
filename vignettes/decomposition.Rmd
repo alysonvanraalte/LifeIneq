@@ -1,0 +1,293 @@
+---
+title: "Additive decompositions of lifespan inequality"
+author: "Christian Dudel, Alyson van Raalte, Tim Riffe"
+output: rmarkdown::html_vignette
+bibliography: REFERENCES.bib
+vignette: >
+  %\VignetteIndexEntry{Additive decompositions of lifespan inequality}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+header-includes:
+- \usepackage{amsmath}
+- \usepackage{amssymb}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6, 
+  fig.height = 6,
+  fig.align = "center"
+)
+```
+
+## Introduction
+
+What factors are driving lifespan inequalities? One way to answer this question
+is to use decomposition methods. Decomposing measures of lifespan inequality
+allows to attribute some of the variation in lifespans to variation between
+groups in the population, such as educational groups. The remaining variation
+comes from variation within the groups. 
+
+In this package, we implement several old and new decompositions of measures
+of lifespan inequality. This includes decompositions of lifespan disparity 
+($e^{\dagger}$), the Gini coefficient, absolute inter-individual difference 
+(AID; also known as absolute Gini coefficient), the Theil index, mean log 
+variation, mean absolute deviation (MAD), and the variance. 
+
+## Decomposing lifespan inequality
+
+### Additive decompositions
+
+All decompositions covered by this package are additive and they have the 
+following general form:
+\begin{align*}
+\textrm{Total inequality} = \textrm{Within-component} + \textrm{Between-component}.
+\end{align*}
+For each measure of lifespan inequality the within-component is a 
+weighted sum of the measure applied to each group. That is, the 
+within-component captures the average lifespan inequality across groups and
+thus the intra-group heterogeneity in lifespans. The between-component captures 
+how different lifespan inequality is between groups; i.e., the inter-group 
+heterogeneity in lifespan.
+
+For several measures of lifespan inequality additive decompositions have been
+published in the literature. Table 1 below provides an overview of all 
+decompositions covered in the package, whether new or not. $K$ is the total 
+number of groups and $\mathrm{Pr}(k)$ is the proportion of group $k$ in the 
+population, assumed to be measured at the starting age of the life table. $k$
+is also used as superscript and subscript to indicate group-specific measures;
+e.g., $e_0^k$ is the life expectancy at birth in group $k$. Additional details
+on the notation are provided below. 
+
+```{r tab, echo=F, warning=F}
+library(knitr)
+library(kableExtra)
+
+df <- data.frame(Index=c("`aid`",
+                         "`edag`",
+                         "`eta_dag`",
+                         "`gini` (achieved)",
+                         "`gini` (shortfall)",
+                         "`H` (shortfall)",
+                         "`mad`",
+                         "`mld` (achieved)",
+                         "`mld` (shortfall)",
+                         "`theil` (achieved)",
+                         "`theil` (shortfall)",
+                         "`var`"))
+
+df$Symbol <- c("$\\mathrm{AID}$",
+               "$e^\\dagger$",
+               "$\\eta^\\dagger$",
+               "$G$",
+               "$G$",
+               "$H$",
+               "$\\mathrm{MAD}$",
+               "$T_L$",
+               "$T_L$",
+               "$T_T$",
+               "$T_T$",
+               "$\\mathrm{Var}$")
+
+df$Within <- c("$\\sum_{k=1}^K \\mathrm{Pr}(k)\\frac{\\ell_a^k}{\\ell_a} \\mathrm{AID}_k$&",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) e^\\dagger_k$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\eta^\\dagger_k$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\frac{\\ell_a^{2(k)}\\eta_a^k}{\\ell_a^2\\eta_a} G_k$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\frac{\\ell_a^{2(k)} e_a^k}{\\ell_a^2 e_a} G_k$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\frac{e^\\dagger_k}{e_a}$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\mathrm{MAD}_k$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) T_L^k$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) T_L^k$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\frac{\\eta_a^k}{\\eta_a} T_T^k$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\frac{e_a^k}{e_a} T_T^k$",
+               "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\mathrm{Var}_k$")
+df$Between <- c("$\\frac{1}{2\\ell_a}\\sum_{k=1}^K B(k)+R(k)$",
+                "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\left(e^{\\dagger*}_k - e^\\dagger_k\\right)$",
+                "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\left(\\eta^{\\dagger*}_k - \\eta^\\dagger_k\\right)$",
+                "$\\frac{1}{2\\ell_a\\eta_a}\\sum_{k=1}^K B(k)+R(k)$",
+                "$\\frac{1}{2\\ell_a e_a}\\sum_{k=1}^K B(k)+R(k)$",
+                "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\left(\\frac{e^{\\dagger*}_k - e^\\dagger_k}{e_a}\\right)$",
+                "$\\mathrm{MAD}-\\sum_{k=1}^K \\mathrm{Pr}(k) \\mathrm{MAD}_k$",
+                "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\log \\frac{e_a}{e^k_a}$",
+                "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\log \\frac{\\eta_a}{\\eta^k_a}$",
+                "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\frac{\\eta_a^k}{\\eta_0}\\log \\frac{\\eta_a^k}{\\eta_a}$",
+                "$\\sum_{k=1}^K \\mathrm{Pr}(k) \\frac{e_a^k}{e_0}\\log \\frac{e_a^k}{e_a}$",
+                "$\\sum_{k=1}^K \\mathrm{Pr}(k) (e_a^k-e_a)^2$")
+
+df %>%
+  kbl(escape = F, caption = "Table 1: Decomposition formulas") %>%
+  kable_paper("hover", full_width = T) 
+```
+
+### Existing decompositions
+
+The variance and its decomposition are standard textbook material. The life 
+table formula is taken from @permanyer2019. The Theil index, often also called 
+Theil T index, is a special case of the Generalized Entropy Index. The formulas 
+and decompositions are taken from @liao2022 and @permanyer2019. The mean log 
+deviation is also a special case of the Generalized Entropy Index, and 
+sometimes called Theil L index. The formulas and decompositions are taken 
+from @liao2022 and @vanraalte2011. The derivation of the decomposition for
+the mean absolute deviation is straightforward. 
+
+### Decomposing lifespan disparity
+
+Here, we use a notation often found in the economic and statistical literature 
+on inequality measurement, which makes it more easy to derive the decomposition
+of lifespan disparity, $e^\dagger$. Let $N$ be the size of the population
+under study; $Y$ is the variable capturing the length of life and $y_i$ is the
+length of life for individual $i$. Using this notation, $e^\dagger$ can be 
+written and re-arranged as follows:
+\begin{align*}
+e^\dagger & = \frac{1}{N}\sum_{i=1}^N \mathrm{M}(Y|Y\geq y_i) \\ 
+& = \frac{1}{N}\sum_{k=1}^K\sum_{i=1}^{N_k} \mathrm{M}(Y|Y\geq y_{ik}) \\  
+& = \frac{1}{N}\sum_{k=1}^K\sum_{i=1}^{N_k} \mathrm{M}(Y|Y\geq y_{ik}) + \mathrm{M}_k(Y|Y\geq y_{ik}) - \mathrm{M}_k(Y|Y\geq y_{ik})\\
+&=\frac{1}{N} \sum_{k=1}^K\sum_{i=1}^{N_k} \mathrm{M}_k(Y|Y\geq y_{ik}) + \frac{1}{N} \sum_{k=1}^K\sum_{i=1}^{N_k} \mathrm{M}(Y|Y\geq y_{ik})-\mathrm{M}_k(Y|Y\geq y_{ik})\\
+&=\sum_{k=1}^K \mathrm{Pr}(k) e^\dagger_k + \sum_{k=1}^K \mathrm{Pr}(k) \left(e^{\dagger*}_k - e^\dagger_k\right)
+\end{align*} 
+The last line uses life table notation. The within-component is the average 
+group-specific lifespan disparity, and the between component is the difference 
+between a counterfactual group-specific lifespan inequality ($e^{\dagger*}_k$) 
+and the actual group-specific lifespan inequality. The counterfactual 
+group-specific lifespan inequality would arise if members of group $k$ died 
+according to the life table of that group, but the average remaining life 
+expectancy at the age of death is that of the total population. This essentially 
+captures how average remaining life expectancy differs between the groups.
+
+### Decomposing the Gini coefficient
+
+@liao2022 gives the following decomposition of the Gini coefficient:
+\begin{eqnarray}
+W_L&=&\frac{1}{2N^2\bar{y}} \sum_{k=1}^K\sum_{i=1}^{N_k}\sum_{j=1}^{N_k} |y_{ik}-y_{jk} | \\ 
+B_L&=&\frac{1}{2N^2\bar{y}} \sum_{k=1}^K\sum_{h=1,h\neq k}^K\sum_{i=1}^{N_k}\sum_{j=1}^{N_h} |y_{ik}-y_{jh} |,
+\end{eqnarray}
+where $y_{ik}$ is the lifespan of individual $i$ in group $k$. This can be 
+written in life table notation as
+\begin{eqnarray}\label{eq:W1}
+W_L&=&\frac{1}{2\ell_0^2 2e_0}\sum_{k=1}^K\sum_{x=0}^\omega \sum_{z=0}^\omega d^k_x d^k_z | b_x-b_z| \\ 
+B_L&=&\frac{1}{2\ell_0^2 e_0}\sum_{k=1}^K\sum_{h=1,h\neq k}^K\sum_{x=0}^\omega \sum_{z=0}^\omega d^k_x d^h_z | b_x-b_z|.
+\end{eqnarray}
+The equation for $W$ can be rearranged:
+\begin{eqnarray}
+W_L&=&\frac{1}{2\ell_0^2e_0}\sum_{k=1}^K\sum_{x=0}^\omega \sum_{z=0}^\omega d^k_x d^k_z | b_x-b_z| \\ 
+&=&\frac{1}{2\ell_0^2e_0}\sum_{k=1}^K\sum_{x=0}^\omega \sum_{z=0}^\omega d^k_x d^k_z \left(\sum\limits_{h=1}^K \mathrm{Pr}(h) |b^h_x-b^h_z|\right) \\
+&=&\frac{1}{2\ell_0^2e_0}\sum_{k=1}^K\sum_{x=0}^\omega \sum_{z=0}^\omega d^k_x d^k_z \mathrm{Pr}(k) |b^k_x-b^k_z| \\
+&+&\frac{1}{2\ell_0^2e_0}\sum_{k=1}^K\sum_{x=0}^\omega \sum_{z=0}^\omega d^k_x d^k_z \left(\sum\limits_{h=1,h\neq k}^K \mathrm{Pr}(h) |b^h_x-b^h_z|\right)
+\end{eqnarray}
+The first line of the last definition of $W_l$ can be re-arranged to 
+give 
+\begin{eqnarray}
+W=\sum_{k=1}^K \mathrm{Pr}(k) \frac{\ell_0^{2(k)} e_0^k}{\ell_0^2 e_0} G_k,
+\end{eqnarray}
+as shown in the overview table. The remainder of the last definition for $W_l$
+in combination with $B_L$ provides the between-component $B$,
+\begin{eqnarray}
+B=\frac{1}{2\ell_0 e_0}\sum_{k=1}^K B(k)+R(k)
+\end{eqnarray}
+with $B(k)$ and $R(k)$ defined as:
+\begin{eqnarray}
+B(k) &=& \sum_{h=1,h\neq k}^K\sum_{x=0}^\omega \sum_{z=0}^\omega d^k_x d^h_z | b_x-b_z| \\
+R(k) &=& \sum_{x=0}^\omega \sum_{z=0}^\omega d^k_x d^k_z \left( \sum_{h=1,h\neq k}^K \mathrm{Pr}(h) | b^h_x-b^h_z| \right)
+\end{eqnarray}
+The case of the Gini using the achieved age at death follows in the same way, as
+does the case of the life table starting at age $a$.
+
+### Decomposing H and AID
+
+ife table entropy, $H$, is a linear transformation of lifespan disparity 
+($e^\dagger/e_a$), while the absolute inter-individual difference in lifespan 
+(AID) is a linear transformation of the Gini coefficient ($G e_a$). This means 
+that the formulas for the decomposition of lifespan disparity and the Gini 
+coefficient only need to be slightly modified. In case of $H$, the within and 
+between component are given by $W_{e^\dagger}/e_a$ and $B_{e^\dagger}/e_a$, 
+while in case of the AID we have $W_{G}e_a$ and $B_{G}e_a$; i.e., scaling by 
+overall life expectancy.
+
+## Example
+
+As an example, we will decompose the lifespan inequality in Canada using gender.
+This will show us to what extent lifespan inequality in Canada is due to gender
+differentials in mortality. First, we load the package and the data.
+```{r setup}
+library(LifeIneq)
+data(LT)
+data(LTm)
+```
+LT contains the life table of Canadian women in 2016, while LTm has the same 
+information for men. We will pass some of this data to the function 'bw_decomp'.
+To do so, we combine the relevant information in matrices:
+```{r data}
+age <- 0:110
+ax  <- cbind(LT$ax,LTm$ax)
+dx  <- cbind(LT$dx,LTm$dx)
+lx  <- cbind(LT$lx,LTm$lx)
+ex  <- cbind(LT$ex,LTm$ex)
+```
+For instance, the object 'lx' contains the life table column $\ell_x$ for both
+men and women. It is a matrix where each column represents one of the groups; 
+the first column has $\ell_x$ of women, and the second column has $\ell_x$ of
+men. 
+```{r lx}
+head(lx)
+```
+Generally, for all matrices the number of columns will be equal to the number
+of groups. 
+
+The matrices created above are passed to the 'bw_decomp' function. In addition 
+to the data several other things need to be specified. The argument 'prop' 
+takes the proportion of each group. The argument 'method' can be used to choose
+betwee the different measures of lifespan inequality. Currentl, the options
+"theil", "edag","var","mld","gini","mad","aid", and "H" are supported. Finally,
+for some measures the distribution type needs to be specified; i.e., whether
+the measure should be calculated with remaining life expectancy ("rl") or with
+the achieved age at death ("aad").
+
+For our example, we assume that women are close to 49% of the population at the
+radix. Choosing mean log deviation (MLD) as our measure and using the remaining 
+life expectancy, we get the following results:
+```{r result1}
+bw_decomp(age = age,
+          ax = ax,
+          dx = dx,
+          lx = lx,
+          ex = ex,
+          prop = c(.4886,1-.4886),
+          method = "mld",
+          distribution_type = "rl")
+```
+The first component ("method") shows the method used. The second component 
+("group_ind") shows the value of the chosen measure for each group. In this
+case, MLD is about 0.04 for women and 0.05 for men. "tot" shows
+the value of MLD for the total population. The next two components, "B" and 
+"W", show the values of the between-component and the within-component, 
+respectively. Compared to the within-component, the between-component is rather
+small in this case. This is also indicated by "fB" and "fW", which show the
+between-component and the within-component relative to the total value. The
+between-component only contributes less than 1% to the total lifespan inequality
+as measured through the MLD. This means that the variation between genders is
+much smaller as within both genders, at least as measured through the MLD. 
+
+As a second example, we calculate the Gini coefficient using the achieved age
+at death:
+```{r result2}
+bw_decomp(age = age,
+          ax = ax,
+          dx = dx,
+          lx = lx,
+          ex = ex,
+          prop = c(.4886,1-.4886),
+          method = "gini",
+          distribution_type = "aad")
+```
+The components of the result are as in the first example. Again, the 
+contribution of the between-component is rather small with slightly more than 
+1%. Generally, such seemingly low importance of the between-component is rather
+common. For instance, @vanraalte2012 find similarly low between-components by
+education in several countries. One potential reason is that there are many 
+factors affecting mortality, and a single grouping variable alone (such as gender 
+in our example) has little predictive power; i.e., after accounting for this 
+variable still a sizeable proportion of lifespan variability remains. 
+
+## References
