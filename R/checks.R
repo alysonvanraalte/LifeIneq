@@ -2,6 +2,7 @@
 # here we should see what happens if 0s or negatives are in inputs
 
 check_positive <- function(x){
+  # not used?
   stopifnot(all(x > 0))
 }
 check_non_negative <- function(x){
@@ -68,6 +69,16 @@ check_args <- function(arg_list){
     check_vec_arg(x=arg_list$dx, item="dx",lx=arg_list$lx)
     age_lengths <- c(age_lengths, length(arg_list$dx))
   }
+  
+  if (any(names(arg_list) == "distribution_type")){
+    stopifnot(arg_list$distribution_type %in% c("rl","aad"))
+  }
+  if (any(names(arg_list) == "p")){
+    p <- arg_list$p
+    if (!(p > 0 & p < 1))
+    stopifnot(arg_list$distribution_type %in% c("rl","aad"))
+  }
+  
   lengths_match <- diff(range(age_lengths)) == 0
   if (!lengths_match){
     stop("vector argument lengths must match")
@@ -82,5 +93,6 @@ check_args <- function(arg_list){
 is_single <- function(age){
   all(diff(age) == 1)
 }
+
 # to remove CMD check warning
 globalVariables(names = c("age","ax","dx","lx", "ex","check"))
