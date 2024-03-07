@@ -253,7 +253,7 @@ The function returns a vector (i.e., a life table column) of standard deviations
 Not all measures require all input arguments. In the example above, the $\ell_x$ column was superfluous input for the standard deviation calculations, and running the code above returned the warning message `following arguments not used: lx`. Thus, the `lx` argument could be (but does not need to be) deleted from the code in this case. 
 
 
-Changing the index can be as simple as changing one line of code. Here we ask for $e^\dagger$, the average life lost at death (@vaupel1986 @goldman1986).
+Changing the index can be as simple as changing one line of code. Here we ask for $e^\dagger$, the average life lost at death (@vaupel1986 @goldman1986), conditional on survival to each age.
 
 ```{r}
 
