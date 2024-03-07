@@ -8,10 +8,10 @@
 # # an HMD life table as example data
 # LT <- readHMDweb("CAN","fltper_1x1",username =Sys.getenv("us"),password=Sys.getenv("pw")) |>
 # filter(Year == 2016)
-LTm <- readHMDweb("CAN","mltper_1x1",
-                  username = Sys.getenv("us"),
-                  password = Sys.getenv("pw")) |>
-   filter(Year == 2016)
+# LTm <- readHMDweb("CAN","mltper_1x1",
+#                   username = Sys.getenv("us"),
+#                   password = Sys.getenv("pw")) |>
+#    filter(Year == 2016)
 # usethis::use_data(LTm, overwrite = TRUE)
 # 
 # usethis::use_data(LT, overwrite = TRUE)
