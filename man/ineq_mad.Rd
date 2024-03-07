@@ -34,6 +34,8 @@ Calculate a lifetable column for the conditional mean absolute deviation in life
 }
 \details{
 All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
+
+This measure has not to our knowledge been used in the lifespan inequality literature. It is used more often in the literature on forecast evaluation or mortality estimation. But it makes sense according to us, so we include it. Values are on the same scale (years) and qualitatively comparable with both e-dagger, AID, or the standard deviation (See example plot).
 }
 \examples{
 
@@ -44,10 +46,18 @@ M = ineq_mad(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 M[1]
 # The MAD in age at death conditional upon survival to age 10
 M[11]
-# MAD wrt condition median
+# MAD wrt conditional median
 ineq_mad(age = LT$Age, dx = LT$dx,
   lx = LT$lx, ex = LT$ex, ax = LT$ax, 
   center_type = "median")
+\dontrun{
+plot(age, M, type = "l", ylim = c(0,15))
+lines(age, ineq_edag(age = LT$Age, dx = LT$dx, lx = LT$lx, ex = LT$ex, ax = LT$ax), col = "red")
+lines(age, ineq_aid(age = LT$Age, dx = LT$dx, ex = LT$ex, ax = LT$ax), col = "blue")
+lines(age, ineq_sd(age = LT$Age, dx = LT$dx, ex = LT$ex, ax = LT$ax), col = "forestgreen")
+legend("bottomleft",legend = c("MAD","e-dagger","AID","sd"),
+col = c("black","red","blue","forestgreen"),lty=1)
+}
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}

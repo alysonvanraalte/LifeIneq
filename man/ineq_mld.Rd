@@ -20,7 +20,7 @@ ineq_mld(age, dx, ex, ax, distribution_type = c("aad", "rl"), check = TRUE)
 \item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
 }
 \description{
-Calculate a lifetable column for the conditional mean log deviation index of inequality in survivorship
+Calculate a lifetable column for the conditional mean log deviation index of inequality in survivorship.
 }
 \details{
 All input vectors must be the same length. Also, we recommend using input data from a life table by single year of age with a highest age group of at least age 110. If your data have a lower upper age bound, consider extrapolation methods, for instance a parametric Kannisto model (implemented in \code{MortalityLaws::MortalityLaw}). If your data are abridged, consider first smoothing over age, and calculating a life table by single year of age (for instance by smoothing with a pclm model in package \code{ungroup} or with a penalized B-spline approach in package \code{MortalitySmooth}).
@@ -36,7 +36,8 @@ MLD[1]
 MLD[11]
 }
 \references{
-\insertRef{van2012contribution}{LifeIneq}
+\insertRef{vanraalte2012}{LifeIneq}
+\insertRef{cowell1980}{LifeIneq}
 }
 \seealso{
 \code{MortalityLaws::\link[MortalityLaws]{MortalityLaw}}

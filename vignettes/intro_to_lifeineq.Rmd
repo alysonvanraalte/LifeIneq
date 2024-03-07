@@ -19,15 +19,17 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 6, 
   fig.height = 6,
-  fig.align = "center"
+  fig.align = "center",
+  tidy.opts = list(width.cutoff = 60), tidy = TRUE
 )
+
 ```
 
 ## Introduction
 
 How unequally distributed are the ages at death within a population? There are many indices around to answer this question, all generally going under the umbrella terms *lifespan inequality*, *lifespan variation*, *age-at-death variation*, *compression of mortality*, or *rectangularization of the survival curve*.
 
-In this R package we have implemented code to calculate such indices from life tables. In what follows, we will go through how to use the package with example Canadian and Hungarian life table data from the Human Mortality Database (add HMD ref) [@barbieri2015; @HMD2023].
+In this R package we have implemented code to calculate such indices from life tables. In what follows, we will go through how to use the package with example Canadian and Hungarian life table data from the Human Mortality Database [@barbieri2015; @HMD2023].
 
 For a good overview of the mathematical properties of the indices, as well as comparisons of how they perform when applied to empirical data, we suggest consulting the following [@wilmoth1999; @shkolnikov2003; @vanraalte2013; @wrycza2015].
 
@@ -94,6 +96,7 @@ The notation is as follows.
 -   $e_x$ is the remaining life expectancy above age $x$
 -   $\eta_x$ is the average age at death, conditional on survival to age $x$ (equivalent to $e_x$ + $x$)
 -   $\alpha_x$ is the average age at death in the interval $[x,x+1)$ (equivalent to $a_x$ + $x$)
+-   $p$ is the proportion of life table deaths, used for calculating Kannisto's compression indices 
 -   $q_1$ and $q_3$ are the first and third quantiles of survivorship, defaulting to the age achieved by the 25th and 75th percentiles of survivors.
 
 In order to calculate some indices of lifespan inequality, two columns were added to a standard life table: $\alpha_{x}$ and $\eta_{x}$ defined above. Two indices, the `iqr` and the `cp` measures, use spline interpolation of the survival curve to estimate the age (to several decimals) at which a given percentile or `quantile` of the life table cohort survive to.
@@ -118,9 +121,9 @@ df <- data.frame(Index=c("`aid`",
                          "`drewnowski` (shortfall)",
                          "`gini` (achieved)",
                          "`gini` (shortfall)",
-                         "`H` (shortfall)",
+                         "`H` (shortfall)$^1$",
                          "`iqr`",
-                         "`mad`$^1$",
+                         "`mad`$^2$",
                          "`mld` (achieved)",
                          "`mld` (shortfall)",
                          "`sd`",
@@ -131,7 +134,7 @@ df <- data.frame(Index=c("`aid`",
 df$Formula <- c("$\\frac{1}{2\\ell_{a}^2 } \\sum_{x=a}^{\\omega}\\sum_{y=a}^{\\omega}d_{x}d_{y}\\left | \\alpha_{x} - \\alpha_{y} \\right |$",
              "$\\frac{S_{a}}{{\\eta}_{x}}$",
              "$\\frac{S_{a}}{e_{x}}$",
-             "min(x-y), where lx - ly = p*la. Ha ha, I'm obviously not a mathematician. Tim, can you help make this a real formula?",
+             "$min(x_{2}-x_{1} | x_{2} \\gt x_{1}) \\ell(x_{1}) - \\ell(x_{2}) = p$",
              "$\\frac{1}{\\ell_{a}} \\sum_{x=a} ^{\\omega} d_{x} \\left [ e_{x} + \\frac{a_x}{n}\\left ( e_{x+1} - e_{x} \\right ) \\right ]$",
              "$\\frac{1}{\\ell_{a}} \\sum_{x=a} ^{\\omega} d_{x} \\left [ \\eta_{x} + \\frac{a_x}{n}\\left ( \\eta_{x+1} - \\eta_{x} \\right ) \\right ]$",
              "1 - `G`(achieved)",
@@ -173,7 +176,8 @@ df$Type <- c("Absolute",
 df %>%
   kbl(escape = F, caption = "Table 1: LifeIneq Formulas") %>%
   kable_paper("hover", full_width = F) %>%
-  footnote(number = c("the `mad` can also be calculated by using the distance to the median - see help file"))
+  footnote(number = c("achieved age is also covered in the package as a distribution type, but we're not so sure of the demographic interpretation because remaining life expectancy is in the numerator and achieved age at death is in the denominator",
+                      "the `mad` can also be calculated by using the distance to the median - see help file"))
 #  column_spec(1, bold = T) 
 #  column_spec(2, border_right = T) 
 
@@ -183,16 +187,26 @@ df %>%
 
 ## Installing and loading the package
 
-When using the package for the first time, you need to install the package from CRAN.
+Before using the package, you will need to install it, either from CRAN, like so:
 
 ```{r eval=F}
 install.packages("LifeIneq")
+```
+
+or directly from GitHub like so:
+```{r eval=F}
+remotes::install_github("alysonvanraalte/LifeIneq")
 ```
 
 On subsequent uses, you can start from here, where we first load the package into our workspace.
 
 ```{r}
 library(LifeIneq)
+# some other packages used in this tutorial:
+library(ggplot2)
+library(scales)
+library(dplyr)
+library(tidyr)
 ```
 
 We recommend to use data in a single-age format, although the package can handle abridged-data formats as well. We also recommend closing out a life table at an age with few deaths. Lifespan variation is far more sensitive to mortality at higher ages than life expectancy [@vanraalte2013], and assumptions on the mortality hazard in the open-ended age interval can make a considerable difference when this age is close to the modal age at death.
@@ -201,11 +215,11 @@ If your data have a lower than desired upper age bound, consider extrapolation m
 
 ### Minor issues to be aware of
 
-Some of the indices will return NaNs at the very oldest ages, beyond around the last one-tenth of a percent of deaths. This is usually owing to the package taking integer counts, especially either the $d_x$ or $\ell_x$ counts being zero.
+Some of the indices will return `NaN`s at the very oldest ages, beyond around the last one-tenth of a percent of deaths. This can happen when $\ell_x$ counts are zero.
 
 ## Empirical examples
 
-### Example 1: Using LifeIneq to calculate lifespan inequality
+## Example 1: Using LifeIneq to calculate lifespan inequality
 
 This first example calculates various measures of lifespan inequality from a lifetable.
 
@@ -219,7 +233,7 @@ head(LifeIneq::LT)
 head(LifeIneq::LTabr)
 ```
 
-The `ineq` function calculates lifespan inequality. Life table columns are taken as standard arguments, specifically `age`, `dx`, `lx`, `ex`, and `ax`, all defined earlier. The `method` argument asks you to choose the index of variation. As of 2023, the indices listed in the previous section *Built-in indices of variation* are implemented. An up-to-date list can be accessed by typing `args(ineq)`. 
+The `ineq` function calculates lifespan inequality. Life table columns are taken as standard arguments, specifically `age`, `dx`, `lx`, `ex`, and `ax`, all defined earlier. The `method` argument asks you to choose the index of variation. As of 2024, the indices listed in the previous section *Built-in indices of variation* are implemented. An up-to-date list can be accessed by typing `args(ineq)`. 
 
 As a first example, we can calculate the standard deviation from the 1x1 table.
 
@@ -242,7 +256,7 @@ The function returns a vector (i.e., a life table column) of standard deviations
 Not all measures require all input arguments. In the example above, the $\ell_x$ column was superfluous input for the standard deviation calculations, and running the code above returned the warning message `following arguments not used: lx`. Thus, the `lx` argument could be (but does not need to be) deleted from the code in this case. 
 
 
-Changing the index can be as simple as changing one line of code.
+Changing the index can be as simple as changing one line of code. Here we ask for $e^\dagger$, the life disparity or average life lost at death (@vaupel1986 @goldman1986).
 
 ```{r}
 
@@ -261,54 +275,58 @@ head(edag)
 
 No warning messages were returned because the `edag` method uses all input arguments.
 
-For some measures, additional arguments are required, and you will be prompted to do so by an error message:
 
-```{r, error=T}
-# calculating the interquartile range in 2016
+### Additional arguments
 
-iqr <- ineq(age=LT$Age, 
+For some measures, additional arguments are possible. For example, Kannisto's compression measures allow the user to determine whether they are interested in finding the smallest age interval containing any given proportion of life table deaths. The measure defaults onto $C50$. 
+
+```{r, warning=T}
+# calculating Kannisto's compression measures, e.g. C50
+
+C50 <- ineq(age=LT$Age, 
            dx=LT$dx,
            lx=LT$lx,
            ex=LT$ex,
            ax=LT$ax,
-           method='iqr')
-
+           method='cp')
+C50
 
 ```
 
-We fix this by adding the additional arguments necessary for the measure. These can be seen from the help file for the measure `?LifeIneq::ineq_iqr`. In this case, we are told that in addition to `age`, and `lx`, we require  `upper` "numeric. upper survival quantile, default .75", and `lower` "numeric. lower survival quantile, default .25". 
+If another proportion is desired, this can be changed. Any additional arguments for the measures (and their defaults) can be seen from the help file for the measure, e.g. `?LifeIneq::ineq_cp`. In this case, we are told that in addition to `age`, and `lx`, we require `p`	"numeric. What proportion of the life table cohort do you want captured in the C measure? The default is .5".
 
-[Tim: ***QUESTION: should we change this from an error to a warning?***]
+Let's now change this to the smallest age range containing 20 percent of the life table deaths.
 
+```{r, warning=T}
+# calculating Kannisto's compression measures, C20
 
-
-```{r, error=T}
-# calculating the interquartile range in 2016
-
-iqr <- ineq(age=LT$Age, 
+C20 <- ineq(age=LT$Age, 
+           dx=LT$dx,
            lx=LT$lx,
-           method='iqr',
-           upper = 0.75, 
-           lower = 0.25)
-
-head(iqr)
+           ex=LT$ex,
+           ax=LT$ax,
+           method='cp',
+           p=0.2)
+C20
 
 ```
 
-Relative measures all require an additional argument `distribution_type` (more on this in example 2).
 
-Calculating measures from abridged life tables does not require any additional input compared to the single age tables--just be sure that your `age` vector is numeric, and contains the lower age bounds (e.g. Age = c(0,1,seq(5,110,5)).
+### Abridged versus single-age lifetables
+Calculating measures from abridged life tables does not require any additional input compared to the single age tables--just be sure that your `age` vector is numeric, and contains the lower age bounds (e.g. Age = c(0,1,seq(5,110,5)). Here we compare results for the case of the IQR.
 
 
-```{r, error=T}
+```{r}
 # calculating the interquartile range in 2016
+iqr <- ineq(age = LT$Age, 
+                lx = LT$lx,
+                method = 'iqr')
 
-iqr_abr <- ineq(age=LTabr$Age, 
-           lx=LTabr$lx,
-           method='iqr',
-           upper = 0.75, 
-           lower = 0.25)
+iqr_abr <- ineq(age = LTabr$Age, 
+                lx = LTabr$lx,
+                method = 'iqr')
 
+# reasonably close
 head(iqr_abr)
 head(iqr)
 
@@ -316,20 +334,17 @@ head(iqr)
 
 
 
+## Example 2: Variation in achieved ages at death compared to remaining life expectancy
 
+Relative measures of variation all require an additional argument `distribution_type`.
 
-### Example 2: Comparing relative variation in achieved ages at death to relative variation in remaining life expectancy, at ages 30 and 65
-
-This example compares relative measures of lifespan variation using Hungarian period male life table data from the HMD. Hungary was explicitly chosen because it experienced age-specific mortality trends which differed by age in magnitude, and sometimes even direction. 
+This example compares relative measures of lifespan variation using Hungarian period male life table data from the HMD. Hungary was explicitly chosen because it experienced mortality trends which differed in magnitude and sometimes even direction across the age span. 
 
 First we read in a time series of Hungarian male life tables, downloaded from the HMD.
 
 ```{r warning=F, message=F}
-library(dplyr)
-
-LTs <- read.csv("HUNmltper_1x1.csv", head=T)
-
-tibble(LTs)
+LTs <- read.csv("HUNmltper_1x1.csv", header = TRUE)
+head(LTs)
 
 ```
 
@@ -337,19 +352,17 @@ Next we calculate relative measures of lifespan variation for each year. While i
 
 Setting `distribution_type = "aad"` calculates the relative measure from a distribution of ages at death. Setting `distribution_type = "rl"` calculates the relative measure from a distribution of remaining life expectancies.
 
-A special case concerns the Keyfitz-Leser life table entropy measure `H` calculated from the age-at-death type of distribution. It is included in the package mainly for completeness, as we are unaware of anyone using this measure. In contrast to the other measures, we thought it was more logical to also calculate the numerator from the age-at-death rather than remaining life expectancy distribution. We have called this numerator `ineq_eta_dag` to distinguish it from `ineq_edag`, and the relative measure `ineq_rel_eta_dag`.
-
-[*Tim: Thinking about this more, does it make sense to do so? The trends are really different.*]
+<!-- A special case concerns the Keyfitz-Leser life table entropy measure `H` calculated from the age-at-death type of distribution. It is included in the package mainly for completeness, as we are unaware of anyone using this measure. In contrast to the other measures, we thought it was more logical to also calculate the numerator from the age-at-death rather than remaining life expectancy distribution. We have called this numerator `ineq_eta_dag` to distinguish it from `ineq_edag`, and the relative measure `ineq_rel_eta_dag`. -->
 
 ```{r}
 
-ineq <- LTs %>%
+ineq_compare <- LTs %>%
             group_by(Year) %>%
             mutate(
               COV_AAD = ineq_cov(age=Age,dx,ex,ax,distribution_type = "aad"),
               COV_RL = ineq_cov(age=Age,dx,ex,ax,distribution_type = "rl"),
-              H_AAD = ineq_rel_eta_dag(age=Age,dx,lx,ex,ax),
-              H_RL = ineq_H(age=Age,dx,lx,ex,ax),
+              H_AAD = ineq_H(age=Age,dx,lx,ex,ax,distribution_type = "aad"),
+              H_RL = ineq_H(age=Age,dx,lx,ex,ax,distribution_type = "rl"),
               T_AAD = ineq_theil(age=Age,dx,ex,ax,distribution_type = "aad"),
               T_RL = ineq_theil(age=Age,dx,ex,ax,distribution_type = "rl"),
               GINI_AAD = ineq_gini(age=Age,dx,ex,ax,distribution_type = "aad"),
@@ -357,7 +370,7 @@ ineq <- LTs %>%
               RL = ex,
               AAD = ex + Age) %>%
   
-  # keeping results for conditional survival to ages 30 or 65
+# keeping results for conditional survival to ages 30 or 65
             filter(Age==30 | Age==65) %>%
             select(Year, Age, 
                    RL, AAD, 
@@ -365,18 +378,18 @@ ineq <- LTs %>%
                    H_AAD, H_RL,
                    T_AAD, T_RL,
                    GINI_AAD, GINI_RL)
-tibble(ineq)
+head(ineq_compare)
 
 ```
 
 We can then plot these.
 
-To use `ggplot2` it is handy to first manipulate data into long format. This is done with `tidyr` package.
+To use `ggplot2` it is handy to first manipulate data into long format. 
 
 ```{r}
-library(tidyr)
 
-# putting our results into a 'long format' and adding new columnn
+
+# putting our results into a 'long format' and adding new column
 
 # adding a couple of columns to describe the measure more fully 
 New_cols <- bind_cols(
@@ -394,38 +407,30 @@ New_cols <- bind_cols(
 
 
 # long format
-Ineq_long <- ineq %>%
+ineq_long <- ineq_compare %>%
       pivot_longer(cols = RL:GINI_RL,
                    names_to = "Measure",
                    values_to = "Value") %>%
-      left_join(New_cols)
-
-tibble(Ineq_long)
-
-                   
-
-
+      left_join(New_cols, by = join_by(Measure))
 ```
 
 To put these measures on the same scale, we will look at relative change in the measure since 1950.
 
 ```{r}
-Ineq_change <- Ineq_long %>%
+ineq_change <- ineq_long %>%
   group_by(Age, Measure) %>%
   mutate(Prop_change = Value / Value[1])
 
-tail(Ineq_change)
+tail(ineq_change)
 
 ```
 
 The top rows show trends in the relative measures, while the bottom rows show trends in the average (remaining life expectancy or average age at death).
 
 ```{r warning=F, message=F}
-library(ggplot2)
-library(scales)
 # comparison conditional upon survival to ages 30 and 65
 
-ggplot(data=Ineq_change,
+ggplot(data=ineq_change,
           aes(x=Year, y=Prop_change, colour=Dist_type)) +
      geom_line(size=1) +
      facet_grid(Age ~ Family) +
@@ -434,7 +439,8 @@ ggplot(data=Ineq_change,
     labs(title = "Proportional change in measure since 1950",
         subtitle = "Conditional upon survival to ages 30 (top row) and 65 (bottom row)",
         caption = "*Life expectancy is not a lifespan inequality measure, but is shown for interpretation") +
-    coord_trans(y="log2") + #for our friend Ilya
+    coord_trans(y="log2") + 
+    theme_minimal() +  
     theme(strip.text.x = element_text(size=8),
           legend.position="bottom",
           legend.title=element_blank(),
@@ -442,7 +448,7 @@ ggplot(data=Ineq_change,
 
 ```
 
-So as this example makes clear, what goes in the denominator for conditional measures of lifespan variation can make an enormous difference in interpreting the variability. This is especially important at older ages, when relative differences over time (or between populations) in remaining life will be much larger than relative differences in ages at death.
+So as this example makes clear, what goes in the denominator for conditional measures of lifespan variation can make an enormous difference in interpreting the variability. This is especially important at older ages, when relative differences over time (or between populations) in remaining life will be much larger than relative differences in ages at death. 
 
 
 
