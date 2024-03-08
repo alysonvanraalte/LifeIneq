@@ -15,8 +15,18 @@
 #' @param distribution_type \code{"aad"} for age-at death, \code{"rl"} for remaining life
 #' @param prop numeric vector of starting fractions for each of the subgroups.
 #' @param method character one of \code{"theil", "edag","var","mld","gini","mad","aid","H"}
-#' @import LifeIneq
 #' @export
+#' @return list with the following components:
+#' \itemize{
+#'   \item method - the inequality method used
+#'   \item distribution_type - whether remaining life (`"rl"`) or age-at-death (`"aad"`) was used
+#'   \item group_ind - vector containing the index values for each subgroup
+#'   \item tot - the weighted average of group indices, representing the total population inequality index.
+#'   \item B - the part of the total population index due to differences between groups
+#'   \item W - the part of the total population index due to differences within groups
+#'   \item fB - the fraction of overall inequality due to differences between groups
+#'   \item fW - the fraction of overall inequality due to differences within groups
+#' }
 #' @examples
 #'  data(LT)
 #'  data(LTm)
@@ -209,6 +219,7 @@ bw_decomp <- function(age,
   
   # gather minimal goods to return
   out <- list(method = method,
+              distribution_type = distribution_type,
               group_ind = indices,
               tot = tot,
               B = B,
