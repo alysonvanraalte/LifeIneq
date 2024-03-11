@@ -32,6 +32,19 @@ bw_decomp(
 
 \item{method}{character one of \code{"theil", "edag","var","mld","gini","mad","aid","H"}}
 }
+\value{
+list with the following components:
+\itemize{
+\item method - the inequality method used
+\item distribution_type - whether remaining life (\code{"rl"}) or age-at-death (\code{"aad"}) was used
+\item group_ind - vector containing the index values for each subgroup
+\item tot - the weighted average of group indices, representing the total population inequality index.
+\item B - the part of the total population index due to differences between groups
+\item W - the part of the total population index due to differences within groups
+\item fB - the fraction of overall inequality due to differences between groups
+\item fW - the fraction of overall inequality due to differences within groups
+}
+}
 \description{
 Partition a lifespan inequality index into additive components
 of between-group inequality and within-group inequality. Presently

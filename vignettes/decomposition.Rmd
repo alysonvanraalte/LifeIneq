@@ -40,22 +40,21 @@ variation, mean absolute deviation (MAD), and the variance.
 
 ### Additive decompositions
 
-All decompositions covered by this package are additive and they have the 
-following general form:
+All decompositions covered by this package are additive and follow the same general form:
 \begin{align*}
 \textrm{Total inequality} = \textrm{Within-component} + \textrm{Between-component}.
 \end{align*}
-For each measure of lifespan inequality the within-component is a 
-weighted sum of the measure applied to each group. That is, the 
+For each measure of lifespan inequality, the _within-component_ is a 
+weighted sum of the given inequality measure applied to each group. That is, the 
 within-component captures the average lifespan inequality across groups and
 thus the intra-group heterogeneity in lifespans. The between-component captures 
 how different lifespan inequality is between groups; i.e., the inter-group 
-heterogeneity in lifespan.
+heterogeneity in lifespan distribution.
 
-For several measures of lifespan inequality additive decompositions have been
+For several measures of lifespan inequality, additive decompositions have been
 published in the literature. Table 1 below provides an overview of all 
 decompositions covered in the package, whether new or not. $K$ is the total 
-number of groups and $\mathrm{Pr}(k)$ is the proportion of group $k$ in the 
+number of groups, and $\mathrm{Pr}(k)$ is the proportion of group $k$ in the 
 population, assumed to be measured at the starting age of the life table. $k$
 is also used as superscript and subscript to indicate group-specific measures;
 e.g., $e_0^k$ is the life expectancy at birth in group $k$. Additional details
@@ -136,7 +135,7 @@ the mean absolute deviation is straightforward.
 
 Here, we use a notation often found in the economic and statistical literature 
 on inequality measurement, which makes it more easy to derive the decomposition
-of lifespan disparity, $e^\dagger$. Let $N$ be the size of the population
+of lifespan disparity, $e^\dagger$ (also called _average life lost at death_). Let $N$ be the size of the population
 under study; $Y$ is the variable capturing the length of life and $y_i$ is the
 length of life for individual $i$. Using this notation, $e^\dagger$ can be 
 written and re-arranged as follows:
@@ -196,7 +195,7 @@ does the case of the life table starting at age $a$.
 
 ### Decomposing H and AID
 
-ife table entropy, $H$, is a linear transformation of lifespan disparity 
+Life table entropy, $H$, is a linear transformation of lifespan disparity 
 ($e^\dagger/e_a$), while the absolute inter-individual difference in lifespan 
 (AID) is a linear transformation of the Gini coefficient ($G e_a$). This means 
 that the formulas for the decomposition of lifespan disparity and the Gini 
@@ -235,42 +234,44 @@ head(lx)
 Generally, for all matrices the number of columns will be equal to the number
 of groups. 
 
-The matrices created above are passed to the 'bw_decomp' function. In addition 
+The matrices created above are passed to the `bw_decomp()` function. In addition 
 to the data several other things need to be specified. The argument 'prop' 
 takes the proportion of each group. The argument 'method' can be used to choose
-betwee the different measures of lifespan inequality. Currentl, the options
-"theil", "edag","var","mld","gini","mad","aid", and "H" are supported. Finally,
+between the different measures of lifespan inequality. Currently, the options
+`"theil"` (Theil T, specifically, right Christian?), `"edag"`,`"var"`,`"mld"`,`"gini"`,`"mad"`,`"aid"`, and `"H"` are supported. Finally,
 for some measures the distribution type needs to be specified; i.e., whether
-the measure should be calculated with remaining life expectancy ("rl") or with
-the achieved age at death ("aad").
+the measure should be calculated with remaining life expectancy (`"rl"`) or with
+the achieved age at death (`"aad"`).
 
 For our example, we assume that women are close to 49% of the population at the
 radix. Choosing mean log deviation (MLD) as our measure and using the remaining 
 life expectancy, we get the following results:
 ```{r result1}
+# let's assume this proportion female at birth
+pf <- 0.4886
 bw_decomp(age = age,
           ax = ax,
           dx = dx,
           lx = lx,
           ex = ex,
-          prop = c(.4886,1-.4886),
+          prop = c(pf, 1-pf),
           method = "mld",
           distribution_type = "rl")
 ```
-The first component ("method") shows the method used. The second component 
-("group_ind") shows the value of the chosen measure for each group. In this
-case, MLD is about 0.04 for women and 0.05 for men. "tot" shows
-the value of MLD for the total population. The next two components, "B" and 
-"W", show the values of the between-component and the within-component, 
-respectively. Compared to the within-component, the between-component is rather
-small in this case. This is also indicated by "fB" and "fW", which show the
-between-component and the within-component relative to the total value. The
-between-component only contributes less than 1% to the total lifespan inequality
+The first component (`"method"`) shows the method used. The element `"distribution_type"` reminds us whether the index was calculated with respect to remaining years of life (`"rl"`) or age at death (`"aad"`). The element
+`"group_ind"` shows the value of the chosen measure for each group. In this
+case, MLD is about 0.04 for women and 0.05 for men. `"tot"` shows
+the value of MLD for the total population, a weighted average of the group-specific index values. The next two components, `"B"` and 
+`"W"`, show the values of the between-component and the within-component, 
+respectively, on the same scale as `"tot"`. Compared to the within-component, the between-component is rather
+small in this case. This is also indicated by `"fB"` and `"fW"`, which show the
+between and the within components as fractions of the total value. The
+between-component contributes less than 1% to the total lifespan inequality
 as measured through the MLD. This means that the variation between genders is
-much smaller as within both genders, at least as measured through the MLD. 
+much smaller than within a given gender, at least as measured through the MLD. 
 
 As a second example, we calculate the Gini coefficient using the achieved age
-at death:
+at death distribution (`"aad"`):
 ```{r result2}
 bw_decomp(age = age,
           ax = ax,
@@ -289,5 +290,7 @@ education in several countries. One potential reason is that there are many
 factors affecting mortality, and a single grouping variable alone (such as gender 
 in our example) has little predictive power; i.e., after accounting for this 
 variable still a sizeable proportion of lifespan variability remains. 
+
+[TR: maybe also cite Hal's paper here?]
 
 ## References
