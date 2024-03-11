@@ -15,7 +15,6 @@
 #' @param distribution_type \code{"aad"} for age-at death, \code{"rl"} for remaining life
 #' @param prop numeric vector of starting fractions for each of the subgroups.
 #' @param method character one of \code{"theil", "edag","var","mld","gini","mad","aid","H"}
-#' @import LifeIneq
 #' @export
 #' @examples
 #'  data(LT)

@@ -18,6 +18,8 @@ ineq_rel_eta_dag(age, dx, lx, ex, ax, check = TRUE, distribution_type = "aad")
 \item{ax}{numeric. vector of the average time spent in the age interval of those dying within the interval.}
 
 \item{check}{logical. Shall we perform basic checks on input vectors? Default TRUE}
+
+\item{distribution_type}{character. Either \code{"aad"} (age at death) or \code{"rl"} (remaining life)}
 }
 \description{
 Calculate a lifetable column for the elasticity of age at death, which is analogous to the Keyfitz-Leser \code{H} measure.
@@ -29,7 +31,7 @@ This method is implemented for the sake of completeness, since \eqn{e^\dagger} a
 
 data(LT)
 # A vector containing the conditional rel_eta_dag values
-H = ineq_rel_edag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+H = ineq_rel_eta_dag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 # The H from birth
 H[1]
 # The H conditional upon survival to age 10

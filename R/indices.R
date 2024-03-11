@@ -283,6 +283,7 @@ ineq_eta_dag <- function(age, dx, lx, ex, ax, check = TRUE){
 #' @description Calculate a lifetable column for the quantity *H*, generally referred to as either the lifetable entropy Keyfitz (1977) or the elasticity of life expectancy Leser (1955).
 #'
 #' @inheritParams ineq_edag
+#' @param distribution_type  character. Either `"aad"` (age at death) or `"rl"` (remaining life)
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
 #' @references
@@ -324,6 +325,7 @@ ineq_H <- function(age, dx, lx, ex, ax, check = TRUE, distribution_type = "rl"){
 #' @description Calculate a lifetable column for the elasticity of age at death, which is analogous to the Keyfitz-Leser `H` measure.
 #' @details This method is implemented for the sake of completeness, since \eqn{e^\dagger} and \eqn{H} give the absolute and relative shortfall metrics, we've included `eta_dag` and `rel_eta_dag` to give age-at-death versions of these. We're not aware of anyone having used this formulation, and we do not offer a demographic interpretation of the scale of this metric, but we do point out that the conditional shape over age is qualitatively similar to other conditional relative measures from attainment (achieved age) distributions.
 #' @inheritParams ineq_edag
+#' @param distribution_type  character. Either `"aad"` (age at death) or `"rl"` (remaining life)
 #' @inherit ineq_var details
 #' @inherit ineq_var seealso
 #' @references
