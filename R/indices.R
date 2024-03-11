@@ -306,7 +306,7 @@ ineq_H <- function(age, dx, lx, ex, ax, check = TRUE, distribution_type = "rl"){
     my_args <- as.list(environment())
     check_args(my_args)
   }
-  # dx <- dx / sum(dx)
+
   if(distribution_type == "rl"){
     denom <- ex
   } else {
@@ -335,7 +335,7 @@ ineq_H <- function(age, dx, lx, ex, ax, check = TRUE, distribution_type = "rl"){
 #'
 #' data(LT)
 #' # A vector containing the conditional rel_eta_dag values
-#' H = ineq_rel_edag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
+#' H = ineq_rel_eta_dag(age=LT$Age,dx=LT$dx,lx=LT$lx,ex=LT$ex,ax=LT$ax)
 #' # The H from birth
 #' H[1]
 #' # The H conditional upon survival to age 10
@@ -354,13 +354,13 @@ ineq_rel_eta_dag <- function(age,
   } else {
     denom <- ex
   }
-  # dx <- dx / sum(dx)
-  ineq_rel_eta_dag(age = age, 
+
+  ineq_eta_dag(age = age, 
             dx = dx, 
             lx = lx, 
             ex = ex, 
             ax = ax, 
-            check = check) / (ex + age) 
+            check = check) / denom
 }
 
 
